@@ -25,5 +25,6 @@ set(MOC_H_FILES
 set(RESOURCE_FILES
   # Interactions/Paint.xml
   # Interactions/PaintConfig.xml
-  ExampleIcon.svg
+  mll_icon2.svg
+  cbica-logo.jpg
 )
