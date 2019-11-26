@@ -10,27 +10,11 @@ endif()
 # which rely on this file happy.
 set(MITK_CaptkApp_PROVISIONING_FILE "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/MitkCaptkApp.provisioning" CACHE INTERNAL "CaptkApp provisioning file" FORCE)
 
-set(_plugins
-  org.mitk.gui.qt.coreapplication
-  org.mitk.gui.qt.stdmultiwidgeteditor
-  org.mitk.gui.qt.datamanager
-  org_mitk_planarfigure
-)
-
-#set(_exclude_plugins
-#  org.blueberry.test
-#  org.blueberry.uitest
+#set(_plugins
 #  org.mitk.gui.qt.coreapplication
-#  org.mitk.gui.qt.diffusionimagingapp
-#  org.mitk.example.gui.customviewer
-#  org.mitk.example.gui.customviewer.views
-#  org.mitk.example.gui.selectionservicemitk
-#  org.mitk.example.gui.selectionservicemitk.views
-#  org.mitk.example.gui.selectionserviceqt
-#  org.mitk.example.gui.extensionpointcontribution
-#  org.mitk.example.gui.extensionpointdefinition
-#  org.mitk.example.gui.minimalapplication
-#  org.mitk.example.gui.multipleperspectives
+#  org.mitk.gui.qt.stdmultiwidgeteditor
+#  org.mitk.gui.qt.datamanager
+#  org_mitk_planarfigure
 #)
 
 # Plug-ins listed below will not be
@@ -38,12 +22,28 @@ set(_plugins
 #  - listed in the provisioning file for the executable
 #  - installed if they are external plug-ins
 
-set(_exclude_plugins )
+set(_exclude_plugins
+  org.blueberry.test
+  org.blueberry.uitest
+  org.mitk.gui.qt.coreapplication
+  org.mitk.gui.qt.diffusionimagingapp
+  org.mitk.example.gui.customviewer
+  org.mitk.example.gui.customviewer.views
+  org.mitk.example.gui.selectionservicemitk
+  org.mitk.example.gui.selectionservicemitk.views
+  org.mitk.example.gui.selectionserviceqt
+  org.mitk.example.gui.extensionpointcontribution
+  org.mitk.example.gui.extensionpointdefinition
+  org.mitk.example.gui.minimalapplication
+  org.mitk.example.gui.multipleperspectives
+)
+
 
 mitkFunctionCreateBlueBerryApplication(
   NAME MitkCaptkApp
   DESCRIPTION "MITK - CaptkApp Application"
-  PLUGINS ${_plugins}
+  #PLUGINS ${_plugins}
+  EXCLUDE_PLUGINS(_exclude_plugins)
   ${_app_options}
 )
 
@@ -52,4 +52,22 @@ mitk_use_modules(TARGET MitkCaptkApp
 )
 
 # subproject support
-add_dependencies(MITK-CoreUI MitkCaptkApp)
+#add_dependencies(MITK-CoreUI MitkCaptkApp)
+
+# Add meta dependencies (e.g. on auto-load modules from depending modules)
+if(TARGET ${CMAKE_PROJECT_NAME}-autoload)
+  add_dependencies(MitkCaptkApp ${CMAKE_PROJECT_NAME}-autoload)
+endif()
+
+#Setting application icon for macOS systems
+#set_target_properties(MitkCaptkApp PROPERTIES MACOSX_BUNDLE_ICON_FILE "icon.icns")
+
+#if(APPLE)
+#  install(FILES "icons/icon.icns" DESTINATION "MitkCaptkApp.app/Contents/Resources")
+#endif(APPLE)
+
+# Add a build time dependency to legacy BlueBerry bundles.
+if(MITK_MODULES_ENABLED_PLUGINS)
+  add_dependencies(MitkCaptkApp ${MITK_MODULES_ENABLED_PLUGINS})
+endif()
+
