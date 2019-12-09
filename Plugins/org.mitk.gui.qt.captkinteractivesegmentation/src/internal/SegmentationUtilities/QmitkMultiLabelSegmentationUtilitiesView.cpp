@@ -22,6 +22,8 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include "SurfaceToImage/QmitkSurfaceToImageWidget.h"
 #include "ImageMasking/QmitkImageMaskingWidget.h"
 
+#include "CaPTkInteractiveSegmentation.h"
+
 QmitkMultiLabelSegmentationUtilitiesView::QmitkMultiLabelSegmentationUtilitiesView() :
 m_BooleanOperationsWidget(nullptr),
 m_MorphologicalOperationsWidget(nullptr),
