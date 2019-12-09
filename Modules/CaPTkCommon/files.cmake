@@ -15,20 +15,22 @@ PREPEND(HEADERS "include/")
 # Find all source and header files for cbica_toolkit
 FILE(GLOB_RECURSE CBICA_TK_SOURCES "${CMAKE_CURRENT_LIST_DIR}/cbica_toolkit/src/*.*")
 FILE(GLOB_RECURSE CBICA_TK_HEADERS "${CMAKE_CURRENT_LIST_DIR}/cbica_toolkit/include/*.*")
-PREPEND(CBICA_TK_SOURCES "../cbica_toolkit/src")
-PREPEND(CBICA_TK_HEADERS "cbica_toolkit/include/")
+#PREPEND(CBICA_TK_SOURCES "../cbica_toolkit/src")
+#PREPEND(CBICA_TK_HEADERS "cbica_toolkit/include/")
 
 # Find all source and header files for yaml_cpp
 FILE(GLOB_RECURSE YAML_SOURCES "${CMAKE_CURRENT_LIST_DIR}/yaml-cpp/src/*.*")
 FILE(GLOB_RECURSE YAML_HEADERS "${CMAKE_CURRENT_LIST_DIR}/yaml-cpp/include/*.*")
-PREPEND(YAML_SOURCES "../yaml-cpp/src")
-PREPEND(YAML_HEADERS "yaml-cpp/include/yaml-cpp/")
+PREPEND(${YAML_SOURCES} "../yaml-cpp/src")
+PREPEND(${YAML_HEADERS} "yaml-cpp/include/yaml-cpp/")
 
 message(hi)
 message(${CMAKE_CURRENT_SOURCE_DIR})
 message(${CMAKE_CURRENT_LIST_DIR})
-message("${SOURCES}")
-message("${HEADERS}")
+message("${YAML_SOURCES}")
+message("${YAML_HEADERS}")
+message("${CBICA_TK_SOURCES}")
+message("${CBICA_TK_HEADERS}")
 
 set(CPP_FILES
   ${SOURCES}
@@ -47,6 +49,5 @@ set(MOC_H_FILES
 )
 
 set(RESOURCE_FILES
-  # mll_icon2.svg
-  # cbica-logo.jpg
+
 )
