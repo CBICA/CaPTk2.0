@@ -24,6 +24,8 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 #include "ui_QmitkMultiLabelSegmentationControls.h"
 
+class CaPTkInteractiveSegmentation;
+
 // berry
 #include <berryIBerryPreferences.h>
 
@@ -175,6 +177,9 @@ protected:
    * it is needed to unregister the observer on unload.
    */
   us::ServiceRegistration<mitk::InteractionEventObserver> m_ServiceRegistration;
+
+  /*CaPTkInteractiveSegmentationModule*/
+  CaPTkInteractiveSegmentation* m_CaPTkInteractiveSegmentationModule;
 };
 
 #endif // QmitkMultiLabelSegmentationView_h

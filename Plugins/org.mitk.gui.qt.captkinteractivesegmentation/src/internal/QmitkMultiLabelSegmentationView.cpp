@@ -50,6 +50,9 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <QInputDialog>
 #include <QMessageBox>
 
+// CaPTk
+#include "CaPTkInteractiveSegmentation.h"
+
 #include "tinyxml.h"
 
 #include <itksys/SystemTools.hxx>
@@ -65,7 +68,8 @@ QmitkMultiLabelSegmentationView::QmitkMultiLabelSegmentationView()
     m_ReferenceNode(nullptr),
     m_WorkingNode(nullptr),
     m_AutoSelectionEnabled(false),
-    m_MouseCursorSet(false)
+    m_MouseCursorSet(false),
+    m_CaPTkInteractiveSegmentationModule(new CaPTkInteractiveSegmentation(this))
 {
   m_SegmentationPredicate = mitk::NodePredicateAnd::New();
   m_SegmentationPredicate->AddPredicate(mitk::TNodePredicateDataType<mitk::LabelSetImage>::New());
@@ -272,6 +276,11 @@ void QmitkMultiLabelSegmentationView::CreateQtPartControl(QWidget *parent)
   // Make sure the GUI notices if appropriate data is already present on creation
   this->OnReferenceSelectionChanged(m_Controls.m_cbReferenceNodeSelector->GetSelectedNode());
   this->OnSegmentationSelectionChanged(m_Controls.m_cbWorkingNodeSelector->GetSelectedNode());
+
+  /* Interactive Segmentation Run Button */
+  connect(m_Controls.pushButtonRun, SIGNAL(clicked()), 
+    m_CaPTkInteractiveSegmentationModule, SLOT(OnRunButtonPressed())
+  );
 }
 
 void QmitkMultiLabelSegmentationView::Activated()

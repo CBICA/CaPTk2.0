@@ -10,29 +10,25 @@
 #include "mitkLabelSetImage.h"
 #include "mitkDataStorage.h"
 
+#include "GeodesicTrainingSegmentation.h"
+
 #include <QObject>
+
+class CaPTkInteractiveSegmentationAdapter;
 
 /** \class CaPTkInteractiveSegmentation
  *  \brief Singleton class that runs the interactive segmentation 
  * algorithm and adds the result to the data storage
  */
-class /*MITKCAPTKINTERACTIVESEGMENTATIONMODULE_EXPORT*/ CaPTkInteractiveSegmentation final : 
+class MITKCAPTKINTERACTIVESEGMENTATIONMODULE_EXPORT CaPTkInteractiveSegmentation /*final*/ : 
                                                     public QObject
 {
     Q_OBJECT
 
 public:
-    /** \brief Get the instance of the singleton class 
-    */
-    static CaPTkInteractiveSegmentation & getInstance() {
-        static CaPTkInteractiveSegmentation * _instance = 0;
-        if ( _instance == 0 ) {
-            _instance = new CaPTkInteractiveSegmentation();
-        }
-        return *_instance;
-    }
+    CaPTkInteractiveSegmentation(QObject *parent = 0);
 
-    virtual ~CaPTkInteractiveSegmentation() {}
+    ~CaPTkInteractiveSegmentation() {}
 
     /** \brief Runs the algorithm
      * 
@@ -45,19 +41,26 @@ public:
     void Run(std::vector<mitk::Image::Pointer> images, 
              mitk::LabelSetImage::Pointer labels);
 
-protected slots:
+    typedef struct Result 
+    {
+        std::shared_ptr<GeodesicTrainingSegmentation::Coordinator<float,2>::Result> res2D;
+        std::shared_ptr<GeodesicTrainingSegmentation::Coordinator<float,3>::Result> res3D;
+    } Result;
+
+public slots:
     /** \brief This function runs in the main thread when 
      * the algorithm is finished to add the result to the data storage
     */
     void OnAlgorithmFinished();
 
+    void OnRunButtonPressed();
+
 private:
-    /* These are needed to make the class singleton */
-    CaPTkInteractiveSegmentation(/*QObject *parent = 0*/) {}
-    // CaPTkInteractiveSegmentation(const CaPTkInteractiveSegmentation&) {}
-    // CaPTkInteractiveSegmentation& (const CaPTkInteractiveSegmentation&) {
-    //     return *this;
-    // }
+    CaPTkInteractiveSegmentationAdapter* m_CaPTkInteractiveSegmentationAdapter;
+    mitk::DataStorage::Pointer m_DataStorage;
+    bool m_IsRunning = false;
+    QFutureWatcher<Result> m_Watcher;
+    QFuture<Result> m_FutureResult;
 };
 
 #endif // ! CaPTkInteractiveSegmentation_h
