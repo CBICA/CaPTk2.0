@@ -213,6 +213,8 @@ void SvmSuite::generateConfig(std::vector< SvmSuite::SvmDescription > &svm_descr
 
 void SvmSuite::generateConfig(SvmSuite::SvmDescription &svm_description, std::string outputFilePath, bool m_save_models)
 {
+	m_save_models = m_save_models; // So it's not unused (sorry)
+
 	std::vector< SvmSuite::SvmDescription > svm_descriptions;
 	svm_descriptions.push_back(svm_description);
 
@@ -221,6 +223,8 @@ void SvmSuite::generateConfig(SvmSuite::SvmDescription &svm_description, std::st
 
 void SvmSuite::generateConfig(cv::Ptr<cv::ml::SVM> model, int neighborhood_radius, double importance, std::string outputFilePath, bool m_save_models)
 {
+	m_save_models = m_save_models; // So it's not unused (sorry)
+
 	std::vector< SvmSuite::SvmDescription > svm_descriptions;
 	svm_descriptions.push_back(convertModelToSvmDescription(model, neighborhood_radius, importance));
 
@@ -230,9 +234,11 @@ void SvmSuite::generateConfig(cv::Ptr<cv::ml::SVM> model, int neighborhood_radiu
 void SvmSuite::generateConfig(std::vector< cv::Ptr<cv::ml::SVM> > multiple_models, std::vector< int > neighborhood_radii,
 	std::vector< double > importance_values, std::string outputFilePath, bool m_save_models)
 {
+	m_save_models = m_save_models; // So it's not unused (sorry)
+
 	std::vector< SvmSuite::SvmDescription > svm_descriptions;
 
-	for (int i = 0; i < multiple_models.size(); i++) {
+	for (size_t i = 0; i < multiple_models.size(); i++) {
 		SvmSuite::SvmDescription svm_desc = convertModelToSvmDescription(multiple_models[i], neighborhood_radii[i], importance_values[i]);
 		svm_desc.SetNeighborhoodRadius(neighborhood_radii[i]);
 		svm_desc.SetImportance(importance_values[i]);
@@ -245,9 +251,11 @@ void SvmSuite::generateConfig(std::vector< cv::Ptr<cv::ml::SVM> > multiple_model
 void SvmSuite::generateConfig(std::vector< std::string > multiple_models_paths, std::vector< int > neighborhood_radii,
 	std::vector< double > importance_values, std::string outputFilePath, bool m_save_models)
 {
+	m_save_models = m_save_models; // So it's not unused (sorry)
+
 	std::vector< SvmSuite::SvmDescription > svm_descriptions;
 
-	for (int i = 0; i < multiple_models_paths.size(); i++) {
+	for (size_t i = 0; i < multiple_models_paths.size(); i++) {
 		SvmSuite::SvmDescription svm_desc = convertModelToSvmDescription(multiple_models_paths[i], neighborhood_radii[i], importance_values[i]);
 		svm_desc.SetNeighborhoodRadius(neighborhood_radii[i]);
 		svm_desc.SetImportance(importance_values[i]);

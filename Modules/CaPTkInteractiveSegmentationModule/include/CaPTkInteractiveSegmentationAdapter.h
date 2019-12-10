@@ -6,7 +6,6 @@
 
 /** \class CaPTkInteractiveSegmentationAdapter
  *  \brief Basically useful to override the progressUpdate function of the original algorithm
- * 
  */
 template<unsigned long Dimensions>
 class CaPTkInteractiveSegmentationAdapter : 
@@ -14,7 +13,9 @@ class CaPTkInteractiveSegmentationAdapter :
     public GeodesicTrainingSegmentation::Coordinator<float, Dimensions>
 {
 public:
-	explicit CaPTkInteractiveSegmentationAdapter(QObject* parent = nullptr) {}
+	explicit CaPTkInteractiveSegmentationAdapter(QObject* parent = nullptr) : 
+					CaPTkInteractiveSegmentationQtPart(parent) {}
+
 	virtual ~CaPTkInteractiveSegmentationAdapter() {}
 
 protected:

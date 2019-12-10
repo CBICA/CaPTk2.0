@@ -2176,7 +2176,11 @@ namespace GeodesicTrainingSegmentation
 		}
 
 		/** This function is meant to be overriden if someone who uses the library wishes to */
-		virtual void progressUpdate(std::string message, int progress) { }
+		virtual void progressUpdate(std::string message, int progress) {
+			// Bypass unused variables (for compiling with warnings counting as errors)
+			message  = message;
+			progress = progress;
+		}
 
 		void message(std::string message, std::string shortMessage = "", int progress = -1)
 		{

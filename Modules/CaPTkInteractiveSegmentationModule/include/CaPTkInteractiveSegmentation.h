@@ -8,15 +8,15 @@
 
 #include "mitkImage.h"
 #include "mitkLabelSetImage.h"
-#include "mitkDataStorage.h"
+#include "mitkStandaloneDataStorage.h"
 
 #include "GeodesicTrainingSegmentation.h"
 
-class QObject;
-class QFuture;
-class QFutureWatcher;
+#include <QObject>
+#include <QFuture>
+#include <QFutureWatcher>
 
-class CaPTkInteractiveSegmentationAdapter;
+#include "CaPTkInteractiveSegmentationAdapter.h"
 
 /** \class CaPTkInteractiveSegmentation
  *  \brief Singleton class that runs the interactive segmentation 
@@ -58,8 +58,9 @@ public slots:
     void OnRunButtonPressed();
 
 private:
-    CaPTkInteractiveSegmentationAdapter* m_CaPTkInteractiveSegmentationAdapter;
-    mitk::DataStorage::Pointer m_DataStorage;
+    CaPTkInteractiveSegmentationAdapter<2>* m_CaPTkInteractiveSegmentationAdapter2D;
+    CaPTkInteractiveSegmentationAdapter<3>* m_CaPTkInteractiveSegmentationAdapter3D;
+    mitk::StandaloneDataStorage::Pointer m_DataStorage;
     bool m_IsRunning = false;
     QFutureWatcher<Result> m_Watcher;
     QFuture<Result> m_FutureResult;

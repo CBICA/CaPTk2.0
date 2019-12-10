@@ -1,6 +1,31 @@
 #include "UtilGTS.h"
 
 #include <algorithm>
+#include <sys/stat.h>
+#include <string>
+#include <iostream>
+#include<sstream>
+
+// Some of the headers below are not needed
+#if (_WIN32)
+#define NOMINMAX
+#include <direct.h>
+#include <windows.h>
+#include <conio.h>
+#include <lmcons.h>
+#include <Shlobj.h>
+#include <filesystem>
+#else
+#include <dirent.h>
+#include <unistd.h>
+#include <libgen.h>
+#include <limits.h>
+#include <cstring>
+#include <cstdlib>
+#include <sys/types.h>
+#include <errno.h>
+#include <ftw.h>
+#endif
 
 std::string GeodesicTrainingSegmentation::UtilGTS::currentDateTime()
 {
@@ -37,7 +62,7 @@ bool GeodesicTrainingSegmentation::UtilGTS::directoryExists(const std::string &d
 		return false;
 }
 
-void GeodesicTrainingSegmentation::UtilGTS::createDir(const std::string &dName)
+bool GeodesicTrainingSegmentation::UtilGTS::createDir(const std::string &dName)
 {
 	//! Pure c++ based directory creation
 #if defined(_WIN32)
@@ -68,7 +93,7 @@ GeodesicTrainingSegmentation::UtilGTS::split_string(const std::string &s, char d
 	return elems;
 }
 
-std::string GeodesicTrainingSegmentation::UtilGTS::getFileExtension(const std::string filePath)
+std::string GeodesicTrainingSegmentation::UtilGTS::getFileExtension(std::string filePath)
 {
 	std::replace( filePath.begin(), filePath.end(), '\\', '/'); // replace all '\\' to '/'
 	auto fSplitVec = split_string(filePath, '/'); // Split based on '/'
@@ -77,8 +102,8 @@ std::string GeodesicTrainingSegmentation::UtilGTS::getFileExtension(const std::s
 	auto fSplitDotsVec = split_string(fLastComp, '.'); // Split filename based on '.'
 
 	// We basically keep the last component as file extension, except for nii.gz
-	if (fSplitDotsVec.size() > 2 && fSplitDotsVec[fSplitDotsVec.size()-2] == 'nii' &&
-		fSplitDotsVec[fSplitDotsVec.size()-1] == 'gz')
+	if (fSplitDotsVec.size() > 2 && fSplitDotsVec[fSplitDotsVec.size()-2] == "nii" &&
+		fSplitDotsVec[fSplitDotsVec.size()-1] == "gz")
 	{
 		return ".nii.gz"; // Special case
 	}

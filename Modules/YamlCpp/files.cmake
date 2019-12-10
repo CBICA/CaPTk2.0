@@ -5,7 +5,6 @@
 FUNCTION( MAKE_LIST_OF_PATHS_RELATIVE_TO _listname _list _dir )
     unset( _tmp )
     foreach( item ${_list} )
-        message("item ${item}")
         file(RELATIVE_PATH _tmpv ${_dir} ${item})
         list(APPEND _tmp "${_tmpv}")
     endforeach( item ${_list} )
@@ -13,16 +12,24 @@ FUNCTION( MAKE_LIST_OF_PATHS_RELATIVE_TO _listname _list _dir )
 ENDFUNCTION( MAKE_LIST_OF_PATHS_RELATIVE_TO )
 
 # Find the source files and headers
-FILE(GLOB_RECURSE SOURCES "${CMAKE_CURRENT_LIST_DIR}/src/*")
-FILE(GLOB_RECURSE HEADERS "${CMAKE_CURRENT_LIST_DIR}/include/*")
-MAKE_LIST_OF_PATHS_RELATIVE_TO(SOURCES "${SOURCES}" "${CMAKE_CURRENT_LIST_DIR}/src")
+FILE(GLOB_RECURSE SOURCES "${CMAKE_CURRENT_LIST_DIR}/files/src/*")
+FILE(GLOB_RECURSE HEADERS "${CMAKE_CURRENT_LIST_DIR}/files/include/*")
+MAKE_LIST_OF_PATHS_RELATIVE_TO(SOURCES "${SOURCES}" "${CMAKE_CURRENT_LIST_DIR}")
 MAKE_LIST_OF_PATHS_RELATIVE_TO(HEADERS "${HEADERS}" "${CMAKE_CURRENT_LIST_DIR}")
 
+message(stuff)
+message("${SOURCES}")
+message("${HEADERS}")
 
 ### Set the files to the required variables normally
+set(all_files ${SOURCES})
+list(APPEND all_files ${HEADERS})
+message(${all_files})
 
 set(CPP_FILES
-  "${SOURCES}"
+  ${all_files}
+  # "${SOURCES}"
+  # "${HEADERS}"
 )
 
 set(UI_FILES
@@ -30,7 +37,7 @@ set(UI_FILES
 )
 
 set(MOC_H_FILES
-  "${HEADERS}"
+#  "${HEADERS}"
 )
 
 set(RESOURCE_FILES

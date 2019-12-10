@@ -1,17 +1,12 @@
 #include "CaPTkInteractiveSegmentation.h"
 
-#include "CaPTkInteractiveSegmentationAdapter.h"
-
-#include <QObject>
-#include <QFuture>
-#include <QFutureWatcher>
 #include <QMessageBox>
 
 #include <iostream>
 
-void CaPTkInteractiveSegmentation(QObject *parent) : 
+CaPTkInteractiveSegmentation::CaPTkInteractiveSegmentation(QObject *parent) : 
     QObject(parent),
-    m_DataStorage(mitk::DataStorage::GetInstance())
+    m_DataStorage(mitk::StandaloneDataStorage::New()) // ds is singleton
 {
 
 }
@@ -26,11 +21,13 @@ void CaPTkInteractiveSegmentation::Run(std::vector<mitk::Image::Pointer> images,
 
     // TODO: Test labels
 
-    // TODO: Find dimensionality
-    unsigned int dimensions = 3;
+    // Recreate adapters
+    auto m_CaPTkInteractiveSegmentationAdapter2D = new CaPTkInteractiveSegmentationAdapter<2>();
+    auto m_CaPTkInteractiveSegmentationAdapter3D = new CaPTkInteractiveSegmentationAdapter<3>();
 
-    // Recreate adapter
-    auto m_CaPTkInteractiveSegmentationAdapter = CaPTkInteractiveSegmentationAdapter<3>();
+    // Bypass unused vars
+    m_CaPTkInteractiveSegmentationAdapter2D = m_CaPTkInteractiveSegmentationAdapter2D;
+    m_CaPTkInteractiveSegmentationAdapter3D = m_CaPTkInteractiveSegmentationAdapter3D;
 
     //...
 

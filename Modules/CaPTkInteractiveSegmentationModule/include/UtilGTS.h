@@ -1,11 +1,12 @@
 #ifndef H_CBICA_UTIL_GTS
 #define H_CBICA_UTIL_GTS
 
-#pragma warning(disable : 4996) //_CRT_SECURE_NO_WARNINGS
+// #pragma warning(disable : 4996) //_CRT_SECURE_NO_WARNINGS
 
 #include <ctime>
 #include <chrono>
 #include <iostream>
+#include <vector>
 
 namespace GeodesicTrainingSegmentation 
 {
@@ -24,7 +25,7 @@ namespace GeodesicTrainingSegmentation
 		bool directoryExists(const std::string &dName);
 
 		/**Creates a directory*/
-		void createDir(const std::string &dName);
+		bool createDir(const std::string &dName);
 
 		/**Splits a string into a list using a delimiter*/
 		std::vector<std::string> 

@@ -202,7 +202,7 @@ std::shared_ptr<SvmSuite::Manager::Result> SvmSuite::Manager::Test(cv::Mat &test
 				decisionAccu = 0;
 				decision = 0;
 
-				for (int i = 0; i < outputPseudo.size(); i++) {
+				for (size_t i = 0; i < outputPseudo.size(); i++) {
 					decisionAccu += static_cast<float>(outputPseudo[i] * importanceValues[i]);
 				}
 
@@ -225,11 +225,11 @@ std::shared_ptr<SvmSuite::Manager::Result> SvmSuite::Manager::Test(cv::Mat &test
 		//Create output image with the same dimensions as the input images for this subject
 		res->labelsMat = cv::Mat::zeros(testingMat.rows, 1, CV_32S);
 
-		int totalThreadsNumber = (m_number_of_threads > testingMat.rows) ? 1 : m_number_of_threads;
+		size_t totalThreadsNumber = (m_number_of_threads > testingMat.rows) ? 1 : m_number_of_threads;
 		int counterForThreadsVec = 0;
 		std::vector<std::thread> threads(totalThreadsNumber);
 
-		for (int iStart = 0; iStart < totalThreadsNumber; iStart++)
+		for (size_t iStart = 0; iStart < totalThreadsNumber; iStart++)
 		{
 			threads[counterForThreadsVec++] = std::thread(&SvmSuite::Manager::testingLabelsThreadJob, this,
 				std::ref(testingMat), iStart, totalThreadsNumber,
@@ -237,7 +237,7 @@ std::shared_ptr<SvmSuite::Manager::Result> SvmSuite::Manager::Test(cv::Mat &test
 			);
 		}
 
-		for (int i = 0; i < totalThreadsNumber; i++) {
+		for (size_t i = 0; i < totalThreadsNumber; i++) {
 			threads[i].join();
 		}
 	}
@@ -358,7 +358,7 @@ void SvmSuite::Manager::testingLabelsThreadJob(cv::Mat &testingMat, int iStart, 
 		}
 
 		// For each different label in the predictions, find the sum of the importance values of the svms that predicted it
-		for (int i = 0; i < outputLabels.size(); i++) {
+		for (size_t i = 0; i < outputLabels.size(); i++) {
 			//if (decisionImportanceValues.find(outputLabels[i]) == decisionImportanceValues.end())
 			//{
 			//	decisionImportanceValues[outputLabels[i]] = importanceValues[i];
@@ -373,7 +373,7 @@ void SvmSuite::Manager::testingLabelsThreadJob(cv::Mat &testingMat, int iStart, 
 		int    decision = 0;
 		double bestDecisionImportance = 0;
 
-		for (int decisionCandidate : m_different_labels)
+		for (size_t decisionCandidate : m_different_labels)
 		{
 			if (decisionImportanceValues[decisionCandidate] > bestDecisionImportance)
 			{

@@ -4,7 +4,7 @@
 #include <QObject>
 
 /** \class CaPTkInteractiveSegmentationQtPart
- *  \brief Signals and slots for the CaPTkInteractiveSegmentationAdapter
+ *  \brief Signals and slots functionality used by the CaPTkInteractiveSegmentationAdapter
  * 
  * This class exists because you can't mix templates and QObject 
  */
