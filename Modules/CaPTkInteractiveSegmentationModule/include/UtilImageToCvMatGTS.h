@@ -54,9 +54,7 @@ namespace GeodesicTrainingSegmentation
 			typename itk::Image<TPixelType, TDimensions>::Pointer oneOfInput, bool considerZeros)
 		{
 			typedef itk::Image<TPixelType, TDimensions>                        TImageType;
-			typedef typename itk::Image<TPixelType, TDimensions>::Pointer      TImagePointer;
 			typedef itk::Image<LabelsPixelType, TDimensions>                   LabelsImageType;
-			typedef typename LabelsImageType::Pointer                          LabelsImagePointer;
 
 			itk::ImageRegionIteratorWithIndex<LabelsImageType> iter_l(labels, labels->GetRequestedRegion());
 			itk::ImageRegionIteratorWithIndex<TImageType> iter_i(oneOfInput, oneOfInput->GetRequestedRegion());
@@ -113,9 +111,7 @@ namespace GeodesicTrainingSegmentation
 			const typename itk::Image<LabelsPixelType, TDimensions>::Pointer &input_labels, bool considerZeros = false)
 		{
 			typedef itk::Image<TPixelType, TDimensions>                        InputImageType;
-			typedef typename itk::Image<TPixelType, TDimensions>::Pointer      InputImagePointer;
 			typedef itk::Image<LabelsPixelType, TDimensions>                   LabelsImageType;
-			typedef typename LabelsImageType::Pointer                          LabelsImagePointer;
 
 			std::shared_ptr<Result> res(new Result());
 
@@ -213,9 +209,7 @@ namespace GeodesicTrainingSegmentation
 			const typename itk::Image<LabelsPixelType, TDimensions>::Pointer &input_labels, bool considerZeros = false)
 		{
 			typedef itk::Image<TPixelType, TDimensions>                        InputImageType;
-			typedef typename itk::Image<TPixelType, TDimensions>::Pointer      InputImagePointer;
 			typedef itk::Image<LabelsPixelType, TDimensions>                   LabelsImageType;
-			typedef typename LabelsImageType::Pointer                          LabelsImagePointer;
 
 			std::shared_ptr<Result> res(new Result());
 

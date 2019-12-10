@@ -77,7 +77,7 @@ class YAML_CPP_API RegEx {
 
  private:
   REGEX_OP m_op;
-  char m_a, m_z;
+  char m_a='0', m_z='0';
   std::vector<RegEx> m_params;
 };
 }

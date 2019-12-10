@@ -7,7 +7,6 @@
 
 # This file is included in the top-level MITK CMakeLists.txt file to
 # allow early dependency checking
-message("---------AppList------------")
 
 option(MITK_BUILD_APP_CaptkApp "Build the MITK CaptkApp" ON)
 #option(MITK_BUILD_APP_Workbench "Build the MITK Workbench executable" OFF)

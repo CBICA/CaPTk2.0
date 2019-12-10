@@ -1,8 +1,8 @@
-mitk_create_module(CaPTkInteractiveSegmentationModule
+mitk_create_module(#CaPTkInteractiveSegmentationModule
   #DEPENDS PUBLIC MitkSegmentationUI
   #PACKAGE_DEPENDS PRIVATE GuidelinesSupportLibrary
-  PACKAGE_DEPENDS Qt5|Core
-  DEPENDS MitkCore MitkMultilabel MitkCaPTkCommon
+  PACKAGE_DEPENDS ITK Qt5|Core
+  DEPENDS PUBLIC MitkCore MitkMultilabel MitkExampleModule MitkYamlCpp
 )
 
 add_subdirectory(cmdapps)

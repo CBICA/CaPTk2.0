@@ -12,12 +12,6 @@
 #include "itkResampleImageFilter.h"
 #include "itkScaleTransform.h"
 
-#include "cbicaCmdParser.h"
-#include "cbicaLogging.h"
-#include "cbicaITKSafeImageIO.h"
-#include "cbicaITKImageInfo.h"
-#include "cbicaUtilities.h"
-
 #include <iostream>
 #include <fstream>
 #include <typeinfo>
@@ -710,18 +704,18 @@ namespace GeodesicTrainingSegmentation
 		}
 		void SetOutputPath(std::string path) {
 			m_output_folder = path;
-			if (!cbica::isDir(m_output_folder)) {
-				cbica::createDir(m_output_folder);
+			if (!UtilGTS::directoryExists(m_output_folder)) {
+				UtilGTS::createDir(m_output_folder);
 			}
 		}
 		void SetOutputPath(std::string path, std::string datasetName, std::string tag = "", bool includeDateTimeInTag = true) {
 			if (datasetName != "") {
-				if (!cbica::isDir(path)) {
-					cbica::createDir(path);
+				if (!UtilGTS::directoryExists(path)) {
+					UtilGTS::createDir(path);
 				}
 				m_output_folder = path + "\\" + datasetName;
-				if (!cbica::isDir(m_output_folder)) {
-					cbica::createDir(m_output_folder);
+				if (!UtilGTS::directoryExists(m_output_folder)) {
+					UtilGTS::createDir(m_output_folder);
 				}
 				std::string subfolderName =
 					((includeDateTimeInTag || tag == "") ?
@@ -737,8 +731,8 @@ namespace GeodesicTrainingSegmentation
 				//std::string subfolderName = "output";
 
 				m_output_folder += "\\" + subfolderName;
-				if (!cbica::isDir(m_output_folder)) {
-					cbica::createDir(m_output_folder);
+				if (!UtilGTS::directoryExists(m_output_folder)) {
+					UtilGTS::createDir(m_output_folder);
 				}
 			}
 			else {
@@ -894,7 +888,7 @@ namespace GeodesicTrainingSegmentation
                         m_ground_truth_set = false, m_max_threads = false, m_changed_labels_map_manually_set = false, 
                         m_do_coordinate_maps = true, m_process = true;
 		std::string     m_config_file_path = "", m_rf_config_file_path = "", m_save_only_seg_name = "",
-                        m_file_extension = DEFAULT_FILE_EXTENSION, m_output_folder = cbica::getExecutablePath();
+                        m_file_extension = DEFAULT_FILE_EXTENSION, m_output_folder = "";
 		LabelsPixelType m_label_TC = DEFAULT_LABEL_TC, m_label_ET = DEFAULT_LABEL_ET,
                         m_label_ED = DEFAULT_LABEL_ED, m_label_HT = DEFAULT_LABEL_HT,
                         m_label_of_interest = DEFAULT_LABEL_OF_INTEREST;
@@ -1000,10 +994,7 @@ namespace GeodesicTrainingSegmentation
 			std::vector< LabelsPixelType> agdLabels, bool saveResults = false)
 		{
 			message("AGD...", "AGD Operations");
-			typedef itk::Image<TPixelType, Dimensions> AgdOriginalImageType;
-			typedef itk::Image<AgdPixelType, 3> AgdImage3DType; // The algorithm implementation needs this type
-			typedef AgdImage3DType::Pointer AgdImage3DPointer;
-
+			
 			std::vector< AgdImagePointer > agdResults;
 
 			//int counterForFileName = 1;
@@ -1042,10 +1033,7 @@ namespace GeodesicTrainingSegmentation
 			LabelsPixelType agdLabel, bool saveResults = false)
 		{
 			message("AGD...", "AGD Operations");
-			typedef itk::Image<TPixelType, Dimensions> AgdOriginalImageType;
-			typedef itk::Image<AgdPixelType, 3> AgdImage3DType; // The algorithm implementation needs this type
-			typedef AgdImage3DType::Pointer AgdImage3DPointer;
-
+			
 			std::vector< AgdImagePointer > agdResults;
 
 			//int counterForFileName = 1;
@@ -1081,7 +1069,6 @@ namespace GeodesicTrainingSegmentation
 			std::vector<LabelsPixelType> allLabels, bool saveResults = true, bool asSvmInput = false)
 		{
 			message("AGD (MRI)...", "AGD Operations");
-			typedef itk::Image<TPixelType, Dimensions> AgdOriginalImageType;
 			typedef itk::Image<AgdPixelType, Dimensions> AgdImageType; // The algorithm implementation needs this type
 			typedef typename AgdImageType::Pointer AgdImagePointer;
 			
@@ -2106,7 +2093,7 @@ namespace GeodesicTrainingSegmentation
 		}
 
 		std::string getFileExtension(std::string fName) {
-			std::string extension = cbica::getFilenameExtension(fName);
+			std::string extension = UtilGTS::getFileExtension(fName);
 			std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
 
 			return extension;
@@ -2159,23 +2146,11 @@ namespace GeodesicTrainingSegmentation
 		template<class TImageType>
 		typename TImageType::Pointer readImage(std::string filename)
 		{
-			return cbica::ReadImage<TImageType>(filename);
-
-			//if (((m_file_extension == ".nii.gz") || (m_file_extension == ".nii") 
-			//	|| (m_file_extension == ".dcm") || (m_file_extension == ".dicom")) && (Dimensions > 2)) {
-			//	return cbica::ReadImage<TImageType>(filename);
-			//}
-			//else {
-			//	typedef itk::ImageFileReader<TImageType> ReaderType;
-			//	typename ReaderType::Pointer reader = ReaderType::New();
-
-			//	reader->SetFileName(filename);
-			//	reader->Update();
-			//	
-			//	typename TImageType::Pointer image;
-			//	image->Graft(reader->GetOutput());
-			//	return image;
-			//}
+			using ReaderType = itk::ImageFileReader<TImageType>;
+			typename ReaderType::Pointer reader = ReaderType::New();
+			reader->SetFileName(filename);
+			reader->Update();
+			return reader->GetOutput();
 		}
 
 		template<class TImageType>
@@ -2188,27 +2163,15 @@ namespace GeodesicTrainingSegmentation
 				filename = m_save_only_seg_name;
 			}
 
-			if (m_save_all || (m_save_only_seg && isOutputSegmentation)) {
+			if (m_save_all || (m_save_only_seg && isOutputSegmentation)) 
+			{
 				std::string fileFullPath = m_output_folder + "/" + filename + m_file_extension;
-				
-				//message("Writing image to file...", "Writing to file");
-				cbica::WriteImage<TImageType>(image, fileFullPath);
-				//message("Writing image to file...", "Writing to file", 100);
-				
-				//std::string fileFullPath = m_output_folder + "/" + filename;
 
-				//if (((m_file_extension == ".nii.gz") || (m_file_extension == ".nii") 
-				//	|| (m_file_extension == ".dcm") || (m_file_extension == ".dicom")) && (Dimensions > 2)) {
-				//	cbica::WriteImage<TImageType>(image, fileFullPath);
-				//}
-				//else {
-				//	// Unknown image type
-				//	typedef typename itk::ImageFileWriter<TImageType> WriterType;
-				//	typename WriterType::Pointer writer = WriterType::New();
-				//	writer->SetInput(image);
-				//	writer->SetFileName(fileFullPath);
-				//	writer->Update();
-				//}
+				typedef typename itk::ImageFileWriter<TImageType> WriterType;
+				typename WriterType::Pointer writer = WriterType::New();
+				writer->SetInput(image);
+				writer->SetFileName(fileFullPath);
+				writer->Update();
 			}
 		}
 

@@ -2,7 +2,6 @@
 \file  AdaptiveGeodesicDistance.h
 \brief The header file containing the Geodesic segmentation class, used to apply an adaptive geodesic transform
 Library Dependecies: ITK 4.7+ <br>
-Header Dependencies: cbicaUtilities.h, cbicaLogging.h
 http://www.med.upenn.edu/sbia/software/ <br>
 software@cbica.upenn.edu
 Copyright (c) 2018 University of Pennsylvania. All rights reserved. <br>
@@ -173,7 +172,6 @@ namespace AdaptiveGeodesicDistance
 		if (verbose) {
 			std::cout << "AdaptiveGeodesicDistance: \tForward pass\n";
 		}
-		//cbica::Logging(loggerFile, "AGD Main loops execution : Forward pass");
 
 		outNIter.GoToBegin();
 		inputNIter.GoToBegin();
@@ -250,7 +248,6 @@ namespace AdaptiveGeodesicDistance
 		if (verbose) {
 			std::cout << "AdaptiveGeodesicDistance: \tBackward pass\n";
 		}
-		//cbica::Logging(loggerFile, "AGD Main loops execution : Backward pass");
 
 		outNIter.GoToEnd();
 		inputNIter.GoToEnd();

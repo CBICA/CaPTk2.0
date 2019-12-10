@@ -87,10 +87,6 @@ void SvmSuite::Manager::Train()
 					
 					//auto extraDir = m_output_path + "/models";
 					auto extraDir = m_output_path;
-					
-					// if (!cbica::isDir(extraDir)) {
-					// 	cbica::createDir(extraDir);
-					// }
 
 					// Save model
 					std::string savePath = extraDir + "/model" + std::to_string(counterForFileName) + "_" 

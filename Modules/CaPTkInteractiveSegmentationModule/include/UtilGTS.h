@@ -16,6 +16,22 @@ namespace GeodesicTrainingSegmentation
 		@return current date and time as %Y-%m-%d %H.%M.%S
 		*/
 		std::string currentDateTime();
+
+		/** Find if a directory exists
+		@param dName the name of the directory
+		@return bool if the directory exists
+		*/
+		bool directoryExists(const std::string &dName);
+
+		/**Creates a directory*/
+		void createDir(const std::string &dName);
+
+		/**Splits a string into a list using a delimiter*/
+		std::vector<std::string> 
+		split_string(const std::string &s, char delim);
+
+		/**Find the file extension of the file*/
+		std::string getFileExtension(const std::string filePath);
 	}
 
 }

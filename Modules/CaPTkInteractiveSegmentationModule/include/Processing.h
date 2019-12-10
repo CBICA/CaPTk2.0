@@ -8,15 +8,22 @@
 #include <set>
 #include <cmath>
 
-#include "cbicaITKSafeImageIO.h"
-#include "cbicaITKImageInfo.h"
-
 #include "SusanDenoising.h"
 #include "UtilItkGTS.h"
 #include "SvmSuite.h"
 
 namespace GeodesicTrainingSegmentation
 {
+	template<class TImageType>
+	void writeImage(typename TImageType::Pointer image, std::string filename)
+	{
+		typedef typename itk::ImageFileWriter<TImageType> WriterType;
+		typename WriterType::Pointer writer = WriterType::New();
+		writer->SetInput(image);
+		writer->SetFileName(filename);
+		writer->Update();
+	}
+
 	/** This class handles preprocessing and postprocessing operations */
 	template<typename PixelType, unsigned int Dimensions>
 	class Processing
@@ -295,11 +302,11 @@ namespace GeodesicTrainingSegmentation
 				int y = 0;
 				for (auto& image : inputImages) 
 				{
-					cbica::WriteImage<InputImageType>( image, m_output_folder + "/" +
+					writeImage<InputImageType>( image, m_output_folder + "/" +
 						std::string("preprocessed_image_just_size_and_spacing") + std::to_string(++y) + ".nii.gz"
 					);
 				}		
-				cbica::WriteImage<LabelsImageType>( labels, 
+				writeImage<LabelsImageType>( labels, 
 					m_output_folder + std::string("/") + "preprocessed_labels_just_size_and_spacing.nii.gz"
 				);
 			}
@@ -323,7 +330,7 @@ namespace GeodesicTrainingSegmentation
 					int w = 0;		
 					for (auto& image : inputImages)
 					{
-						cbica::WriteImage<InputImageType>( image, m_output_folder + "/" +
+						writeImage<InputImageType>( image, m_output_folder + "/" +
 							std::string("statistical_norm_image") + std::to_string(++w) + std::string(".nii.gz")
 						);
 					}
@@ -340,7 +347,7 @@ namespace GeodesicTrainingSegmentation
 			// 			image, true, 255 * m_image_to_agd_maps_ratio
 			// 		);
 
-			// 		cbica::WriteImage<InputImageType>( image, m_output_folder + "/" +
+			// 		writeImage<InputImageType>( image, m_output_folder + "/" +
 			// 			std::string("bilateral_norm_image_ignore") + std::string(".nii.gz")
 			// 		);
 			// 	}
@@ -351,7 +358,7 @@ namespace GeodesicTrainingSegmentation
 			// 		int w = 0;		
 			// 		for (auto& image : inputImages)
 			// 		{
-			// 			cbica::WriteImage<InputImageType>( image, m_output_folder + "/" +
+			// 			writeImage<InputImageType>( image, m_output_folder + "/" +
 			// 				std::string("bilateral_norm_image") + std::to_string(++w) + std::string(".nii.gz")
 			// 			);
 			// 		}
@@ -368,7 +375,7 @@ namespace GeodesicTrainingSegmentation
 			// 			image, true, 255 * m_image_to_agd_maps_ratio
 			// 		);
 
-			// 		cbica::WriteImage<InputImageType>( image, m_output_folder + "/" +
+			// 		writeImage<InputImageType>( image, m_output_folder + "/" +
 			// 			std::string("gadf_norm_image_ignore") + std::string(".nii.gz")
 			// 		);
 			// 	}
@@ -379,7 +386,7 @@ namespace GeodesicTrainingSegmentation
 			// 		int w = 0;		
 			// 		for (auto& image : inputImages)
 			// 		{
-			// 			cbica::WriteImage<InputImageType>( image, m_output_folder + "/" +
+			// 			writeImage<InputImageType>( image, m_output_folder + "/" +
 			// 				std::string("gadf_norm_image") + std::to_string(++w) + std::string(".nii.gz")
 			// 			);
 			// 		}
@@ -403,7 +410,7 @@ namespace GeodesicTrainingSegmentation
 				if (m_save_all)
 				{				
 					for (auto& image : inputImages) {
-						cbica::WriteImage<InputImageType>( image, m_output_folder + "/" +
+						writeImage<InputImageType>( image, m_output_folder + "/" +
 							std::string("susan_denoised_image") + std::to_string(++z) + std::string(".nii.gz")
 						);
 					}
@@ -452,7 +459,7 @@ namespace GeodesicTrainingSegmentation
 				{				
 					for (auto& image : inputImages) {
 						// image = ItkUtilGTS::curvatureAnisotropicDiffusionImageFilter<InputImageType>(image);
-						cbica::WriteImage<InputImageType>( image, m_output_folder + "/" +
+						writeImage<InputImageType>( image, m_output_folder + "/" +
 							std::string("cadf_image") + std::to_string(++z) + std::string(".nii.gz")
 						);
 					}
@@ -467,7 +474,7 @@ namespace GeodesicTrainingSegmentation
 
 			if (m_save_all)
 			{
-				cbica::WriteImage<LabelsImageType>( labels, m_output_folder + "/" +
+				writeImage<LabelsImageType>( labels, m_output_folder + "/" +
 					std::string("labels_before_post_processing.nii.gz")
 				);
 			}
@@ -482,7 +489,7 @@ namespace GeodesicTrainingSegmentation
 			
 			if (m_save_all)
 			{
-				cbica::WriteImage<LabelsImageType>( labels, m_output_folder + "/" +
+				writeImage<LabelsImageType>( labels, m_output_folder + "/" +
 					std::string("labels_res.nii.gz")
 				);
 			}
@@ -525,7 +532,7 @@ namespace GeodesicTrainingSegmentation
 		      m_verbose = false, m_save_all = false, m_timer_enabled = false;
 		int   m_pixel_limit  = 10000000, m_number_of_threads = 16;
 		float m_image_to_agd_maps_ratio = 6;
-		std::string m_output_folder = cbica::getExecutablePath();
+		std::string m_output_folder = "";
 		SvmSuiteUtil::Timer m_timer;
 
 		void startTimer() {
