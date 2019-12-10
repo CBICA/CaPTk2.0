@@ -2,6 +2,8 @@
 
 #include "CaPTkInteractiveSegmentationAdapter.h"
 
+#include <QObject>
+#include <QFuture>
 #include <QFutureWatcher>
 #include <QMessageBox>
 

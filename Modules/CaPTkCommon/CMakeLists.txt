@@ -1,11 +1,6 @@
-mitk_create_module(#CaPTkCommon
-  #DEPENDS PUBLIC MitkSegmentationUI
-  #PACKAGE_DEPENDS PRIVATE GuidelinesSupportLibrary
-#  PACKAGE_DEPENDS Qt5|Core
-  #INCLUDE_DIRS Qmitk
+mitk_create_module(
   PACKAGE_DEPENDS ITK OpenCV
   DEPENDS MitkCore MitkYamlCpp
-#  DEPENDS MitkCore MitkMultilabel
 )
 
 add_subdirectory(cmdapps)

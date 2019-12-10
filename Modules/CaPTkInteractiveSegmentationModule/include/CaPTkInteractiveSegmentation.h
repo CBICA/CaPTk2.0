@@ -12,7 +12,9 @@
 
 #include "GeodesicTrainingSegmentation.h"
 
-#include <QObject>
+class QObject;
+class QFuture;
+class QFutureWatcher;
 
 class CaPTkInteractiveSegmentationAdapter;
 
