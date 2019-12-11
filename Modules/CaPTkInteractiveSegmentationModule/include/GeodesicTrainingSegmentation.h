@@ -1003,9 +1003,9 @@ namespace GeodesicTrainingSegmentation
 			int numberOfOpenThreads = 0;
 			int oldestOpenThread = 0;
 
-			for (int i = 0; i < inputImages.size(); i++)
+			for (size_t i = 0; i < inputImages.size(); i++)
 			{
-				for (int j = 0; j < agdLabels.size(); j++)
+				for (size_t j = 0; j < agdLabels.size(); j++)
 				{
 					if (!m_max_threads && numberOfOpenThreads == m_number_of_threads) {
 						threads[oldestOpenThread].join();
@@ -1020,7 +1020,7 @@ namespace GeodesicTrainingSegmentation
 				}
 			}
 
-			for (int i = oldestOpenThread; i < inputImages.size() * agdLabels.size(); i++) {
+			for (size_t i = oldestOpenThread; i < inputImages.size() * agdLabels.size(); i++) {
 				threads[i].join();
 			}
 
@@ -1042,7 +1042,7 @@ namespace GeodesicTrainingSegmentation
 			int numberOfOpenThreads = 0;
 			int oldestOpenThread = 0;
 
-			for (int i = 0; i < inputImages.size(); i++)
+			for (size_t i = 0; i < inputImages.size(); i++)
 			{
 				if (!m_max_threads && numberOfOpenThreads == m_number_of_threads) {
 					threads[oldestOpenThread].join();
@@ -1056,7 +1056,7 @@ namespace GeodesicTrainingSegmentation
 				);
 			}
 
-			for (int i = oldestOpenThread; i < inputImages.size(); i++) {
+			for (size_t i = oldestOpenThread; i < inputImages.size(); i++) {
 				threads[i].join();
 			}
 
@@ -1191,7 +1191,7 @@ namespace GeodesicTrainingSegmentation
 				}
 			}
 
-			for (int i = oldestOpenThread; i < threadsNumber; i++) {
+			for (size_t i = oldestOpenThread; i < threadsNumber; i++) {
 				threads[i].join();
 			}
 
@@ -1736,7 +1736,7 @@ namespace GeodesicTrainingSegmentation
 			std::vector<typename ImageType::Pointer> outputVector;
 			std::vector<Iterator> outputIterators;
 
-			for (int i=0; i<ImageType::ImageDimension; i++)
+			for (size_t i=0; i<ImageType::ImageDimension; i++)
 			{
 			  outputVector.push_back(ItkUtilGTS::initializeOutputImageBasedOn<ImageType>(reference));
 			  outputIterators.push_back(
@@ -1787,7 +1787,7 @@ namespace GeodesicTrainingSegmentation
 
 			itk::Index< Dimensions > centralPixel;
 			std::string imageSizeString = "Image dimensions: ";
-			for (int i = 0; i < Dimensions; i++) {
+			for (size_t i = 0; i < Dimensions; i++) {
 				totalSize *= size[i];
 				imageSizeString += std::to_string(size[i]) + " ";
 				centralPixel[i]  = size[i] / 2;
@@ -1800,7 +1800,7 @@ namespace GeodesicTrainingSegmentation
 			m_were_images_shrunk = true;
 
 			itk::Point< double, Dimensions > centralPoint;
-			for (int i = 0; i < Dimensions; i++) {
+			for (size_t i = 0; i < Dimensions; i++) {
 				centralPoint[i] = centralPixel[i];
 			}
 
@@ -1809,7 +1809,7 @@ namespace GeodesicTrainingSegmentation
 
 			typename ScaleTransformType::ParametersType parameters = scaleTransform->GetParameters();
 			float scale = 0.5;
-			for (int i = 0; i < Dimensions; i++) {
+			for (size_t i = 0; i < Dimensions; i++) {
 				parameters[i] = scale; //???
 			}
 
@@ -1883,6 +1883,8 @@ namespace GeodesicTrainingSegmentation
 			case SVM_PSEUDO:       // Same as GEOTRAIN
 			case SVM_LABELS:       // Same as GEOTRAIN
 			case REVERSE_GEOTRAIN: // Same as GEOTRAIN
+			case REVERSE_GEOTRAIN_SPORADIC: // Same as GEOTRAIN
+			case GEOTRAIN_FULL:
 			case GEOTRAIN:
 			{
 				if (m_input_images.size() + m_input_images_MRI.size() == 0 || m_labels_image == nullptr) {
