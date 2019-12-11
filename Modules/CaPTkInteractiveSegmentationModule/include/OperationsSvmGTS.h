@@ -50,6 +50,8 @@ namespace GeodesicTrainingSegmentation
 		std::shared_ptr<ResultSvmGTS> TrainAndTestGTS(std::shared_ptr<ParserGTS::Result> data, std::vector<InputImagePointer> images, 
                                                       LabelsImagePointer labels, bool predictFlags/*, cv::Mat sampleIdx = cv::Mat()*/)
 		{
+			images = images; // To bypass unused parameter warning for now.
+
 			this->SetTrainData(data->trainingMat, data->labelsMat, data->weightsMat/*, sampleIdx*/);
 
 			this->Train();

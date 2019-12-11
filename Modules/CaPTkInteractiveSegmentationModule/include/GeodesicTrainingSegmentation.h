@@ -1191,7 +1191,7 @@ namespace GeodesicTrainingSegmentation
 				}
 			}
 
-			for (size_t i = oldestOpenThread; i < threadsNumber; i++) {
+			for (int i = oldestOpenThread; i < threadsNumber; i++) {
 				threads[i].join();
 			}
 
@@ -1749,7 +1749,7 @@ namespace GeodesicTrainingSegmentation
 
 			// These needs to be initialized beforehand for optimization
 			itk::Index<ImageType::ImageDimension> index;
-			int i;
+			unsigned int i;
 
 			for (iter_i.GoToBegin(); !iter_i.IsAtEnd(); 
 			     ++iter_i)

@@ -129,7 +129,7 @@ namespace GeodesicTrainingSegmentation
 			auto   minSpacing = m_original_input_image_spacing[0];
 			auto   maxSpacing = m_original_input_image_spacing[0];
 			double avgSpacing = m_original_input_image_spacing[0];
-			for(int i=1; i<InputImageType::ImageDimension; i++)
+			for(unsigned int i=1; i<InputImageType::ImageDimension; i++)
 			{
 				if (m_original_input_image_spacing[i] > maxSpacing) {
 					maxSpacing = m_original_input_image_spacing[i];
@@ -147,7 +147,7 @@ namespace GeodesicTrainingSegmentation
 
 			// Find if spacing should be normalized (i.e. there is a big difference across dimensions)
 			bool shouldNormalizeSpacing = false;
-			for(int i=0; i<InputImageType::ImageDimension; i++)
+			for(unsigned int i=0; i<InputImageType::ImageDimension; i++)
 			{
 				auto dimSpacingDiff = m_original_input_image_spacing[i] - minSpacing;
 				if (dimSpacingDiff > 0.1 || dimSpacingDiff < -0.1)
@@ -180,11 +180,11 @@ namespace GeodesicTrainingSegmentation
 				if (sneaky2D)
 				{
 					float spacing1 = -1, spacing2 = -1;
-					for (int i=0; i<3; i++)
+					for (unsigned int i=0; i<3; i++)
 					{
 						if (i == occursInDim) { continue; }
-						if (spacing1 == -1) { spacing1 == m_original_input_image_spacing[i]; }
-						else { spacing2 == m_original_input_image_spacing[i]; }
+						if (spacing1 == -1) { spacing1 = m_original_input_image_spacing[i]; }
+						else { spacing2 = m_original_input_image_spacing[i]; }
 					}
 					float dimSpacingDiff = spacing1 - spacing2;
 					if (dimSpacingDiff > 0.1 || dimSpacingDiff < -0.1)
@@ -199,7 +199,7 @@ namespace GeodesicTrainingSegmentation
 
 			// Find the (theoretical) size that will result from potentially normalizing spacing
 			unsigned long tPixelCount = 1;
-			for(int i=0; i<InputImageType::ImageDimension; i++) {
+			for(unsigned int i=0; i<InputImageType::ImageDimension; i++) {
 				tPixelCount *= tSize[i];
 			}
 
@@ -216,7 +216,7 @@ namespace GeodesicTrainingSegmentation
 			/* ------ Find out if size should be normalized (after potential spacing changes) ------ */
 			
 			bool shouldNormalizeSize = false;
-			if (m_limit_pixels && tPixelCount > m_pixel_limit) 
+			if (m_limit_pixels && tPixelCount > (unsigned int)m_pixel_limit) 
 			{
 				shouldNormalizeSize = true; 
 			}
@@ -227,7 +227,7 @@ namespace GeodesicTrainingSegmentation
 			typename InputImageType::SpacingType targetSpacing = tSpacing;
 
 			// Calculate target size if there is (theoretically) no size normalization
-			for(int i=0; i<InputImageType::ImageDimension; i++) 
+			for(unsigned int i=0; i<InputImageType::ImageDimension; i++) 
 			{
 				targetSize[i] = std::lround(
 					1.0 * tSize[i] * m_original_labels_image_spacing[i] / tSpacing[i]
@@ -241,7 +241,7 @@ namespace GeodesicTrainingSegmentation
 
 				typename InputImageType::SizeType targetSizeSmall;
 
-				for(int i=0; i<InputImageType::ImageDimension; i++) 
+				for(unsigned int i=0; i<InputImageType::ImageDimension; i++) 
 				{
 					targetSizeSmall[i] = std::lround(
 						1.0 * targetSize[i] * std::pow(ratio, 1.0/InputImageType::ImageDimension)
@@ -260,7 +260,7 @@ namespace GeodesicTrainingSegmentation
 			typename InputImageType::SizeType targetSizeLabels;
 			typename InputImageType::SpacingType targetSpacingLabels;
 
-			for(int i=0; i<InputImageType::ImageDimension; i++) 
+			for(unsigned int i=0; i<InputImageType::ImageDimension; i++) 
 			{
 				targetSizeLabels[i] = targetSize[i];
 				targetSpacingLabels[i] = targetSpacing[i];
@@ -399,7 +399,7 @@ namespace GeodesicTrainingSegmentation
 				// TODO: Background threads
 				if (m_verbose) { std::cout << "\tDenoising images\n"; }
 				SusanDenoising susan;
-				for (int i = 0; i < inputImages.size(); i++)
+				for (size_t i = 0; i < inputImages.size(); i++)
 				{
 					inputImages[i] = susan.Run<InputImageType>(inputImages[i]);
 				}
@@ -427,7 +427,7 @@ namespace GeodesicTrainingSegmentation
 				int numberOfOpenThreads = 0;
 				int oldestOpenThread = 0;
 
-				for (int i = 0; i < inputImages.size(); i++)
+				for (size_t i = 0; i < inputImages.size(); i++)
 				{
 					if (numberOfOpenThreads == m_number_of_threads) {
 						threads[oldestOpenThread].join();
@@ -448,7 +448,7 @@ namespace GeodesicTrainingSegmentation
 					);
 				}
 
-				for (int i = oldestOpenThread; i < inputImages.size(); i++) {
+				for (size_t i = oldestOpenThread; i < inputImages.size(); i++) {
 					threads[i].join();
 				}
 				stopTimerAndReport("Preprocessing: Curvature Anisotropic Diffusion Image Filter");

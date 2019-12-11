@@ -160,6 +160,8 @@ namespace GeodesicTrainingSegmentation
 			typename TImageType::SpacingType inputSpacing = input->GetSpacing();
 			const unsigned int dimensions = inputSize.GetSizeDimension();
 
+			forceCertainOrigin = forceCertainOrigin; // Bypass unused parameter warning for now
+
 			bool isAnythingDifferent = false;
 			for (unsigned int i=0; i < dimensions; i++) {
 				if (inputSpacing[i] != outputSpacing[i]) {
@@ -489,7 +491,7 @@ namespace GeodesicTrainingSegmentation
 
 			// Helper variables for the loop
 			typename TImageType::PixelType val;
-			bool statusIgnore;
+			// bool statusIgnore;
 			// typename NIterator::Iterator nIterInput;
 			typename NIterator::Iterator nIterOutput;
 
@@ -517,8 +519,8 @@ namespace GeodesicTrainingSegmentation
 		                const typename TImageType::SizeType& desiredSize, 
 		                const typename TImageType::SpacingType& desiredSpacing)
 		{
-			typename TImageType::SizeType inputSize = image->GetLargestPossibleRegion().GetSize();
-			typename TImageType::SpacingType inputSpacing = image->GetSpacing();
+			// typename TImageType::SizeType inputSize = image->GetLargestPossibleRegion().GetSize();
+			// typename TImageType::SpacingType inputSpacing = image->GetSpacing();
 
 			using TransformType = itk::IdentityTransform<double, TImageType::ImageDimension>;
 			using ResampleFilterType = itk::ResampleImageFilter<TImageType, TImageType>;
@@ -554,7 +556,7 @@ namespace GeodesicTrainingSegmentation
 		                bool verbose = false)
 		{
 			typename TImageType::SizeType inputSize = inputLabels->GetLargestPossibleRegion().GetSize();
-			typename TImageType::SpacingType inputSpacing = inputLabels->GetSpacing();
+			// typename TImageType::SpacingType inputSpacing = inputLabels->GetSpacing();
 
 			using TransformType = itk::IdentityTransform<double, TImageType::ImageDimension>;
 			// using GaussianInterpolatorType = 

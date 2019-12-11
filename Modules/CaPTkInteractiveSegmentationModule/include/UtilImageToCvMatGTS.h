@@ -41,7 +41,7 @@ namespace GeodesicTrainingSegmentation
 			typename TImageType::SizeType   imageSize = region.GetSize();
 			int numberOfPixels = 1;
 
-			for (int i = 0; i < TImageType::ImageDimension; i++) {
+			for (unsigned int i = 0; i < TImageType::ImageDimension; i++) {
 				// Multiply with image size in each dimension
 				numberOfPixels *= imageSize[i];
 			}
@@ -138,7 +138,7 @@ namespace GeodesicTrainingSegmentation
 			float val;
 			LabelsPixelType label;
 			bool isInputInt = (typeid(TPixelType).name() == typeid(int).name()) ? true : false;
-			int inputImagesSize = input_images.size();
+			size_t inputImagesSize = input_images.size();
 			bool skipPixel;
 			int row_i = 0, row_testing_i = 0;
 			size_t fi;

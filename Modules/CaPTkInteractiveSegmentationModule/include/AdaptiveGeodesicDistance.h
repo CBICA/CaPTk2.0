@@ -154,7 +154,7 @@ namespace AdaptiveGeodesicDistance
 
 		typename ImageTypeGeodesic::SizeType radius;
 		
-		for (int i = 0; i < ImageTypeGeodesic::ImageDimension; i++) {
+		for (unsigned int i = 0; i < ImageTypeGeodesic::ImageDimension; i++) {
 			radius[i] = 1;
 		}
 

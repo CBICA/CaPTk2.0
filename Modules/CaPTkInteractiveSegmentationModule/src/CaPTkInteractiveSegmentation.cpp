@@ -41,6 +41,9 @@ void CaPTkInteractiveSegmentation::Run(std::vector<mitk::Image::Pointer>& images
     bool ok = true;              // Becomes false if there is an issue
     std::string problemStr = ""; // Populated if there is an issue
 
+    std::cout << "[CaPTkInteractiveSegmentation::Run] " 
+              << "Number of images: " << std::to_string(images.size()) << "\n";
+
     // Check if there is at least one image
     if (images.size() == 0)
     {
@@ -163,35 +166,41 @@ void CaPTkInteractiveSegmentation::Run(std::vector<mitk::Image::Pointer>& images
     m_CaPTkInteractiveSegmentationAdapter3D = m_CaPTkInteractiveSegmentationAdapter3D;
 
     // Set the correct dimensionality (to m_RunDimensionality)
+    // Is that even needed? One can tell from itk/mitk images
 
-    /* ---- ... ---- */
+    /* ---- Convert images from mitk to itk ---- */
 
-    // std::vector<itk::Image<float,3>::Pointer> imagesItk;
-    // for (auto& image : images)
-    // {
-    //     typename itk::Image<float, 3>::Pointer imageItk;
-    //     mitk::CastToItkImage(image, imageItk);
-    //     imagesItk.push_back(imageItk);
-    // }
-    // typedef itk::Image<int, 3> LabelsImageType3D;
-    // typename LabelsImageType3D::Pointer seedsItk3D;
-    // mitk::CastToItkImage(seeds, seedsItk3D);
-    // CaPTkInteractiveSegmentationAdapter<3>* algorithm = 
-    //         new CaPTkInteractiveSegmentationAdapter<3>();
-    // algorithm->SetInputImages(imagesItk);
-    // algorithm->SetLabels(seedsItk3D);
-    // auto result = algorithm->Execute();
+    std::vector<itk::Image<float,3>::Pointer> imagesItk;
+    for (auto& image : images)
+    {
+        typename itk::Image<float, 3>::Pointer imageItk;
+        mitk::CastToItkImage(image, imageItk);
+        imagesItk.push_back(imageItk);
+        std::cout << "bump\n";
+    }
 
-    // if (result->ok)
-    // {
-    //     mitk::Image::Pointer segmNormal;
-    //     mitk::CastToMitkImage(result->labelsImage, segmNormal);
-    //     mitk::LabelSetImage::Pointer segm = mitk::LabelSetImage::New();
-    //     segm->InitializeByLabeledImage(segmNormal);
-    //     mitk::DataNode::Pointer node = mitk::DataNode::New();
-    //     node->SetData(segm);
-    //     m_DataStorage->Add(node);
-    // }
+    typedef itk::Image<int, 3> LabelsImageType3D;
+    typename LabelsImageType3D::Pointer seedsItk3D;
+    mitk::CastToItkImage(seeds, seedsItk3D);
+
+    /* ---- Run ---- */
+
+    CaPTkInteractiveSegmentationAdapter<3>* algorithm = 
+            new CaPTkInteractiveSegmentationAdapter<3>();
+    algorithm->SetInputImages(imagesItk);
+    algorithm->SetLabels(seedsItk3D);
+    auto result = algorithm->Execute();
+
+    if (result->ok)
+    {
+        mitk::Image::Pointer segmNormal;
+        mitk::CastToMitkImage(result->labelsImage, segmNormal);
+        mitk::LabelSetImage::Pointer segm = mitk::LabelSetImage::New();
+        segm->InitializeByLabeledImage(segmNormal);
+        mitk::DataNode::Pointer node = mitk::DataNode::New();
+        node->SetData(segm);
+        m_DataStorage->Add(node);
+    }
 
     this->OnAlgorithmFinished(); // TODO: This should be called when the algorithm
                                  // finishes in the background (watchers etc)
