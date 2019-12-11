@@ -199,6 +199,10 @@ void CaPTkInteractiveSegmentation::Run(std::vector<mitk::Image::Pointer>& images
         segm->InitializeByLabeledImage(segmNormal);
         mitk::DataNode::Pointer node = mitk::DataNode::New();
         node->SetData(segm);
+        node->SetName("Segmentation");
+        node->SetBoolProperty("captk.interactive.segmentation.output", true);
+        // mitk::BoolProperty::Pointer propertySeg = mitk::BoolProperty::New(true);
+        // node->SetProperty("captk.interactive.segmentation.output", propertySeg);
         m_DataStorage->Add(node);
     }
 

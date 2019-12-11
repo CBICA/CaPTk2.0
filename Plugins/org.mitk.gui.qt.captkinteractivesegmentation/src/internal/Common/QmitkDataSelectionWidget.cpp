@@ -39,9 +39,19 @@ See LICENSE.txt or http://www.mitk.org for details.
 static mitk::NodePredicateBase::Pointer CreatePredicate(QmitkDataSelectionWidget::PredicateType predicateType)
 {
 
-  mitk::NodePredicateAnd::Pointer  segmentationPredicate = mitk::NodePredicateAnd::New();
-  segmentationPredicate->AddPredicate(mitk::TNodePredicateDataType<mitk::LabelSetImage>::New());
-  segmentationPredicate->AddPredicate(mitk::NodePredicateNot::New(mitk::NodePredicateProperty::New("helper object")));
+  mitk::NodePredicateAnd::Pointer  seedsPredicate = mitk::NodePredicateAnd::New();
+  seedsPredicate->AddPredicate(mitk::TNodePredicateDataType<mitk::LabelSetImage>::New());
+  seedsPredicate->AddPredicate(mitk::NodePredicateNot::New(mitk::NodePredicateProperty::New("helper object")));
+
+  // CaPTk: To not detect output segmentations as seeds
+  seedsPredicate->AddPredicate(
+      mitk::NodePredicateNot::New(
+          mitk::NodePredicateProperty::New(
+              "captk.interactive.segmentation.output", 
+              mitk::BoolProperty::New(true)
+          )
+      )
+  );
 
   mitk::NodePredicateAnd::Pointer maskPredicate = mitk::NodePredicateAnd::New();
   maskPredicate->AddPredicate(mitk::NodePredicateProperty::New("binary", mitk::BoolProperty::New(true)));
@@ -60,9 +70,19 @@ static mitk::NodePredicateBase::Pointer CreatePredicate(QmitkDataSelectionWidget
 
   mitk::NodePredicateAnd::Pointer imagePredicate = mitk::NodePredicateAnd::New();
   imagePredicate->AddPredicate(validImages);
-  imagePredicate->AddPredicate(mitk::NodePredicateNot::New(segmentationPredicate));
+  imagePredicate->AddPredicate(mitk::NodePredicateNot::New(seedsPredicate));
   imagePredicate->AddPredicate(mitk::NodePredicateNot::New(mitk::NodePredicateProperty::New("binary", mitk::BoolProperty::New(true))));
   imagePredicate->AddPredicate(mitk::NodePredicateNot::New(mitk::NodePredicateProperty::New("helper object", mitk::BoolProperty::New(true))));
+
+  // CaPTk: To not detect output segmentations as normal images
+  imagePredicate->AddPredicate(
+      mitk::NodePredicateNot::New(
+          mitk::NodePredicateProperty::New(
+              "captk.interactive.segmentation.output", 
+              mitk::BoolProperty::New(true)
+          )
+      )
+  );
 
   mitk::NodePredicateAnd::Pointer surfacePredicate = mitk::NodePredicateAnd::New();
   surfacePredicate->AddPredicate(mitk::TNodePredicateDataType<mitk::Surface>::New());
@@ -77,7 +97,7 @@ static mitk::NodePredicateBase::Pointer CreatePredicate(QmitkDataSelectionWidget
       return maskPredicate.GetPointer();
 
     case QmitkDataSelectionWidget::SegmentationPredicate:
-      return segmentationPredicate.GetPointer();
+      return seedsPredicate.GetPointer();
 
     case QmitkDataSelectionWidget::SurfacePredicate:
       return surfacePredicate.GetPointer();
