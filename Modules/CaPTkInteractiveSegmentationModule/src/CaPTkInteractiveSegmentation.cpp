@@ -63,14 +63,17 @@ void CaPTkInteractiveSegmentation::Run(std::vector<mitk::Image::Pointer>& images
     // Check if all the input images and the seeds have the same dimensionality
     if (ok)
     {
-        auto ref = images[0];
+        auto refDim = images[0]->GetDimension();
 
         // Check if the other images are on par with the ref
         for (size_t i = 1; i < images.size(); i++)
         {
-            auto im = images[i];
+            auto dim = images[i]->GetDimension();
 
-            //...
+            if (dim != refDim)
+            {
+                ok = false;
+            }
 
             if (!ok)
             {
@@ -82,10 +85,9 @@ void CaPTkInteractiveSegmentation::Run(std::vector<mitk::Image::Pointer>& images
         // Check if the seeds are on par with the ref
         if (ok)
         {
-            //...
-
-            if (!ok)
+            if (refDim != seeds->GetDimension())
             {
+                ok = false;
                 problemStr = "The seeds should have the same dimension as the images.";
             }
         }
