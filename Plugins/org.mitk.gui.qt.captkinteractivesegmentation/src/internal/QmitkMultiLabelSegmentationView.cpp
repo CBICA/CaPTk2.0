@@ -74,8 +74,12 @@ QmitkMultiLabelSegmentationView::QmitkMultiLabelSegmentationView()
       new CaPTkInteractiveSegmentation(GetDataStorage(), this);
 
   m_SegmentationPredicate = mitk::NodePredicateAnd::New();
-  m_SegmentationPredicate->AddPredicate(mitk::TNodePredicateDataType<mitk::LabelSetImage>::New());
-  m_SegmentationPredicate->AddPredicate(mitk::NodePredicateNot::New(mitk::NodePredicateProperty::New("helper object")));
+  m_SegmentationPredicate->AddPredicate(
+      mitk::TNodePredicateDataType<mitk::LabelSetImage>::New()
+  );
+  m_SegmentationPredicate->AddPredicate
+      (mitk::NodePredicateNot::New(mitk::NodePredicateProperty::New("helper object"))
+  );
 
   mitk::TNodePredicateDataType<mitk::Image>::Pointer isImage = mitk::TNodePredicateDataType<mitk::Image>::New();
   mitk::NodePredicateProperty::Pointer isBinary =
@@ -360,10 +364,15 @@ void QmitkMultiLabelSegmentationView::OnRunButtonPressed()
   auto predicateIsLabelSetImage = 
       mitk::TNodePredicateDataType<mitk::LabelSetImage>::New();
 
-  // The images we want are mitk::Image, but not mitk::LabelSetImage
+  // Predicate property to find if node is a helper object
+  auto predicatePropertyIsHelper =
+      mitk::NodePredicateProperty::New("helper object");
+
+  // The images we want are mitk::Image, but not mitk::LabelSetImage and not helper obj
   auto predicateFinal = mitk::NodePredicateAnd::New();
   predicateFinal->AddPredicate(predicateIsImage);
   predicateFinal->AddPredicate(mitk::NodePredicateNot::New(predicateIsLabelSetImage));
+  predicateFinal->AddPredicate(mitk::NodePredicateNot::New(predicatePropertyIsHelper));
 
   // Get those images and add them to the vector
 	mitk::DataStorage::SetOfObjects::ConstPointer all = 
@@ -472,7 +481,7 @@ void QmitkMultiLabelSegmentationView::OnNewSegmentationSession()
   mitk::Image* referenceImage = dynamic_cast<mitk::Image*>(referenceNode->GetData());
   assert(referenceImage);
 
-  QString newName = "seeds";
+  QString newName = "Seeds";
   // QString newName = QString::fromStdString(referenceNode->GetName());
   // newName.append("-labels");
   // bool ok = false;
