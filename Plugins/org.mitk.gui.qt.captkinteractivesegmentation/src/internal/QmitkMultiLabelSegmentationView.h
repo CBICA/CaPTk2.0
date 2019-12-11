@@ -65,6 +65,8 @@ public:
 
 protected slots:
 
+  void OnRunButtonPressed();
+
   /// \brief reaction to the selection of any 2D segmentation tool
   void OnManualTool2DSelected(int id);
 

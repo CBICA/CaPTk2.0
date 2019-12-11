@@ -68,9 +68,11 @@ QmitkMultiLabelSegmentationView::QmitkMultiLabelSegmentationView()
     m_ReferenceNode(nullptr),
     m_WorkingNode(nullptr),
     m_AutoSelectionEnabled(false),
-    m_MouseCursorSet(false),
-    m_CaPTkInteractiveSegmentationModule(new CaPTkInteractiveSegmentation(this))
+    m_MouseCursorSet(false)
 {
+  m_CaPTkInteractiveSegmentationModule = 
+      new CaPTkInteractiveSegmentation(GetDataStorage(), this);
+
   m_SegmentationPredicate = mitk::NodePredicateAnd::New();
   m_SegmentationPredicate->AddPredicate(mitk::TNodePredicateDataType<mitk::LabelSetImage>::New());
   m_SegmentationPredicate->AddPredicate(mitk::NodePredicateNot::New(mitk::NodePredicateProperty::New("helper object")));
@@ -279,7 +281,7 @@ void QmitkMultiLabelSegmentationView::CreateQtPartControl(QWidget *parent)
 
   /* Interactive Segmentation Run Button */
   connect(m_Controls.pushButtonRun, SIGNAL(clicked()), 
-    m_CaPTkInteractiveSegmentationModule, SLOT(OnRunButtonPressed())
+    this, SLOT(OnRunButtonPressed())
   );
 }
 
@@ -334,6 +336,55 @@ int QmitkMultiLabelSegmentationView::ComputePreferredSize(bool width,
 /************************************************************************/
 /* protected slots                                                      */
 /************************************************************************/
+void QmitkMultiLabelSegmentationView::OnRunButtonPressed()
+{
+  // ---- Collect the seeds ----
+
+  std::string seedsNodeName = "";
+  mitk::LabelSetImage::Pointer seeds = nullptr;
+  if (m_WorkingNode.IsNotNull())
+  {
+    seeds = dynamic_cast<mitk::LabelSetImage*>( m_WorkingNode->GetData() );
+    seedsNodeName = m_WorkingNode->GetName();
+  }
+
+  // ---- Collect the images ----
+
+  std::vector<mitk::Image::Pointer> images;
+  
+  // Predicate to find if node is mitk::Image
+  auto predicateIsImage = 
+      mitk::TNodePredicateDataType<mitk::Image>::New();
+  
+  // Predicate to find if node is mitk::LabelSetImage
+  auto predicateIsLabelSetImage = 
+      mitk::TNodePredicateDataType<mitk::LabelSetImage>::New();
+
+  // The images we want are mitk::Image, but not mitk::LabelSetImage
+  auto predicateFinal = mitk::NodePredicateAnd::New();
+  predicateFinal->AddPredicate(predicateIsImage);
+  predicateFinal->AddPredicate(mitk::NodePredicateNot::New(predicateIsLabelSetImage));
+
+  // Get those images and add them to the vector
+	mitk::DataStorage::SetOfObjects::ConstPointer all = 
+      GetDataStorage()->GetSubset(predicateFinal);
+	for (mitk::DataStorage::SetOfObjects::ConstIterator it = all->Begin(); 
+       it != all->End(); ++it) 
+  {
+    if (it->Value().IsNotNull())
+    {
+      std::cout << "[QmitkMultiLabelSegmentationView::OnRunButtonPressed] "
+                << "Image node name: " 
+                << it->Value()->GetName()
+                << "\n";
+			images.push_back( dynamic_cast<mitk::Image*>(it->Value()->GetData()) );
+		}
+	}
+
+  // ---- Call module ----
+  m_CaPTkInteractiveSegmentationModule->Run(images, seeds);
+}
+
 void QmitkMultiLabelSegmentationView::OnManualTool2DSelected(int id)
 {
   this->ResetMouseCursor();
@@ -728,6 +779,14 @@ void QmitkMultiLabelSegmentationView::OnReferenceSelectionChanged(const mitk::Da
 
 void QmitkMultiLabelSegmentationView::OnSegmentationSelectionChanged(const mitk::DataNode* node)
 {
+  if (node != nullptr)
+  {
+    std::cout << "[QmitkMultiLabelSegmentationView::OnSegmentationSelectionChanged] "
+              << "Selection changed to: "
+              << node->GetName()
+              << "\n";
+  }
+
   m_ToolManager->ActivateTool(-1);
 
   if (m_WorkingNode.IsNotNull())
@@ -1045,8 +1104,8 @@ void QmitkMultiLabelSegmentationView::UpdateControls()
   m_Controls.m_pbShowLabelTable->setEnabled(false);
 
   // Hide not useful views
-  m_Controls.label_PatientImage->setVisible(false);
-  m_Controls.m_cbReferenceNodeSelector->setVisible(false);
+  // m_Controls.label_PatientImage->setVisible(false);
+  // m_Controls.m_cbReferenceNodeSelector->setVisible(false);
   m_Controls.m_btLockExterior->setVisible(false);
   m_Controls.m_tw2DTools->removeTab(1);
   m_Controls.m_gbInterpolation->setVisible(false);

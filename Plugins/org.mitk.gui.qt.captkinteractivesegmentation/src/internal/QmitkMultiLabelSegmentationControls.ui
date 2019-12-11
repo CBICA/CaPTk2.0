@@ -38,6 +38,56 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_5">
    <item>
+    <widget class="QGroupBox" name="groupBoxInstructions">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::LeftToRight</enum>
+     </property>
+     <property name="title">
+      <string>Instructions</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_7">
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>• Load at least one image.
+• Select the ones you want to use in Data Manager.
+   All these images should be co-registered.
+• Select one of them as the reference image.
+• Create the seeds image.
+• Draw at least 2 seed labels.
+• Run.
+• To correct mistakes, draw more seeds and rerun.
+• To inflate/deflate or fill holes,
+   use the multilabel segmentation utilities.
+• To visualize, right click the output segmentation
+   and select 'Create smoothed polygon model'.
+   To change the surface representation,
+   right click the objects.</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <widget class="QGroupBox" name="groupBox_DataSelection">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -52,7 +102,7 @@
       <item row="0" column="0">
        <widget class="QLabel" name="label_PatientImage">
         <property name="text">
-         <string>Patient Image</string>
+         <string>Reference Image</string>
         </property>
        </widget>
       </item>
@@ -747,6 +797,7 @@
   <zorder>groupBox_Layer</zorder>
   <zorder>groupBox_Labels</zorder>
   <zorder>groupBox_Run</zorder>
+  <zorder>groupBoxInstructions</zorder>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>

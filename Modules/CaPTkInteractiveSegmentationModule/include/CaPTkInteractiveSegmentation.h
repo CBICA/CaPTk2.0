@@ -6,17 +6,16 @@
 // that you want to be part of the public interface of your module.
 #include <MitkCaPTkInteractiveSegmentationModuleExports.h>
 
+#include "CaPTkInteractiveSegmentationAdapter.h"
+#include "GeodesicTrainingSegmentation.h"
+
 #include "mitkImage.h"
 #include "mitkLabelSetImage.h"
-#include "mitkStandaloneDataStorage.h"
-
-#include "GeodesicTrainingSegmentation.h"
+#include "mitkDataStorage.h"
 
 #include <QObject>
 #include <QFuture>
 #include <QFutureWatcher>
-
-#include "CaPTkInteractiveSegmentationAdapter.h"
 
 /** \class CaPTkInteractiveSegmentation
  *  \brief Singleton class that runs the interactive segmentation 
@@ -28,7 +27,9 @@ class MITKCAPTKINTERACTIVESEGMENTATIONMODULE_EXPORT CaPTkInteractiveSegmentation
     Q_OBJECT
 
 public:
-    CaPTkInteractiveSegmentation(QObject *parent = 0);
+    CaPTkInteractiveSegmentation(
+            mitk::DataStorage::Pointer dataStorage,
+            QObject *parent = 0);
 
     ~CaPTkInteractiveSegmentation() {}
 
@@ -40,8 +41,8 @@ public:
      * @param images a list of the co-registered input images
      * @param labels label image that contains the user drawn seeds
     */
-    void Run(std::vector<mitk::Image::Pointer> images, 
-             mitk::LabelSetImage::Pointer labels);
+    void Run(std::vector<mitk::Image::Pointer>& images, 
+             mitk::LabelSetImage::Pointer& seeds);
 
     typedef struct Result 
     {
@@ -55,15 +56,15 @@ public slots:
     */
     void OnAlgorithmFinished();
 
-    void OnRunButtonPressed();
-
 private:
     CaPTkInteractiveSegmentationAdapter<2>* m_CaPTkInteractiveSegmentationAdapter2D;
     CaPTkInteractiveSegmentationAdapter<3>* m_CaPTkInteractiveSegmentationAdapter3D;
-    mitk::StandaloneDataStorage::Pointer m_DataStorage;
     bool m_IsRunning = false;
     QFutureWatcher<Result> m_Watcher;
     QFuture<Result> m_FutureResult;
+    unsigned int m_RunDimensionality;
+
+    mitk::DataStorage::Pointer m_DataStorage;
 };
 
 #endif // ! CaPTkInteractiveSegmentation_h
