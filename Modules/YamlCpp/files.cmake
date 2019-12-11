@@ -12,34 +12,33 @@ FUNCTION( MAKE_LIST_OF_PATHS_RELATIVE_TO _listname _list _dir )
 ENDFUNCTION( MAKE_LIST_OF_PATHS_RELATIVE_TO )
 
 # Find the source files and headers
-FILE(GLOB_RECURSE SOURCES "${CMAKE_CURRENT_LIST_DIR}/files/src/*")
-FILE(GLOB_RECURSE HEADERS "${CMAKE_CURRENT_LIST_DIR}/files/include/*")
+FILE(GLOB_RECURSE ALL_FILES "${CMAKE_CURRENT_LIST_DIR}/files/*")
+FILE(GLOB_RECURSE HEADERS "${CMAKE_CURRENT_LIST_DIR}/files/*.h")
 MAKE_LIST_OF_PATHS_RELATIVE_TO(SOURCES "${SOURCES}" "${CMAKE_CURRENT_LIST_DIR}")
 MAKE_LIST_OF_PATHS_RELATIVE_TO(HEADERS "${HEADERS}" "${CMAKE_CURRENT_LIST_DIR}")
 
-message(stuff)
-message("${SOURCES}")
-message("${HEADERS}")
+# message(stuff)
+# message("${SOURCES}")
+# message("${HEADERS}")
 
 ### Set the files to the required variables normally
-set(all_files ${SOURCES})
-list(APPEND all_files ${HEADERS})
-message(${all_files})
+#list(APPEND all_files ${HEADERS})
+#message(${all_files})
 
 set(CPP_FILES
-  ${all_files}
+  ${ALL_FILES}
   # "${SOURCES}"
   # "${HEADERS}"
 )
-
+message("cppfiles: ${CPP_FILES}")
 set(UI_FILES
 
 )
 
 set(MOC_H_FILES
-#  "${HEADERS}"
+ "${HEADERS}"
 )
-
+message("cppfiles: ${MOC_H_FILES}")
 set(RESOURCE_FILES
 
 )

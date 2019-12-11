@@ -1,11 +1,10 @@
-# ### Source files need to be relative to src/
-# ### Header files need to be relative to module_root
+### Source files need to be relative to src/
+### Header files need to be relative to module_root
 
 # Function to prepend a string to all list items
 FUNCTION( MAKE_LIST_OF_PATHS_RELATIVE_TO _listname _list _dir )
     unset( _tmp )
     foreach( item ${_list} )
-        message("item ${item}")
         file(RELATIVE_PATH _tmpv ${_dir} ${item})
         list(APPEND _tmp "${_tmpv}")
     endforeach( item ${_list} )
