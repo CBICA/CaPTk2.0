@@ -1,3 +1,18 @@
+# Function to prepend a string to all list items
+FUNCTION( MAKE_LIST_OF_PATHS_RELATIVE_TO _listname _list _dir )
+    unset( _tmp )
+    foreach( item ${_list} )
+        file(RELATIVE_PATH _tmpv ${_dir} ${item})
+        list(APPEND _tmp "${_tmpv}")
+    endforeach( item ${_list} )
+    set( ${_listname} ${_tmp} PARENT_SCOPE )
+ENDFUNCTION( MAKE_LIST_OF_PATHS_RELATIVE_TO )
+
+FILE(GLOB_RECURSE YAML_ALL "${CMAKE_CURRENT_LIST_DIR}/src/yaml-cpp/*")
+FILE(GLOB_RECURSE YAML_HEADERS "${CMAKE_CURRENT_LIST_DIR}/yaml-cpp/files/*.h")
+MAKE_LIST_OF_PATHS_RELATIVE_TO(YAML_ALL "${YAML_ALL}" "${CMAKE_CURRENT_LIST_DIR}/src")
+MAKE_LIST_OF_PATHS_RELATIVE_TO(YAML_HEADERS "${YAML_HEADERS}" "${CMAKE_CURRENT_LIST_DIR}")
+
 set(CPP_FILES
   CaPTkInteractiveSegmentation.cpp
   CaPTkInteractiveSegmentationAdapter.cpp
@@ -21,6 +36,8 @@ set(CPP_FILES
   depends/UtilGTS.cpp
   depends/UtilImageToCvMatGTS.cpp
   depends/UtilItkGTS.cpp 
+
+  ${YAML_ALL}
 )
 
 set(UI_FILES
@@ -52,6 +69,8 @@ set(MOC_H_FILES
   include/UtilGTS.h
   include/UtilImageToCvMatGTS.h
   include/UtilItkGTS.h
+
+  ${YAML_HEADERS}
 )
 
 set(RESOURCE_FILES
