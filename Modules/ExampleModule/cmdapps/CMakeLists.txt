@@ -2,7 +2,7 @@ option(BUILD_ExtExampleCmdApps "Build command-line apps for the Example module" 
 
 if(BUILD_ExtExampleCmdApps)
   mitkFunctionCreateCommandLineApp(
-    NAME ExampleCmdApp
+    NAME ExtExampleCmdApp
     DEPENDS MitkExampleModule
   )
 endif()
