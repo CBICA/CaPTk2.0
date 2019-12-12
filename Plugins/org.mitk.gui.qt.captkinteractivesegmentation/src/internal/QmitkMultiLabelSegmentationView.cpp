@@ -80,6 +80,9 @@ QmitkMultiLabelSegmentationView::QmitkMultiLabelSegmentationView()
   m_SegmentationPredicate->AddPredicate
       (mitk::NodePredicateNot::New(mitk::NodePredicateProperty::New("helper object"))
   );
+  m_SegmentationPredicate->AddPredicate
+      (mitk::NodePredicateNot::New(mitk::NodePredicateProperty::New("captk.interactive.segmentation.output"))
+  );
 
   mitk::TNodePredicateDataType<mitk::Image>::Pointer isImage = mitk::TNodePredicateDataType<mitk::Image>::New();
   mitk::NodePredicateProperty::Pointer isBinary =
@@ -102,6 +105,9 @@ QmitkMultiLabelSegmentationView::QmitkMultiLabelSegmentationView()
   m_ReferencePredicate->AddPredicate(mitk::NodePredicateNot::New(m_SegmentationPredicate));
   m_ReferencePredicate->AddPredicate(mitk::NodePredicateNot::New(isMask));
   m_ReferencePredicate->AddPredicate(mitk::NodePredicateNot::New(mitk::NodePredicateProperty::New("helper object")));
+  m_ReferencePredicate->AddPredicate
+      (mitk::NodePredicateNot::New(mitk::NodePredicateProperty::New("captk.interactive.segmentation.output"))
+  );
 }
 
 QmitkMultiLabelSegmentationView::~QmitkMultiLabelSegmentationView()

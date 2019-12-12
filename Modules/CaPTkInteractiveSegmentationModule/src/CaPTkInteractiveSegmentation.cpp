@@ -2,7 +2,12 @@
 
 #include <mitkImageCast.h>
 #include <mitkDataStorage.h>
+#include <mitkNodePredicateAnd.h>
+#include <mitkNodePredicateDataType.h>
+#include <mitkNodePredicateNot.h>
+#include <mitkNodePredicateProperty.h>
 
+#include <QtConcurrent/QtConcurrent>
 #include <QMessageBox>
 
 #include <iostream>
@@ -13,6 +18,8 @@ CaPTkInteractiveSegmentation::CaPTkInteractiveSegmentation(
     : QObject(parent)
 {
     m_DataStorage = dataStorage;
+
+    connect(&m_Watcher, SIGNAL(finished()), this, SLOT(OnAlgorithmFinished()));
 }
 
 void CaPTkInteractiveSegmentation::Run(std::vector<mitk::Image::Pointer>& images, 
@@ -103,7 +110,7 @@ void CaPTkInteractiveSegmentation::Run(std::vector<mitk::Image::Pointer>& images
         {
             auto im = images[i];
 
-            //...
+            // TODO
 
             if (!ok)
             {
@@ -116,7 +123,7 @@ void CaPTkInteractiveSegmentation::Run(std::vector<mitk::Image::Pointer>& images
         // Check if the seeds are on par with the ref
         if (ok)
         {
-            //...
+            // TODO
 
             if (!ok)
             {
@@ -155,68 +162,197 @@ void CaPTkInteractiveSegmentation::Run(std::vector<mitk::Image::Pointer>& images
         return;
     }
 
-    /* ---- Recreate whatever is needed for running ---- */
-
-    // Recreate adapters
-    auto m_CaPTkInteractiveSegmentationAdapter2D = 
-            new CaPTkInteractiveSegmentationAdapter<2>();
-    auto m_CaPTkInteractiveSegmentationAdapter3D = 
-            new CaPTkInteractiveSegmentationAdapter<3>();
-
-    // Bypass unused vars
-    m_CaPTkInteractiveSegmentationAdapter2D = m_CaPTkInteractiveSegmentationAdapter2D;
-    m_CaPTkInteractiveSegmentationAdapter3D = m_CaPTkInteractiveSegmentationAdapter3D;
-
-    // Set the correct dimensionality (to m_RunDimensionality)
-    // Is that even needed? One can tell from itk/mitk images
-
-    /* ---- Convert images from mitk to itk ---- */
-
-    std::vector<itk::Image<float,3>::Pointer> imagesItk;
-    for (auto& image : images)
-    {
-        typename itk::Image<float, 3>::Pointer imageItk;
-        mitk::CastToItkImage(image, imageItk);
-        imagesItk.push_back(imageItk);
-        std::cout << "bump\n";
-    }
-
-    typedef itk::Image<int, 3> LabelsImageType3D;
-    typename LabelsImageType3D::Pointer seedsItk3D;
-    mitk::CastToItkImage(seeds, seedsItk3D);
-
     /* ---- Run ---- */
 
-    CaPTkInteractiveSegmentationAdapter<3>* algorithm = 
-            new CaPTkInteractiveSegmentationAdapter<3>();
-    algorithm->SetInputImages(imagesItk);
-    algorithm->SetLabels(seedsItk3D);
-    auto result = algorithm->Execute();
-
-    if (result->ok)
-    {
-        mitk::Image::Pointer segmNormal;
-        mitk::CastToMitkImage(result->labelsImage, segmNormal);
-        mitk::LabelSetImage::Pointer segm = mitk::LabelSetImage::New();
-        segm->InitializeByLabeledImage(segmNormal);
-        mitk::DataNode::Pointer node = mitk::DataNode::New();
-        node->SetData(segm);
-        node->SetName("Segmentation");
-        node->SetBoolProperty("captk.interactive.segmentation.output", true);
-        // mitk::BoolProperty::Pointer propertySeg = mitk::BoolProperty::New(true);
-        // node->SetProperty("captk.interactive.segmentation.output", propertySeg);
-        m_DataStorage->Add(node);
-    }
-
-    this->OnAlgorithmFinished(); // TODO: This should be called when the algorithm
-                                 // finishes in the background (watchers etc)
+    m_FutureResult = QtConcurrent::run(this, &CaPTkInteractiveSegmentation::RunThread, 
+                                       images, seeds);
+    m_Watcher.setFuture(m_FutureResult);
+    // this->RunThread(images, seeds);
 }
 
 void CaPTkInteractiveSegmentation::OnAlgorithmFinished()
 {
     std::cout << "[CaPTkInteractiveSegmentation::OnAlgorithmFinished]\n";
 
-    //...
+    // TODO: !
+
+    // Find the name for the output segmentation
+
+
+    if (m_FutureResult.result().ok)
+    {
+        mitk::DataNode::Pointer node = mitk::DataNode::New();
+        node->SetData(m_FutureResult.result().segmentation);
+        node->SetName(FindNextAvailableSegmentationName());
+        node->SetBoolProperty("captk.interactive.segmentation.output", true);
+        // mitk::BoolProperty::Pointer propertySeg = mitk::BoolProperty::New(true);
+        // node->SetProperty("captk.interactive.segmentation.output", propertySeg);
+        m_DataStorage->Add(node);
+    }
+    else
+    {
+        QMessageBox msgError;
+        msgError.setText(m_FutureResult.result().errorMessage.c_str());
+        msgError.setIcon(QMessageBox::Critical);
+        msgError.setWindowTitle("CaPTk Interactive Segmentation Error!");
+        msgError.exec();
+    }
 
     m_IsRunning = false;
+}
+
+CaPTkInteractiveSegmentation::Result 
+CaPTkInteractiveSegmentation::RunThread(std::vector<mitk::Image::Pointer>& images, 
+         mitk::LabelSetImage::Pointer& seeds)
+{
+    // std::shared_ptr< CaPTkInteractiveSegmentation::Result > runResult(
+    //     new CaPTkInteractiveSegmentation::Result()
+    // );
+    CaPTkInteractiveSegmentation::Result runResult;
+    runResult.seeds = seeds;
+
+    mitk::LabelSetImage::Pointer segm = mitk::LabelSetImage::New();
+
+    if (seeds->GetDimension() == 3)
+    {
+        // [ 3D ]
+
+        /* ---- Convert images from mitk to itk ---- */
+
+        std::vector<itk::Image<float,3>::Pointer> imagesItk;
+        for (auto& image : images)
+        {
+            typename itk::Image<float, 3>::Pointer imageItk;
+            mitk::CastToItkImage(image, imageItk);
+            imagesItk.push_back(imageItk);
+        }
+
+        typedef itk::Image<int, 3> LabelsImageType3D;
+        typename LabelsImageType3D::Pointer seedsItk3D;
+        mitk::CastToItkImage(seeds, seedsItk3D);
+
+        CaPTkInteractiveSegmentationAdapter<3>* algorithm = 
+                new CaPTkInteractiveSegmentationAdapter<3>();
+        algorithm->SetInputImages(imagesItk);
+        algorithm->SetLabels(seedsItk3D);
+        auto result = algorithm->Execute();
+
+        if (result->ok)
+        {
+            mitk::Image::Pointer segmNormal;
+            mitk::CastToMitkImage(result->labelsImage, segmNormal);
+            segm->InitializeByLabeledImage(segmNormal);
+
+            runResult.segmentation = segm;
+        }
+
+        runResult.ok = result->ok;
+        runResult.errorMessage = result->errorMessage;
+    }
+    else
+    {
+        // [ 2D ]
+
+        QMessageBox msgError;
+        msgError.setText("Please use a 3D image");
+        msgError.setIcon(QMessageBox::Critical);
+        msgError.setWindowTitle("2D is not supported yet");
+        msgError.exec();
+    }
+
+    // Copy the labels from seeds image
+    {
+        mitk::LabelSet::Pointer referenceLabelSet =	seeds->GetActiveLabelSet();
+        mitk::LabelSet::Pointer outputLabelSet    = segm->GetActiveLabelSet();
+
+        mitk::LabelSet::LabelContainerConstIteratorType itR;
+        mitk::LabelSet::LabelContainerConstIteratorType it;
+        
+        for (itR =  referenceLabelSet->IteratorConstBegin();
+                itR != referenceLabelSet->IteratorConstEnd(); 
+                ++itR) 
+        {
+            for (it = outputLabelSet->IteratorConstBegin(); 
+                    it != outputLabelSet->IteratorConstEnd();
+                    ++it)
+            {
+                if (itR->second->GetValue() == it->second->GetValue())
+                {
+                    it->second->SetColor(itR->second->GetColor());
+                    it->second->SetName(itR->second->GetName());
+                }
+            }
+        }
+    }
+
+    return runResult;
+    // this->OnAlgorithmFinished(); // TODO: This should be called when the algorithm
+    //                              // finishes in the background (watchers etc)
+}
+
+std::string CaPTkInteractiveSegmentation::FindNextAvailableSegmentationName()
+{
+    // Predicate to find if node is mitk::LabelSetImage
+    auto predicateIsLabelSetImage = 
+        mitk::TNodePredicateDataType<mitk::LabelSetImage>::New();
+
+    // Predicate property to find if node is a helper object
+    auto predicatePropertyIsHelper =
+        mitk::NodePredicateProperty::New("helper object");
+
+    // The images we want are but mitk::LabelSetImage and not helper obj
+    auto predicateFinal = mitk::NodePredicateAnd::New();
+    predicateFinal->AddPredicate(predicateIsLabelSetImage);
+    predicateFinal->AddPredicate(mitk::NodePredicateNot::New(predicatePropertyIsHelper));
+
+    int lastFound = 0;
+
+    // Get those images
+    mitk::DataStorage::SetOfObjects::ConstPointer all = 
+        m_DataStorage->GetSubset(predicateFinal);
+    for (mitk::DataStorage::SetOfObjects::ConstIterator it = all->Begin(); 
+        it != all->End(); ++it) 
+    {
+        if (it->Value().IsNotNull())
+        {
+            std::string name = it->Value()->GetName();
+            if (name.rfind("Segmentation", 0) == 0) // Starts with
+            {
+                if (name.length() == std::string("Segmentation").length())
+                {
+                    // Special case
+                    if (lastFound < 1) { lastFound = 1; }
+                }
+                else
+                {
+                    if (name.rfind("Segmentation-", 0) == 0) // Starts with
+                    {
+                        std::string numStr = name.erase(0,std::string("Segmentation-").length());
+
+                        if (IsNumber(numStr))
+                        {
+                            int num = std::stoi(numStr);
+                            if (lastFound < num) { lastFound = num; }
+                        }
+                    }
+                }
+            } 
+        }
+    }
+
+    // Construct and return the correct string
+    if (lastFound == 0)
+    {
+        return "Segmentation";
+    }
+    else
+    {
+        return std::string("Segmentation-") + std::to_string(lastFound+1);
+    }
+}
+
+bool CaPTkInteractiveSegmentation::IsNumber(const std::string& s)
+{
+    return !s.empty() && std::find_if(s.begin(), 
+        s.end(), [](char c) { return !std::isdigit(c); }) == s.end();
 }

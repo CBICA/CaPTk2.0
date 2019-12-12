@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>459</width>
-    <height>844</height>
+    <height>857</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -65,8 +65,7 @@
         </property>
         <property name="text">
          <string>• Load at least one image.
-• Select the ones you want to use in Data Manager.
-   All these images should be co-registered.
+• All these images should be co-registered.
 • Select one of them as the reference image.
 • Create the seeds image.
 • Draw at least 2 seed labels.

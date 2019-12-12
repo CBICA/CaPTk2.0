@@ -46,8 +46,12 @@ public:
 
     typedef struct Result 
     {
-        std::shared_ptr<GeodesicTrainingSegmentation::Coordinator<float,2>::Result> res2D;
-        std::shared_ptr<GeodesicTrainingSegmentation::Coordinator<float,3>::Result> res3D;
+        // std::shared_ptr<GeodesicTrainingSegmentation::Coordinator<float,2>::Result> res2D;
+        // std::shared_ptr<GeodesicTrainingSegmentation::Coordinator<float,3>::Result> res3D;
+        mitk::LabelSetImage::Pointer seeds;
+        mitk::LabelSetImage::Pointer segmentation;
+        bool ok = true;
+        std::string errorMessage = "";
     } Result;
 
 public slots:
@@ -56,13 +60,27 @@ public slots:
     */
     void OnAlgorithmFinished();
 
-private:
-    CaPTkInteractiveSegmentationAdapter<2>* m_CaPTkInteractiveSegmentationAdapter2D;
-    CaPTkInteractiveSegmentationAdapter<3>* m_CaPTkInteractiveSegmentationAdapter3D;
+protected:
+
+    /** \brief Runs the algorithm after the operations in Run
+     * 
+     * This can serve as a background thread. When the
+     * algorithm finishes, OnAlgorithmFinished() is called.
+     * 
+     * @param images a list of the co-registered input images
+     * @param labels label image that contains the user drawn seeds
+     * @return a result struct that has either the 2D or 3D part populated
+    */
+    Result RunThread(std::vector<mitk::Image::Pointer>& images, 
+                     mitk::LabelSetImage::Pointer& seeds);
+    
+    std::string FindNextAvailableSegmentationName();
+
+    bool IsNumber(const std::string& s);
+
     bool m_IsRunning = false;
     QFutureWatcher<Result> m_Watcher;
     QFuture<Result> m_FutureResult;
-    unsigned int m_RunDimensionality;
 
     mitk::DataStorage::Pointer m_DataStorage;
 };
