@@ -138,6 +138,8 @@ void QmitkMultiLabelSegmentationView::CreateQtPartControl(QWidget *parent)
 
   m_Controls.setupUi(parent);
 
+  m_CaPTkInteractiveSegmentationModule->SetProgressBar(m_Controls.progressBar);
+
   // *------------------------
   // * DATA SELECTION WIDGETS
   // *------------------------
@@ -574,6 +576,8 @@ void QmitkMultiLabelSegmentationView::OnNewSegmentationSession()
     // GetDataStorage()->Add(workingNode, referenceNode);
     GetDataStorage()->Add(workingNode);
   }
+
+  m_Controls.progressBar->setValue(0);
 
   // OnNewLabel();
 }

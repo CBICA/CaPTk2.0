@@ -22,6 +22,8 @@ protected:
 	/** Progress update method overriden from GeodesicTrainingSegmentation */
 	void progressUpdate(std::string message, int progress) override
 	{
+		std::cout << "[CaPTkInteractiveSegmentationAdapter::progressUpdate]\n";
+
 		if (message == "GTS: Executing" && progress == 0)
 		{
 			emit ProgressUpdate(/*QString::fromStdString(message), */0);

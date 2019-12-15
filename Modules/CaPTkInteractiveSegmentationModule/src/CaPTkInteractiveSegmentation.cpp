@@ -13,8 +13,8 @@
 #include <iostream>
 
 CaPTkInteractiveSegmentation::CaPTkInteractiveSegmentation(
-            mitk::DataStorage::Pointer dataStorage,
-            QObject *parent) 
+    mitk::DataStorage::Pointer dataStorage,
+    QObject *parent)
     : QObject(parent)
 {
     m_DataStorage = dataStorage;
@@ -22,13 +22,11 @@ CaPTkInteractiveSegmentation::CaPTkInteractiveSegmentation(
     connect(&m_Watcher, SIGNAL(finished()), this, SLOT(OnAlgorithmFinished()));
 }
 
-void CaPTkInteractiveSegmentation::Run(std::vector<mitk::Image::Pointer>& images, 
-         mitk::LabelSetImage::Pointer& seeds)
+void CaPTkInteractiveSegmentation::Run(std::vector<mitk::Image::Pointer> &images,
+                                       mitk::LabelSetImage::Pointer &seeds)
 {
     std::cout << "[CaPTkInteractiveSegmentation::Run] Image size: "
               << std::to_string(images.size()) << "\n";
-    images = images; // Delete this
-    seeds = seeds; // Delete this
 
     /* ---- Check if it's already running ---- */
 
@@ -48,16 +46,14 @@ void CaPTkInteractiveSegmentation::Run(std::vector<mitk::Image::Pointer>& images
     bool ok = true;              // Becomes false if there is an issue
     std::string problemStr = ""; // Populated if there is an issue
 
-    std::cout << "[CaPTkInteractiveSegmentation::Run] " 
+    std::cout << "[CaPTkInteractiveSegmentation::Run] "
               << "Number of images: " << std::to_string(images.size()) << "\n";
 
     // Check if there is at least one image
     if (images.size() == 0)
     {
         ok = false;
-        problemStr = std::string("No input images. At least one image")
-                   + std::string(" should be loaded and selected")
-                   + std::string(" in the data manager.");
+        problemStr = std::string("No input images. At least one image") + std::string(" should be loaded and selected") + std::string(" in the data manager.");
     }
 
     // Check if the seeds image exists
@@ -114,8 +110,7 @@ void CaPTkInteractiveSegmentation::Run(std::vector<mitk::Image::Pointer>& images
 
             if (!ok)
             {
-                problemStr = std::string("All the images should have the same ")
-                           + std::string("size, spacing, origin, direction.");
+                problemStr = std::string("All the images should have the same ") + std::string("size, spacing, origin, direction.");
                 break;
             }
         }
@@ -127,8 +122,7 @@ void CaPTkInteractiveSegmentation::Run(std::vector<mitk::Image::Pointer>& images
 
             if (!ok)
             {
-                problemStr = std::string("The seeds should have the same size, ")
-                           + std::string("spacing, origin, direction as the images.");
+                problemStr = std::string("The seeds should have the same size, ") + std::string("spacing, origin, direction as the images.");
             }
         }
     }
@@ -141,12 +135,11 @@ void CaPTkInteractiveSegmentation::Run(std::vector<mitk::Image::Pointer>& images
         // Iterate through the labels in the seeds
         // TODO: !
         foundTwo = foundOne = true; // TODO: Delete this
-        
+
         if (!foundTwo)
         {
             ok = false;
-            problemStr = std::string("Please draw with at least two labels.")
-                       + std::string(" One has to always be for the background tissue.");
+            problemStr = std::string("Please draw with at least two labels.") + std::string(" One has to always be for the background tissue.");
         }
     }
 
@@ -164,20 +157,20 @@ void CaPTkInteractiveSegmentation::Run(std::vector<mitk::Image::Pointer>& images
 
     /* ---- Run ---- */
 
-    m_FutureResult = QtConcurrent::run(this, &CaPTkInteractiveSegmentation::RunThread, 
+    m_FutureResult = QtConcurrent::run(this, &CaPTkInteractiveSegmentation::RunThread,
                                        images, seeds);
     m_Watcher.setFuture(m_FutureResult);
-    // this->RunThread(images, seeds);
+}
+
+void CaPTkInteractiveSegmentation::SetProgressBar(QProgressBar* progressBar)
+{
+    m_ProgressBar = progressBar;
+    // if (m_ProgressBar) { m_ProgressBar->setValue(42); }
 }
 
 void CaPTkInteractiveSegmentation::OnAlgorithmFinished()
 {
     std::cout << "[CaPTkInteractiveSegmentation::OnAlgorithmFinished]\n";
-
-    // TODO: !
-
-    // Find the name for the output segmentation
-
 
     if (m_FutureResult.result().ok)
     {
@@ -185,12 +178,11 @@ void CaPTkInteractiveSegmentation::OnAlgorithmFinished()
         node->SetData(m_FutureResult.result().segmentation);
         node->SetName(FindNextAvailableSegmentationName());
         node->SetBoolProperty("captk.interactive.segmentation.output", true);
-        // mitk::BoolProperty::Pointer propertySeg = mitk::BoolProperty::New(true);
-        // node->SetProperty("captk.interactive.segmentation.output", propertySeg);
         m_DataStorage->Add(node);
     }
     else
     {
+        // Something went wrong
         QMessageBox msgError;
         msgError.setText(m_FutureResult.result().errorMessage.c_str());
         msgError.setIcon(QMessageBox::Critical);
@@ -201,13 +193,10 @@ void CaPTkInteractiveSegmentation::OnAlgorithmFinished()
     m_IsRunning = false;
 }
 
-CaPTkInteractiveSegmentation::Result 
-CaPTkInteractiveSegmentation::RunThread(std::vector<mitk::Image::Pointer>& images, 
-         mitk::LabelSetImage::Pointer& seeds)
+CaPTkInteractiveSegmentation::Result
+CaPTkInteractiveSegmentation::RunThread(std::vector<mitk::Image::Pointer> &images,
+                                        mitk::LabelSetImage::Pointer &seeds)
 {
-    // std::shared_ptr< CaPTkInteractiveSegmentation::Result > runResult(
-    //     new CaPTkInteractiveSegmentation::Result()
-    // );
     CaPTkInteractiveSegmentation::Result runResult;
     runResult.seeds = seeds;
 
@@ -219,8 +208,8 @@ CaPTkInteractiveSegmentation::RunThread(std::vector<mitk::Image::Pointer>& image
 
         /* ---- Convert images from mitk to itk ---- */
 
-        std::vector<itk::Image<float,3>::Pointer> imagesItk;
-        for (auto& image : images)
+        std::vector<itk::Image<float, 3>::Pointer> imagesItk;
+        for (auto &image : images)
         {
             typename itk::Image<float, 3>::Pointer imageItk;
             mitk::CastToItkImage(image, imageItk);
@@ -231,11 +220,22 @@ CaPTkInteractiveSegmentation::RunThread(std::vector<mitk::Image::Pointer>& image
         typename LabelsImageType3D::Pointer seedsItk3D;
         mitk::CastToItkImage(seeds, seedsItk3D);
 
-        CaPTkInteractiveSegmentationAdapter<3>* algorithm = 
-                new CaPTkInteractiveSegmentationAdapter<3>();
+        /* ---- Run algorithm ---- */
+
+        CaPTkInteractiveSegmentationAdapter<3> *algorithm =
+            new CaPTkInteractiveSegmentationAdapter<3>();
+        if (m_ProgressBar)
+        {
+            std::cout << "[CaPTkInteractiveSegmentation::RunThread] "
+                      << "Connecting Progress Bar\n";
+            connect(algorithm, SIGNAL(ProgressUpdate(int)),
+                    m_ProgressBar, SLOT(setValue(int)));
+        }
         algorithm->SetInputImages(imagesItk);
         algorithm->SetLabels(seedsItk3D);
         auto result = algorithm->Execute();
+
+        /* ---- Parse result ---- */
 
         if (result->ok)
         {
@@ -262,19 +262,19 @@ CaPTkInteractiveSegmentation::RunThread(std::vector<mitk::Image::Pointer>& image
 
     // Copy the labels from seeds image
     {
-        mitk::LabelSet::Pointer referenceLabelSet =	seeds->GetActiveLabelSet();
-        mitk::LabelSet::Pointer outputLabelSet    = segm->GetActiveLabelSet();
+        mitk::LabelSet::Pointer referenceLabelSet = seeds->GetActiveLabelSet();
+        mitk::LabelSet::Pointer outputLabelSet = segm->GetActiveLabelSet();
 
         mitk::LabelSet::LabelContainerConstIteratorType itR;
         mitk::LabelSet::LabelContainerConstIteratorType it;
-        
-        for (itR =  referenceLabelSet->IteratorConstBegin();
-                itR != referenceLabelSet->IteratorConstEnd(); 
-                ++itR) 
+
+        for (itR = referenceLabelSet->IteratorConstBegin();
+             itR != referenceLabelSet->IteratorConstEnd();
+             ++itR)
         {
-            for (it = outputLabelSet->IteratorConstBegin(); 
-                    it != outputLabelSet->IteratorConstEnd();
-                    ++it)
+            for (it = outputLabelSet->IteratorConstBegin();
+                 it != outputLabelSet->IteratorConstEnd();
+                 ++it)
             {
                 if (itR->second->GetValue() == it->second->GetValue())
                 {
@@ -286,14 +286,12 @@ CaPTkInteractiveSegmentation::RunThread(std::vector<mitk::Image::Pointer>& image
     }
 
     return runResult;
-    // this->OnAlgorithmFinished(); // TODO: This should be called when the algorithm
-    //                              // finishes in the background (watchers etc)
 }
 
 std::string CaPTkInteractiveSegmentation::FindNextAvailableSegmentationName()
 {
     // Predicate to find if node is mitk::LabelSetImage
-    auto predicateIsLabelSetImage = 
+    auto predicateIsLabelSetImage =
         mitk::TNodePredicateDataType<mitk::LabelSetImage>::New();
 
     // Predicate property to find if node is a helper object
@@ -308,10 +306,10 @@ std::string CaPTkInteractiveSegmentation::FindNextAvailableSegmentationName()
     int lastFound = 0;
 
     // Get those images
-    mitk::DataStorage::SetOfObjects::ConstPointer all = 
+    mitk::DataStorage::SetOfObjects::ConstPointer all =
         m_DataStorage->GetSubset(predicateFinal);
-    for (mitk::DataStorage::SetOfObjects::ConstIterator it = all->Begin(); 
-        it != all->End(); ++it) 
+    for (mitk::DataStorage::SetOfObjects::ConstIterator it = all->Begin();
+         it != all->End(); ++it)
     {
         if (it->Value().IsNotNull())
         {
@@ -321,22 +319,28 @@ std::string CaPTkInteractiveSegmentation::FindNextAvailableSegmentationName()
                 if (name.length() == std::string("Segmentation").length())
                 {
                     // Special case
-                    if (lastFound < 1) { lastFound = 1; }
+                    if (lastFound < 1)
+                    {
+                        lastFound = 1;
+                    }
                 }
                 else
                 {
                     if (name.rfind("Segmentation-", 0) == 0) // Starts with
                     {
-                        std::string numStr = name.erase(0,std::string("Segmentation-").length());
+                        std::string numStr = name.erase(0, std::string("Segmentation-").length());
 
                         if (IsNumber(numStr))
                         {
                             int num = std::stoi(numStr);
-                            if (lastFound < num) { lastFound = num; }
+                            if (lastFound < num)
+                            {
+                                lastFound = num;
+                            }
                         }
                     }
                 }
-            } 
+            }
         }
     }
 
@@ -347,12 +351,12 @@ std::string CaPTkInteractiveSegmentation::FindNextAvailableSegmentationName()
     }
     else
     {
-        return std::string("Segmentation-") + std::to_string(lastFound+1);
+        return std::string("Segmentation-") + std::to_string(lastFound + 1);
     }
 }
 
-bool CaPTkInteractiveSegmentation::IsNumber(const std::string& s)
+bool CaPTkInteractiveSegmentation::IsNumber(const std::string &s)
 {
-    return !s.empty() && std::find_if(s.begin(), 
+    return !s.empty() && std::find_if(s.begin(),
         s.end(), [](char c) { return !std::isdigit(c); }) == s.end();
 }
