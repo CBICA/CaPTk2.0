@@ -291,7 +291,7 @@ void QmitkMultiLabelSegmentationView::CreateQtPartControl(QWidget *parent)
   this->OnReferenceSelectionChanged(m_Controls.m_cbReferenceNodeSelector->GetSelectedNode());
   this->OnSegmentationSelectionChanged(m_Controls.m_cbWorkingNodeSelector->GetSelectedNode());
 
-  /* Interactive Segmentation Run Button */
+  /* CaPTk Interactive Segmentation Run Button */
   connect(m_Controls.pushButtonRun, SIGNAL(clicked()), 
     this, SLOT(OnRunButtonPressed())
   );
@@ -454,7 +454,15 @@ void QmitkMultiLabelSegmentationView::OnNewLabel()
   {
     segName = "Unnamed";
   }
-  workingImage->GetActiveLabelSet()->AddLabel(segName.toStdString(), dialog->GetColor());
+
+  // Create new label
+  mitk::Label::Pointer newLabel = mitk::Label::New();
+  newLabel->SetName(segName.toStdString());
+  newLabel->SetColor(dialog->GetColor());
+  newLabel->SetLocked(false);
+  //workingImage->GetActiveLabelSet()->AddLabel(segName.toStdString(), dialog->GetColor());
+  workingImage->GetActiveLabelSet()->AddLabel(newLabel);
+  
   // Set specific DICOM SEG properties for the label
   mitk::DICOMSegmentationPropertyHandler::GetDICOMSegmentProperties(
     workingImage->GetActiveLabel(workingImage->GetActiveLayer()));
@@ -480,16 +488,19 @@ void QmitkMultiLabelSegmentationView::OnNewSegmentationSession()
   if (!referenceNode)
   {
     QMessageBox::information(
-      m_Parent, "New Segmentation Session", "Please load and select a patient image before starting some action.");
+      m_Parent, "New Segmentation Session", "Please load a patient image before starting some action.");
     return;
   }
+
+  // Reset progress bar
+  m_Controls.progressBar->setValue(0);
 
   m_ToolManager->ActivateTool(-1);
 
   mitk::Image* referenceImage = dynamic_cast<mitk::Image*>(referenceNode->GetData());
   assert(referenceImage);
 
-  QString newName = "Seeds";
+  QString newName = this->FindNextAvailableSegmentationName();
   // QString newName = QString::fromStdString(referenceNode->GetName());
   // newName.append("-labels");
   // bool ok = false;
@@ -1122,9 +1133,9 @@ void QmitkMultiLabelSegmentationView::UpdateControls()
   m_Controls.m_pbShowLabelTable->setChecked(false);
   m_Controls.m_pbShowLabelTable->setEnabled(false);
 
-  // Hide not useful views
-  // m_Controls.label_PatientImage->setVisible(false);
-  // m_Controls.m_cbReferenceNodeSelector->setVisible(false);
+  // Hide views that are not useful
+  m_Controls.label_PatientImage->setVisible(false);
+  m_Controls.m_cbReferenceNodeSelector->setVisible(false);
   m_Controls.m_btLockExterior->setVisible(false);
   m_Controls.m_tw2DTools->removeTab(1);
   m_Controls.m_gbInterpolation->setVisible(false);
@@ -1293,4 +1304,71 @@ void QmitkMultiLabelSegmentationView::SetLastFileOpenPath(const QString &path)
 {
   this->GetPreferences()->Put("LastFileOpenPath", path);
   this->GetPreferences()->Flush();
+}
+
+std::string QmitkMultiLabelSegmentationView::FindNextAvailableSegmentationName()
+{
+    // Predicate to find if node is mitk::LabelSetImage
+    auto predicateIsLabelSetImage =
+        mitk::TNodePredicateDataType<mitk::LabelSetImage>::New();
+
+    // Predicate property to find if node is a helper object
+    auto predicatePropertyIsHelper =
+        mitk::NodePredicateProperty::New("helper object");
+
+    // The images we want are but mitk::LabelSetImage and not helper obj
+    auto predicateFinal = mitk::NodePredicateAnd::New();
+    predicateFinal->AddPredicate(predicateIsLabelSetImage);
+    predicateFinal->AddPredicate(mitk::NodePredicateNot::New(predicatePropertyIsHelper));
+
+    int lastFound = 0;
+
+    // Get those images
+    mitk::DataStorage::SetOfObjects::ConstPointer all =
+        m_DataStorage->GetSubset(predicateFinal);
+    for (mitk::DataStorage::SetOfObjects::ConstIterator it = all->Begin();
+         it != all->End(); ++it)
+    {
+        if (it->Value().IsNotNull())
+        {
+            std::string name = it->Value()->GetName();
+            if (name.rfind("Seeds", 0) == 0) // Starts with
+            {
+                if (name.length() == std::string("Seeds").length())
+                {
+                    // Special case
+                    if (lastFound < 1)
+                    {
+                        lastFound = 1;
+                    }
+                }
+                else
+                {
+                    if (name.rfind("Seeds-", 0) == 0) // Starts with
+                    {
+                        std::string numStr = name.erase(0, std::string("Seeds-").length());
+
+                        if (IsNumber(numStr))
+                        {
+                            int num = std::stoi(numStr);
+                            if (lastFound < num)
+                            {
+                                lastFound = num;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Construct and return the correct string
+    if (lastFound == 0)
+    {
+        return "Seeds";
+    }
+    else
+    {
+        return std::string("Seeds-") + std::to_string(lastFound + 1);
+    }
 }

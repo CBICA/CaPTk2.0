@@ -1,6 +1,7 @@
 #include "CaPTkInteractiveSegmentation.h"
 
 #include <mitkImageCast.h>
+#include <mitkConvert2Dto3DImageFilter.h>
 #include <mitkDataStorage.h>
 #include <mitkNodePredicateAnd.h>
 #include <mitkNodePredicateDataType.h>
@@ -190,6 +191,22 @@ void CaPTkInteractiveSegmentation::OnAlgorithmFinished()
         msgError.exec();
     }
 
+    /* ---- Make seeds invisible ---- */
+    mitk::DataStorage::SetOfObjects::ConstPointer all =
+    m_DataStorage->GetAll();
+    for (mitk::DataStorage::SetOfObjects::ConstIterator it = all->Begin();
+         it != all->End(); ++it)
+    {
+        if (it->Value().IsNotNull())
+        {
+            std::string name = it->Value()->GetName();
+            if (name.rfind("Seeds", 0) == 0) // Starts with
+            {
+                it->Value().SetVisibility(false);
+            }
+        }
+    }
+
     m_IsRunning = false;
 }
 
@@ -216,9 +233,11 @@ CaPTkInteractiveSegmentation::RunThread(std::vector<mitk::Image::Pointer> &image
             imagesItk.push_back(imageItk);
         }
 
+        /* ---- Convert seeds from mitk to itk ---- */
+
         typedef itk::Image<int, 3> LabelsImageType3D;
-        typename LabelsImageType3D::Pointer seedsItk3D;
-        mitk::CastToItkImage(seeds, seedsItk3D);
+        typename LabelsImageType3D::Pointer seedsItk;
+        mitk::CastToItkImage(seeds, seedsItk);
 
         /* ---- Run algorithm ---- */
 
@@ -232,7 +251,7 @@ CaPTkInteractiveSegmentation::RunThread(std::vector<mitk::Image::Pointer> &image
                     m_ProgressBar, SLOT(setValue(int)));
         }
         algorithm->SetInputImages(imagesItk);
-        algorithm->SetLabels(seedsItk3D);
+        algorithm->SetLabels(seedsItk);
         auto result = algorithm->Execute();
 
         /* ---- Parse result ---- */
@@ -242,7 +261,6 @@ CaPTkInteractiveSegmentation::RunThread(std::vector<mitk::Image::Pointer> &image
             mitk::Image::Pointer segmNormal;
             mitk::CastToMitkImage(result->labelsImage, segmNormal);
             segm->InitializeByLabeledImage(segmNormal);
-
             runResult.segmentation = segm;
         }
 
@@ -253,14 +271,82 @@ CaPTkInteractiveSegmentation::RunThread(std::vector<mitk::Image::Pointer> &image
     {
         // [ 2D ]
 
-        QMessageBox msgError;
-        msgError.setText("Please use a 3D image");
-        msgError.setIcon(QMessageBox::Critical);
-        msgError.setWindowTitle("2D is not supported yet");
-        msgError.exec();
+        // QMessageBox msgError;
+        // msgError.setText("Please use a 3D image");
+        // msgError.setIcon(QMessageBox::Critical);
+        // msgError.setWindowTitle("2D is not supported yet");
+        // msgError.exec();
+
+        /* ---- Convert images from mitk to itk ---- */
+
+        std::vector<itk::Image<float, 2>::Pointer> imagesItk;
+        for (auto &image : images)
+        {
+            typename itk::Image<float, 2>::Pointer imageItk;
+            mitk::CastToItkImage(image, imageItk);
+            imagesItk.push_back(imageItk);
+        }
+
+        /* ---- Convert seeds from mitk to itk ---- */
+
+        typename itk::Image<int, 2>::Pointer seedsItk;
+        // (mitk::LabelSetImage is always 3D)
+        {
+            typedef itk::Image<int, 2> LabelsImageType2D;
+            typedef itk::Image<int, 3> LabelsImageType3D;
+            typename LabelsImageType3D::Pointer seedsItk3D;
+            mitk::CastToItkImage(seeds, seedsItk3D);
+            auto regionSize = seedsItk3D->GetLargestPossibleRegion().GetSize();
+            regionSize[2] = 0; // Only 2D image is needed
+            LabelsImageType3D::IndexType regionIndex;
+            regionIndex.Fill(0);    
+            LabelsImageType3D::RegionType desiredRegion(regionIndex, regionSize);
+            auto extractor = itk::ExtractImageFilter< LabelsImageType3D, LabelsImageType2D >::New();
+            extractor->SetExtractionRegion(desiredRegion);
+            extractor->SetInput(seedsItk3D);
+            extractor->SetDirectionCollapseToIdentity();
+            extractor->Update();
+            seedsItk = extractor->GetOutput();
+            seedsItk->DisconnectPipeline();
+        }
+
+        /* ---- Run algorithm ---- */
+
+        CaPTkInteractiveSegmentationAdapter<2> *algorithm =
+            new CaPTkInteractiveSegmentationAdapter<2>();
+        if (m_ProgressBar)
+        {
+            std::cout << "[CaPTkInteractiveSegmentation::RunThread] "
+                      << "Connecting Progress Bar\n";
+            connect(algorithm, SIGNAL(ProgressUpdate(int)),
+                    m_ProgressBar, SLOT(setValue(int)));
+        }
+        algorithm->SetInputImages(imagesItk);
+        algorithm->SetLabels(seedsItk);
+        auto result = algorithm->Execute();
+
+        /* ---- Parse result ---- */
+
+        if (result->ok)
+        {
+            mitk::Image::Pointer segmNormal;
+
+            // Convert to 3D
+            mitk::CastToMitkImage(result->labelsImage, segmNormal);
+            mitk::Convert2Dto3DImageFilter::Pointer filter = mitk::Convert2Dto3DImageFilter::New();
+            filter->SetInput(segmNormal);
+            filter->Update();
+            segmNormal = filter->GetOutput();
+
+            segm->InitializeByLabeledImage(segmNormal);
+            runResult.segmentation = segm;
+        }
+
+        runResult.ok = result->ok;
+        runResult.errorMessage = result->errorMessage;
     }
 
-    // Copy the labels from seeds image
+    // Copy the labels from seeds image (same for 2D and 3D)
     {
         mitk::LabelSet::Pointer referenceLabelSet = seeds->GetActiveLabelSet();
         mitk::LabelSet::Pointer outputLabelSet = segm->GetActiveLabelSet();

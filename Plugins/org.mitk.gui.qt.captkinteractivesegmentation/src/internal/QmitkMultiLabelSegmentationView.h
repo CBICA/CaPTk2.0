@@ -65,6 +65,7 @@ public:
 
 protected slots:
 
+  /** \brief CaPTk Interactive Segmentation Run Button clicked slot */
   void OnRunButtonPressed();
 
   /// \brief reaction to the selection of any 2D segmentation tool
@@ -152,6 +153,8 @@ protected:
   QString GetLastFileOpenPath();
 
   void SetLastFileOpenPath(const QString &path);
+
+  std::string FindNextAvailableSeedsName();
 
   /// \brief the Qt parent of our GUI (NOT of this object)
   QWidget *m_Parent;
