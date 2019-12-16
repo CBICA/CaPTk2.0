@@ -11,13 +11,13 @@
     <product name="CaPTk" application="org.mitk.qt.captkapplication" />
   </extension>
 
-  <extension id="fiberfox" point="org.blueberry.core.runtime.products">
+  <!-- <extension id="fiberfox" point="org.blueberry.core.runtime.products">
     <product name="MITK Fiberfox" application="org.mitk.qt.captkapplication" />
-  </extension>
+  </extension> -->
 
   <extension point="org.blueberry.ui.intro">
     <intro id="org.mitk.qt.captkapplicationintro"
-      class="QmitkMitkWorkbenchIntroPart"
+      class="QmitkCaPTkIntroPart"
       role="editor"/>
     <introProductBinding
       productId="org.mitk.gui.qt.captkapplication.captk"
@@ -32,15 +32,15 @@
       icon="resources/icon_research.xpm">
     </perspective>
     <perspective
-      id="org.mitk.mitkworkbench.perspectives.editor"
+      id="org.mitk.captkapp.perspectives.editor"
       name="Viewer"
-      class="QmitkEditorPerspective"
+      class="QmitkCaPTkEditorPerspective"
       icon="resources/perspectives/viewer_icon.png">
     </perspective>
     <perspective
-      id="org.mitk.mitkworkbench.perspectives.visualization"
+      id="org.mitk.captkapp.perspectives.visualization"
       name="Visualization"
-      class="QmitkVisualizationPerspective"
+      class="QmitkCaPTkVisualizationPerspective"
       icon="resources/perspectives/eye.png">
     </perspective>
   </extension>
