@@ -22,7 +22,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include "mitkSegmentationInteractor.h"
 #include <mitkILifecycleAwarePart.h>
 
-#include "ui_QmitkMultiLabelSegmentationControls.h"
+#include "ui_QmitkCaPTkInteractiveSegmentationControls.h"
 
 class CaPTkInteractiveSegmentation;
 

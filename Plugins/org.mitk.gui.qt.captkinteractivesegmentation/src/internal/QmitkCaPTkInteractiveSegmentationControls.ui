@@ -34,7 +34,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>QmitkSegmentation</string>
+   <string>QmitkCaPTkInteractiveSegmentation</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_5">
    <item>
