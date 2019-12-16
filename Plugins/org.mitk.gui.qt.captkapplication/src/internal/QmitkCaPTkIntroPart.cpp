@@ -192,7 +192,7 @@ void QmitkCaPTkIntroPart::CreateQtPartControl(QWidget* parent)
   if (!m_Controls)
   {
     // create GUI widgets
-    m_Controls = new Ui::QmitkWelcomeScreenViewControls;
+    m_Controls = new Ui::QmitkCaPTkWelcomeScreenViewControls;
     m_Controls->setupUi(parent);
 
     // create a QWebView as well as a QWebPage and QWebFrame within the QWebview

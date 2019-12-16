@@ -17,7 +17,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include "QmitkCaPTkAppWorkbenchAdvisor.h"
 #include "internal/QmitkCaPTkApplicationPlugin.h"
 
-#include <QmitkCaPTkWorkbenchWindowAdvisor.h>
+#include <QmitkExtWorkbenchWindowAdvisor.h>
 
 const QString QmitkCaPTkAppWorkbenchAdvisor::DEFAULT_PERSPECTIVE_ID =
     "org.mitk.captkapp.defaultperspective";
@@ -34,8 +34,8 @@ berry::WorkbenchWindowAdvisor*
 QmitkCaPTkAppWorkbenchAdvisor::CreateWorkbenchWindowAdvisor(
         berry::IWorkbenchWindowConfigurer::Pointer configurer)
 {
-  QmitkCaPTkWorkbenchWindowAdvisor* advisor = new
-    QmitkCaPTkWorkbenchWindowAdvisor(this, configurer);
+  QmitkExtWorkbenchWindowAdvisor* advisor = new
+    QmitkExtWorkbenchWindowAdvisor(this, configurer);
 
   // Exclude the help perspective from org.blueberry.ui.qt.help from
   // the normal perspective list.
@@ -52,7 +52,7 @@ QmitkCaPTkAppWorkbenchAdvisor::CreateWorkbenchWindowAdvisor(
 
   advisor->SetWindowIcon(":/org.mitk.gui.qt.captkapplication/icon.png");
   return advisor;
-  //return new QmitkCaPTkWorkbenchWindowAdvisor(this, configurer);
+  //return new QmitkExtWorkbenchWindowAdvisor(this, configurer);
 }
 
 QString QmitkCaPTkAppWorkbenchAdvisor::GetInitialWindowPerspectiveId()

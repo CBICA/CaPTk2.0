@@ -8,6 +8,8 @@
 #include <mitkNodePredicateNot.h>
 #include <mitkNodePredicateProperty.h>
 
+#include "itkExtractImageFilter.h"
+
 #include <QtConcurrent/QtConcurrent>
 #include <QMessageBox>
 
@@ -202,7 +204,7 @@ void CaPTkInteractiveSegmentation::OnAlgorithmFinished()
             std::string name = it->Value()->GetName();
             if (name.rfind("Seeds", 0) == 0) // Starts with
             {
-                it->Value().SetVisibility(false);
+                it->Value()->SetVisibility(false);
             }
         }
     }

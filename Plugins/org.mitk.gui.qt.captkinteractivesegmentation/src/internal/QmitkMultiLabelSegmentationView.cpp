@@ -500,7 +500,7 @@ void QmitkMultiLabelSegmentationView::OnNewSegmentationSession()
   mitk::Image* referenceImage = dynamic_cast<mitk::Image*>(referenceNode->GetData());
   assert(referenceImage);
 
-  QString newName = this->FindNextAvailableSegmentationName();
+  QString newName = this->FindNextAvailableSeedsName().c_str();
   // QString newName = QString::fromStdString(referenceNode->GetName());
   // newName.append("-labels");
   // bool ok = false;
@@ -1306,7 +1306,7 @@ void QmitkMultiLabelSegmentationView::SetLastFileOpenPath(const QString &path)
   this->GetPreferences()->Flush();
 }
 
-std::string QmitkMultiLabelSegmentationView::FindNextAvailableSegmentationName()
+std::string QmitkMultiLabelSegmentationView::FindNextAvailableSeedsName()
 {
     // Predicate to find if node is mitk::LabelSetImage
     auto predicateIsLabelSetImage =
@@ -1325,7 +1325,7 @@ std::string QmitkMultiLabelSegmentationView::FindNextAvailableSegmentationName()
 
     // Get those images
     mitk::DataStorage::SetOfObjects::ConstPointer all =
-        m_DataStorage->GetSubset(predicateFinal);
+        GetDataStorage()->GetSubset(predicateFinal);
     for (mitk::DataStorage::SetOfObjects::ConstIterator it = all->Begin();
          it != all->End(); ++it)
     {
@@ -1371,4 +1371,10 @@ std::string QmitkMultiLabelSegmentationView::FindNextAvailableSegmentationName()
     {
         return std::string("Seeds-") + std::to_string(lastFound + 1);
     }
+}
+
+bool QmitkMultiLabelSegmentationView::IsNumber(const std::string &s)
+{
+	return !s.empty() && std::find_if(s.begin(),
+		s.end(), [](char c) { return !std::isdigit(c); }) == s.end();
 }

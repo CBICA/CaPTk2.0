@@ -18,7 +18,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include "perspectives/QmitkCaPTkDefaultPerspective.h"
 #include "perspectives/QmitkCaPTkEditorPerspective.h"
 #include "perspectives/QmitkCaPTkVisualizationPerspective.h"
-#include "QmitkMitkCaPTkIntroPart.h"
+#include "QmitkCaPTkIntroPart.h"
 #include "QmitkCaPTkApplication.h"
 
 #include <mitkVersion.h>
@@ -54,7 +54,7 @@ void QmitkCaPTkApplicationPlugin::start(ctkPluginContext* context)
 
   BERRY_REGISTER_EXTENSION_CLASS(QmitkCaPTkDefaultPerspective, context);
   BERRY_REGISTER_EXTENSION_CLASS(QmitkCaPTkEditorPerspective, context);
-  BERRY_REGISTER_EXTENSION_CLASS(QmitkMitkCaPTkIntroPart, context);
+  BERRY_REGISTER_EXTENSION_CLASS(QmitkCaPTkIntroPart, context);
   BERRY_REGISTER_EXTENSION_CLASS(QmitkCaPTkApplication, context);
   BERRY_REGISTER_EXTENSION_CLASS(QmitkCaPTkVisualizationPerspective, context);
 

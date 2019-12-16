@@ -156,6 +156,8 @@ protected:
 
   std::string FindNextAvailableSeedsName();
 
+  bool IsNumber(const std::string &s);
+
   /// \brief the Qt parent of our GUI (NOT of this object)
   QWidget *m_Parent;
 
