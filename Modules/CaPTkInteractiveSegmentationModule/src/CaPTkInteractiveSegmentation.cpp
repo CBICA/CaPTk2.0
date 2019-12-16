@@ -28,8 +28,8 @@ CaPTkInteractiveSegmentation::CaPTkInteractiveSegmentation(
 void CaPTkInteractiveSegmentation::Run(std::vector<mitk::Image::Pointer> &images,
                                        mitk::LabelSetImage::Pointer &seeds)
 {
-    std::cout << "[CaPTkInteractiveSegmentation::Run] Image size: "
-              << std::to_string(images.size()) << "\n";
+    std::cout << "[CaPTkInteractiveSegmentation::Run] "
+              << "Number of images: " << std::to_string(images.size()) << "\n";
 
     /* ---- Check if it's already running ---- */
 
@@ -48,9 +48,6 @@ void CaPTkInteractiveSegmentation::Run(std::vector<mitk::Image::Pointer> &images
 
     bool ok = true;              // Becomes false if there is an issue
     std::string problemStr = ""; // Populated if there is an issue
-
-    std::cout << "[CaPTkInteractiveSegmentation::Run] "
-              << "Number of images: " << std::to_string(images.size()) << "\n";
 
     // Check if there is at least one image
     if (images.size() == 0)
@@ -91,7 +88,7 @@ void CaPTkInteractiveSegmentation::Run(std::vector<mitk::Image::Pointer> &images
         // Check if the seeds are on par with the ref
         if (ok)
         {
-            if (refDim != seeds->GetDimension())
+            if (refDim == 3 && refDim != seeds->GetDimension())
             {
                 ok = false;
                 problemStr = "The seeds should have the same dimension as the images.";
@@ -177,6 +174,23 @@ void CaPTkInteractiveSegmentation::OnAlgorithmFinished()
 
     if (m_FutureResult.result().ok)
     {
+        /* ---- Make seeds invisible ---- */
+        mitk::DataStorage::SetOfObjects::ConstPointer all =
+        m_DataStorage->GetAll();
+        for (mitk::DataStorage::SetOfObjects::ConstIterator it = all->Begin();
+            it != all->End(); ++it)
+        {
+            if (it->Value().IsNotNull())
+            {
+                std::string name = it->Value()->GetName();
+                if (name.rfind("Seeds", 0) == 0) // Starts with
+                {
+                    it->Value()->SetVisibility(false);
+                }
+            }
+        }
+
+        /* ---- Add segmentation ---- */
         mitk::DataNode::Pointer node = mitk::DataNode::New();
         node->SetData(m_FutureResult.result().segmentation);
         node->SetName(FindNextAvailableSegmentationName());
@@ -193,22 +207,6 @@ void CaPTkInteractiveSegmentation::OnAlgorithmFinished()
         msgError.exec();
     }
 
-    /* ---- Make seeds invisible ---- */
-    mitk::DataStorage::SetOfObjects::ConstPointer all =
-    m_DataStorage->GetAll();
-    for (mitk::DataStorage::SetOfObjects::ConstIterator it = all->Begin();
-         it != all->End(); ++it)
-    {
-        if (it->Value().IsNotNull())
-        {
-            std::string name = it->Value()->GetName();
-            if (name.rfind("Seeds", 0) == 0) // Starts with
-            {
-                it->Value()->SetVisibility(false);
-            }
-        }
-    }
-
     m_IsRunning = false;
 }
 
@@ -216,12 +214,14 @@ CaPTkInteractiveSegmentation::Result
 CaPTkInteractiveSegmentation::RunThread(std::vector<mitk::Image::Pointer> &images,
                                         mitk::LabelSetImage::Pointer &seeds)
 {
+    std::cout << "[CaPTkInteractiveSegmentation::RunThread]\n";
+
     CaPTkInteractiveSegmentation::Result runResult;
     runResult.seeds = seeds;
 
     mitk::LabelSetImage::Pointer segm = mitk::LabelSetImage::New();
 
-    if (seeds->GetDimension() == 3)
+    if (images[0]->GetDimension() == 3)
     {
         // [ 3D ]
 
@@ -281,6 +281,7 @@ CaPTkInteractiveSegmentation::RunThread(std::vector<mitk::Image::Pointer> &image
 
         /* ---- Convert images from mitk to itk ---- */
 
+        std::cout << "Transforming images...\n";
         std::vector<itk::Image<float, 2>::Pointer> imagesItk;
         for (auto &image : images)
         {
@@ -288,6 +289,7 @@ CaPTkInteractiveSegmentation::RunThread(std::vector<mitk::Image::Pointer> &image
             mitk::CastToItkImage(image, imageItk);
             imagesItk.push_back(imageItk);
         }
+        std::cout << "Transforming images finished.\n";
 
         /* ---- Convert seeds from mitk to itk ---- */
 
@@ -301,7 +303,7 @@ CaPTkInteractiveSegmentation::RunThread(std::vector<mitk::Image::Pointer> &image
             auto regionSize = seedsItk3D->GetLargestPossibleRegion().GetSize();
             regionSize[2] = 0; // Only 2D image is needed
             LabelsImageType3D::IndexType regionIndex;
-            regionIndex.Fill(0);    
+            regionIndex.Fill(0);
             LabelsImageType3D::RegionType desiredRegion(regionIndex, regionSize);
             auto extractor = itk::ExtractImageFilter< LabelsImageType3D, LabelsImageType2D >::New();
             extractor->SetExtractionRegion(desiredRegion);
@@ -311,6 +313,7 @@ CaPTkInteractiveSegmentation::RunThread(std::vector<mitk::Image::Pointer> &image
             seedsItk = extractor->GetOutput();
             seedsItk->DisconnectPipeline();
         }
+        std::cout << "Transformed seeds.\n";
 
         /* ---- Run algorithm ---- */
 

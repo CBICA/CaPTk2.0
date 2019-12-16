@@ -8,7 +8,7 @@
             "name": "Debug",
             "type": "cppdbg",
             "request": "launch",
-            "program": "/opt/MITK/MITK-superbuild/Debug/MITK-build/bin/MitkWorkbench",
+            "program": "/opt/MITK/MITK-superbuild/Debug/MITK-build/bin/MitkCaptkApp",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

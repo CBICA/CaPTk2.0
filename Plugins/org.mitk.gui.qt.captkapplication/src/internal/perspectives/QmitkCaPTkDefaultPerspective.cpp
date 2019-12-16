@@ -30,10 +30,20 @@ void QmitkCaPTkDefaultPerspective::CreateInitialLayout(berry::IPageLayout::Point
   berry::IViewLayout::Pointer lo = layout->GetViewLayout("org.mitk.views.datamanager");
   lo->SetCloseable(false);
 
-  layout->AddView("org.mitk.views.imagenavigator",
-    berry::IPageLayout::BOTTOM, 0.5f, "org.mitk.views.datamanager");
+  // Show interactive segmentation by default. In the future change this to a 
+  // non-closable "Start" menu of CaPTk, that also offers shortcuts
+  // for different perspectives for Brain, Breast, Lung Cancer etc
+  layout->AddView(
+    "org.mitk.views.captkinteractivesegmentation", berry::IPageLayout::RIGHT, 
+    0.3f, editorArea
+  );
 
-  berry::IPlaceholderFolderLayout::Pointer bottomFolder = layout->CreatePlaceholderFolder("bottom", berry::IPageLayout::BOTTOM, 0.7f, editorArea);
+  layout->AddView("org.mitk.views.imagenavigator",
+      berry::IPageLayout::BOTTOM, 0.5f, "org.mitk.views.datamanager");
+
+  berry::IPlaceholderFolderLayout::Pointer bottomFolder = 
+      layout->CreatePlaceholderFolder("bottom", berry::IPageLayout::BOTTOM, 
+                                      0.7f, editorArea);
   bottomFolder->AddPlaceholder("org.blueberry.views.logview");
   bottomFolder->AddPlaceholder("org.mitk.views.modules");
 
