@@ -14,8 +14,8 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 ===================================================================*/
 
-#ifndef QmitkMultiLabelSegmentationView_h
-#define QmitkMultiLabelSegmentationView_h
+#ifndef QmitkCaPTkInteractiveSegmentationView_h
+#define QmitkCaPTkInteractiveSegmentationView_h
 
 #include <QmitkAbstractView.h>
 
@@ -35,15 +35,15 @@ class QmitkRenderWindow;
  * \ingroup ToolManagerEtAl
  * \ingroup org_mitk_gui_qt_multilabelsegmentation_internal
  */
-class QmitkMultiLabelSegmentationView : public QmitkAbstractView, public mitk::ILifecycleAwarePart
+class QmitkCaPTkInteractiveSegmentationView : public QmitkAbstractView, public mitk::ILifecycleAwarePart
 {
   Q_OBJECT
 
 public:
   static const std::string VIEW_ID;
 
-  QmitkMultiLabelSegmentationView();
-  virtual ~QmitkMultiLabelSegmentationView();
+  QmitkCaPTkInteractiveSegmentationView();
+  virtual ~QmitkCaPTkInteractiveSegmentationView();
 
   typedef std::map<mitk::DataNode *, unsigned long> NodeTagMapType;
 
@@ -189,4 +189,4 @@ protected:
   CaPTkInteractiveSegmentation* m_CaPTkInteractiveSegmentationModule;
 };
 
-#endif // QmitkMultiLabelSegmentationView_h
+#endif // QmitkCaPTkInteractiveSegmentationView_h

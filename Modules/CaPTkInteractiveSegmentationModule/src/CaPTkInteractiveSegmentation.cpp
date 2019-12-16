@@ -36,7 +36,9 @@ void CaPTkInteractiveSegmentation::Run(std::vector<mitk::Image::Pointer> &images
     if (m_IsRunning)
     {
         QMessageBox msgError;
-        msgError.setText("The algorithm is already running!\nPlease wait for it to finish.");
+        msgError.setText(
+            "The algorithm is already running!\nPlease wait for it to finish."
+        );
         msgError.setIcon(QMessageBox::Critical);
         msgError.setWindowTitle("Please wait");
         msgError.exec();
@@ -53,7 +55,9 @@ void CaPTkInteractiveSegmentation::Run(std::vector<mitk::Image::Pointer> &images
     if (images.size() == 0)
     {
         ok = false;
-        problemStr = std::string("No input images. At least one image") + std::string(" should be loaded and selected") + std::string(" in the data manager.");
+        problemStr = std::string("No input images. At least one image") + 
+                     std::string(" should be loaded ") + 
+                     std::string(" in the data manager.");
     }
 
     // Check if the seeds image exists
@@ -110,7 +114,8 @@ void CaPTkInteractiveSegmentation::Run(std::vector<mitk::Image::Pointer> &images
 
             if (!ok)
             {
-                problemStr = std::string("All the images should have the same ") + std::string("size, spacing, origin, direction.");
+                problemStr = std::string("All the images should have the same ") + 
+                             std::string("size, spacing, origin, direction.");
                 break;
             }
         }
@@ -122,7 +127,8 @@ void CaPTkInteractiveSegmentation::Run(std::vector<mitk::Image::Pointer> &images
 
             if (!ok)
             {
-                problemStr = std::string("The seeds should have the same size, ") + std::string("spacing, origin, direction as the images.");
+                problemStr = std::string("The seeds should have the same size, ") + 
+                             std::string("spacing, origin, direction as the images.");
             }
         }
     }
@@ -139,7 +145,8 @@ void CaPTkInteractiveSegmentation::Run(std::vector<mitk::Image::Pointer> &images
         if (!foundTwo)
         {
             ok = false;
-            problemStr = std::string("Please draw with at least two labels.") + std::string(" One has to always be for the background tissue.");
+            problemStr = std::string("Please draw with at least two labels.") + 
+                         std::string(" One has to always be for the background tissue.");
         }
     }
 
@@ -286,7 +293,19 @@ CaPTkInteractiveSegmentation::RunThread(std::vector<mitk::Image::Pointer> &image
         for (auto &image : images)
         {
             typename itk::Image<float, 2>::Pointer imageItk;
-            mitk::CastToItkImage(image, imageItk);
+            try
+            {
+                mitk::CastToItkImage(image, imageItk);
+            }
+            catch(const std::exception& e)
+            {
+                // Image type is not supported (probably a png or something)
+                std::cerr << e.what() << '\n';
+                runResult.ok = false;
+                runResult.errorMessage = "Image type is not supported";
+                return runResult;
+            }
+            
             imagesItk.push_back(imageItk);
         }
         std::cout << "Transforming images finished.\n";
@@ -305,7 +324,8 @@ CaPTkInteractiveSegmentation::RunThread(std::vector<mitk::Image::Pointer> &image
             LabelsImageType3D::IndexType regionIndex;
             regionIndex.Fill(0);
             LabelsImageType3D::RegionType desiredRegion(regionIndex, regionSize);
-            auto extractor = itk::ExtractImageFilter< LabelsImageType3D, LabelsImageType2D >::New();
+            auto extractor = 
+                itk::ExtractImageFilter< LabelsImageType3D, LabelsImageType2D >::New();
             extractor->SetExtractionRegion(desiredRegion);
             extractor->SetInput(seedsItk3D);
             extractor->SetDirectionCollapseToIdentity();
@@ -338,7 +358,8 @@ CaPTkInteractiveSegmentation::RunThread(std::vector<mitk::Image::Pointer> &image
 
             // Convert to 3D
             mitk::CastToMitkImage(result->labelsImage, segmNormal);
-            mitk::Convert2Dto3DImageFilter::Pointer filter = mitk::Convert2Dto3DImageFilter::New();
+            mitk::Convert2Dto3DImageFilter::Pointer filter = 
+                mitk::Convert2Dto3DImageFilter::New();
             filter->SetInput(segmNormal);
             filter->Update();
             segmNormal = filter->GetOutput();
@@ -392,7 +413,9 @@ std::string CaPTkInteractiveSegmentation::FindNextAvailableSegmentationName()
     // The images we want are but mitk::LabelSetImage and not helper obj
     auto predicateFinal = mitk::NodePredicateAnd::New();
     predicateFinal->AddPredicate(predicateIsLabelSetImage);
-    predicateFinal->AddPredicate(mitk::NodePredicateNot::New(predicatePropertyIsHelper));
+    predicateFinal->AddPredicate(
+        mitk::NodePredicateNot::New(predicatePropertyIsHelper)
+    );
 
     int lastFound = 0;
 
@@ -419,8 +442,9 @@ std::string CaPTkInteractiveSegmentation::FindNextAvailableSegmentationName()
                 {
                     if (name.rfind("Segmentation-", 0) == 0) // Starts with
                     {
-                        std::string numStr = name.erase(0, std::string("Segmentation-").length());
-
+                        std::string numStr = name.erase(
+                            0, std::string("Segmentation-").length()
+                        );
                         if (IsNumber(numStr))
                         {
                             int num = std::stoi(numStr);

@@ -14,7 +14,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 ===================================================================*/
 
-#include "QmitkMultiLabelSegmentationView.h"
+#include "QmitkCaPTkInteractiveSegmentationView.h"
 
 // blueberry
 #include <berryConstants.h>
@@ -59,9 +59,9 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 #include <regex>
 
-const std::string QmitkMultiLabelSegmentationView::VIEW_ID = "org.mitk.views.multilabelsegmentation";
+const std::string QmitkCaPTkInteractiveSegmentationView::VIEW_ID = "org.mitk.views.captkinteractivesegmentation";
 
-QmitkMultiLabelSegmentationView::QmitkMultiLabelSegmentationView()
+QmitkCaPTkInteractiveSegmentationView::QmitkCaPTkInteractiveSegmentationView()
   : m_Parent(nullptr),
     m_IRenderWindowPart(nullptr),
     m_ToolManager(nullptr),
@@ -110,7 +110,7 @@ QmitkMultiLabelSegmentationView::QmitkMultiLabelSegmentationView()
   );
 }
 
-QmitkMultiLabelSegmentationView::~QmitkMultiLabelSegmentationView()
+QmitkCaPTkInteractiveSegmentationView::~QmitkCaPTkInteractiveSegmentationView()
 {
   // m_ToolManager->ActivateTool(-1);
   /*
@@ -131,7 +131,7 @@ QmitkMultiLabelSegmentationView::~QmitkMultiLabelSegmentationView()
   OnLooseLabelSetConnection();
 }
 
-void QmitkMultiLabelSegmentationView::CreateQtPartControl(QWidget *parent)
+void QmitkCaPTkInteractiveSegmentationView::CreateQtPartControl(QWidget *parent)
 {
   // setup the basic GUI of this view
   m_Parent = parent;
@@ -297,28 +297,28 @@ void QmitkMultiLabelSegmentationView::CreateQtPartControl(QWidget *parent)
   );
 }
 
-void QmitkMultiLabelSegmentationView::Activated()
+void QmitkCaPTkInteractiveSegmentationView::Activated()
 {
   m_ToolManager->SetReferenceData(m_Controls.m_cbReferenceNodeSelector->GetSelectedNode());
   m_ToolManager->SetWorkingData(m_Controls.m_cbWorkingNodeSelector->GetSelectedNode());
 }
 
-void QmitkMultiLabelSegmentationView::Deactivated()
+void QmitkCaPTkInteractiveSegmentationView::Deactivated()
 {
   // Not yet implemented
 }
 
-void QmitkMultiLabelSegmentationView::Visible()
+void QmitkCaPTkInteractiveSegmentationView::Visible()
 {
   // Not yet implemented
 }
 
-void QmitkMultiLabelSegmentationView::Hidden()
+void QmitkCaPTkInteractiveSegmentationView::Hidden()
 {
   // Not yet implemented
 }
 
-int QmitkMultiLabelSegmentationView::GetSizeFlags(bool width)
+int QmitkCaPTkInteractiveSegmentationView::GetSizeFlags(bool width)
 {
   if (!width)
   {
@@ -330,7 +330,7 @@ int QmitkMultiLabelSegmentationView::GetSizeFlags(bool width)
   }
 }
 
-int QmitkMultiLabelSegmentationView::ComputePreferredSize(bool width,
+int QmitkCaPTkInteractiveSegmentationView::ComputePreferredSize(bool width,
                                                           int /*availableParallel*/,
                                                           int /*availablePerpendicular*/,
                                                           int preferredResult)
@@ -348,7 +348,7 @@ int QmitkMultiLabelSegmentationView::ComputePreferredSize(bool width,
 /************************************************************************/
 /* protected slots                                                      */
 /************************************************************************/
-void QmitkMultiLabelSegmentationView::OnRunButtonPressed()
+void QmitkCaPTkInteractiveSegmentationView::OnRunButtonPressed()
 {
   // ---- Collect the seeds ----
 
@@ -390,7 +390,7 @@ void QmitkMultiLabelSegmentationView::OnRunButtonPressed()
   {
     if (it->Value().IsNotNull())
     {
-      std::cout << "[QmitkMultiLabelSegmentationView::OnRunButtonPressed] "
+      std::cout << "[QmitkCaPTkInteractiveSegmentationView::OnRunButtonPressed] "
                 << "Image node name: " 
                 << it->Value()->GetName()
                 << "\n";
@@ -402,7 +402,7 @@ void QmitkMultiLabelSegmentationView::OnRunButtonPressed()
   m_CaPTkInteractiveSegmentationModule->Run(images, seeds);
 }
 
-void QmitkMultiLabelSegmentationView::OnManualTool2DSelected(int id)
+void QmitkCaPTkInteractiveSegmentationView::OnManualTool2DSelected(int id)
 {
   this->ResetMouseCursor();
   mitk::StatusBar::GetInstance()->DisplayText("");
@@ -419,7 +419,7 @@ void QmitkMultiLabelSegmentationView::OnManualTool2DSelected(int id)
   }
 }
 
-void QmitkMultiLabelSegmentationView::OnNewLabel()
+void QmitkCaPTkInteractiveSegmentationView::OnNewLabel()
 {
   m_ToolManager->ActivateTool(-1);
 
@@ -473,7 +473,7 @@ void QmitkMultiLabelSegmentationView::OnNewLabel()
   mitk::RenderingManager::GetInstance()->InitializeViews(workingNode->GetData()->GetTimeGeometry(), mitk::RenderingManager::REQUEST_UPDATE_ALL, true);
 }
 
-void QmitkMultiLabelSegmentationView::OnShowLabelTable(bool value)
+void QmitkCaPTkInteractiveSegmentationView::OnShowLabelTable(bool value)
 {
   if (value)
     m_Controls.m_LabelSetWidget->show();
@@ -481,7 +481,7 @@ void QmitkMultiLabelSegmentationView::OnShowLabelTable(bool value)
     m_Controls.m_LabelSetWidget->hide();
 }
 
-void QmitkMultiLabelSegmentationView::OnNewSegmentationSession()
+void QmitkCaPTkInteractiveSegmentationView::OnNewSegmentationSession()
 {
   mitk::DataNode *referenceNode = m_Controls.m_cbReferenceNodeSelector->GetSelectedNode();
 
@@ -593,19 +593,19 @@ void QmitkMultiLabelSegmentationView::OnNewSegmentationSession()
   // OnNewLabel();
 }
 
-void QmitkMultiLabelSegmentationView::OnGoToLabel(const mitk::Point3D& pos)
+void QmitkCaPTkInteractiveSegmentationView::OnGoToLabel(const mitk::Point3D& pos)
 {
   if (m_IRenderWindowPart)
     m_IRenderWindowPart->SetSelectedPosition(pos);
 }
 
-void QmitkMultiLabelSegmentationView::OnResetView()
+void QmitkCaPTkInteractiveSegmentationView::OnResetView()
 {
   if (m_IRenderWindowPart)
     m_IRenderWindowPart->ForceImmediateUpdate();
 }
 
-void QmitkMultiLabelSegmentationView::OnAddLayer()
+void QmitkCaPTkInteractiveSegmentationView::OnAddLayer()
 {
   m_ToolManager->ActivateTool(-1);
 
@@ -639,7 +639,7 @@ void QmitkMultiLabelSegmentationView::OnAddLayer()
   OnNewLabel();
 }
 
-void QmitkMultiLabelSegmentationView::OnDeleteLayer()
+void QmitkCaPTkInteractiveSegmentationView::OnDeleteLayer()
 {
   m_ToolManager->ActivateTool(-1);
 
@@ -681,7 +681,7 @@ void QmitkMultiLabelSegmentationView::OnDeleteLayer()
   m_Controls.m_LabelSetWidget->ResetAllTableWidgetItems();
 }
 
-void QmitkMultiLabelSegmentationView::OnPreviousLayer()
+void QmitkCaPTkInteractiveSegmentationView::OnPreviousLayer()
 {
   m_ToolManager->ActivateTool(-1);
 
@@ -693,7 +693,7 @@ void QmitkMultiLabelSegmentationView::OnPreviousLayer()
   OnChangeLayer(workingImage->GetActiveLayer() - 1);
 }
 
-void QmitkMultiLabelSegmentationView::OnNextLayer()
+void QmitkCaPTkInteractiveSegmentationView::OnNextLayer()
 {
   m_ToolManager->ActivateTool(-1);
 
@@ -705,7 +705,7 @@ void QmitkMultiLabelSegmentationView::OnNextLayer()
   OnChangeLayer(workingImage->GetActiveLayer() + 1);
 }
 
-void QmitkMultiLabelSegmentationView::OnChangeLayer(int layer)
+void QmitkCaPTkInteractiveSegmentationView::OnChangeLayer(int layer)
 {
   m_ToolManager->ActivateTool(-1);
 
@@ -723,12 +723,12 @@ void QmitkMultiLabelSegmentationView::OnChangeLayer(int layer)
   m_Controls.m_LabelSetWidget->ResetAllTableWidgetItems();
 }
 
-void QmitkMultiLabelSegmentationView::OnDeactivateActiveTool()
+void QmitkCaPTkInteractiveSegmentationView::OnDeactivateActiveTool()
 {
   m_ToolManager->ActivateTool(-1);
 }
 
-void QmitkMultiLabelSegmentationView::OnLockExteriorToggled(bool checked)
+void QmitkCaPTkInteractiveSegmentationView::OnLockExteriorToggled(bool checked)
 {
   mitk::DataNode* workingNode = m_ToolManager->GetWorkingData(0);
   assert(workingNode);
@@ -739,7 +739,7 @@ void QmitkMultiLabelSegmentationView::OnLockExteriorToggled(bool checked)
   workingImage->GetLabel(0)->SetLocked(checked);
 }
 
-void QmitkMultiLabelSegmentationView::OnReferenceSelectionChanged(const mitk::DataNode* node)
+void QmitkCaPTkInteractiveSegmentationView::OnReferenceSelectionChanged(const mitk::DataNode* node)
 {
   m_ToolManager->ActivateTool(-1);
 
@@ -807,11 +807,11 @@ void QmitkMultiLabelSegmentationView::OnReferenceSelectionChanged(const mitk::Da
   }
 }
 
-void QmitkMultiLabelSegmentationView::OnSegmentationSelectionChanged(const mitk::DataNode* node)
+void QmitkCaPTkInteractiveSegmentationView::OnSegmentationSelectionChanged(const mitk::DataNode* node)
 {
   if (node != nullptr)
   {
-    std::cout << "[QmitkMultiLabelSegmentationView::OnSegmentationSelectionChanged] "
+    std::cout << "[QmitkCaPTkInteractiveSegmentationView::OnSegmentationSelectionChanged] "
               << "Selection changed to: "
               << node->GetName()
               << "\n";
@@ -886,7 +886,7 @@ void QmitkMultiLabelSegmentationView::OnSegmentationSelectionChanged(const mitk:
   }
 }
 
-void QmitkMultiLabelSegmentationView::OnInterpolationSelectionChanged(int index)
+void QmitkCaPTkInteractiveSegmentationView::OnInterpolationSelectionChanged(int index)
 {
   if (index == 1)
   {
@@ -912,7 +912,7 @@ void QmitkMultiLabelSegmentationView::OnInterpolationSelectionChanged(int index)
 /************************************************************************/
 /* protected                                                            */
 /************************************************************************/
-void QmitkMultiLabelSegmentationView::OnSelectionChanged(berry::IWorkbenchPart::Pointer, const QList<mitk::DataNode::Pointer> &nodes)
+void QmitkCaPTkInteractiveSegmentationView::OnSelectionChanged(berry::IWorkbenchPart::Pointer, const QList<mitk::DataNode::Pointer> &nodes)
 {
   if (m_AutoSelectionEnabled)
   {
@@ -949,7 +949,7 @@ void QmitkMultiLabelSegmentationView::OnSelectionChanged(berry::IWorkbenchPart::
   }
 }
 
-void QmitkMultiLabelSegmentationView::OnPreferencesChanged(const berry::IBerryPreferences* prefs)
+void QmitkCaPTkInteractiveSegmentationView::OnPreferencesChanged(const berry::IBerryPreferences* prefs)
 {
   if (m_Parent && m_WorkingNode.IsNotNull())
   {
@@ -1003,7 +1003,7 @@ void QmitkMultiLabelSegmentationView::OnPreferencesChanged(const berry::IBerryPr
   }
 }
 
-void QmitkMultiLabelSegmentationView::NodeAdded(const mitk::DataNode *)
+void QmitkCaPTkInteractiveSegmentationView::NodeAdded(const mitk::DataNode *)
 {
   /*
   bool isHelperObject(false);
@@ -1022,7 +1022,7 @@ void QmitkMultiLabelSegmentationView::NodeAdded(const mitk::DataNode *)
   */
 }
 
-void QmitkMultiLabelSegmentationView::NodeRemoved(const mitk::DataNode *node)
+void QmitkCaPTkInteractiveSegmentationView::NodeRemoved(const mitk::DataNode *node)
 {
   bool isHelperObject(false);
   node->GetBoolProperty("helper object", isHelperObject);
@@ -1057,7 +1057,7 @@ void QmitkMultiLabelSegmentationView::NodeRemoved(const mitk::DataNode *node)
   }
 }
 
-void QmitkMultiLabelSegmentationView::OnEstablishLabelSetConnection()
+void QmitkCaPTkInteractiveSegmentationView::OnEstablishLabelSetConnection()
 {
   if (m_WorkingNode.IsNull())
   {
@@ -1077,11 +1077,11 @@ void QmitkMultiLabelSegmentationView::OnEstablishLabelSetConnection()
   workingImage->GetActiveLabelSet()->ActiveLabelEvent +=
     mitk::MessageDelegate1<QmitkLabelSetWidget, mitk::Label::PixelType>(m_Controls.m_LabelSetWidget,
                                                                         &QmitkLabelSetWidget::SelectLabelByPixelValue);
-  workingImage->BeforeChangeLayerEvent += mitk::MessageDelegate<QmitkMultiLabelSegmentationView>(
-    this, &QmitkMultiLabelSegmentationView::OnLooseLabelSetConnection);
+  workingImage->BeforeChangeLayerEvent += mitk::MessageDelegate<QmitkCaPTkInteractiveSegmentationView>(
+    this, &QmitkCaPTkInteractiveSegmentationView::OnLooseLabelSetConnection);
 }
 
-void QmitkMultiLabelSegmentationView::OnLooseLabelSetConnection()
+void QmitkCaPTkInteractiveSegmentationView::OnLooseLabelSetConnection()
 {
   if (m_WorkingNode.IsNull())
   {
@@ -1102,15 +1102,15 @@ void QmitkMultiLabelSegmentationView::OnLooseLabelSetConnection()
   workingImage->GetActiveLabelSet()->ActiveLabelEvent -=
     mitk::MessageDelegate1<QmitkLabelSetWidget, mitk::Label::PixelType>(m_Controls.m_LabelSetWidget,
                                                                         &QmitkLabelSetWidget::SelectLabelByPixelValue);
-  workingImage->BeforeChangeLayerEvent -= mitk::MessageDelegate<QmitkMultiLabelSegmentationView>(
-    this, &QmitkMultiLabelSegmentationView::OnLooseLabelSetConnection);
+  workingImage->BeforeChangeLayerEvent -= mitk::MessageDelegate<QmitkCaPTkInteractiveSegmentationView>(
+    this, &QmitkCaPTkInteractiveSegmentationView::OnLooseLabelSetConnection);
 }
 
-void QmitkMultiLabelSegmentationView::SetFocus()
+void QmitkCaPTkInteractiveSegmentationView::SetFocus()
 {
 }
 
-void QmitkMultiLabelSegmentationView::UpdateControls()
+void QmitkCaPTkInteractiveSegmentationView::UpdateControls()
 {
   mitk::DataNode* referenceNode = m_ToolManager->GetReferenceData(0);
   bool hasReferenceNode = referenceNode != nullptr;
@@ -1195,7 +1195,7 @@ void QmitkMultiLabelSegmentationView::UpdateControls()
   this->RequestRenderWindowUpdate(mitk::RenderingManager::REQUEST_UPDATE_ALL);
 }
 
-void QmitkMultiLabelSegmentationView::RenderWindowPartActivated(mitk::IRenderWindowPart* renderWindowPart)
+void QmitkCaPTkInteractiveSegmentationView::RenderWindowPartActivated(mitk::IRenderWindowPart* renderWindowPart)
 {
   if (m_IRenderWindowPart != renderWindowPart)
   {
@@ -1210,14 +1210,14 @@ void QmitkMultiLabelSegmentationView::RenderWindowPartActivated(mitk::IRenderWin
   }
 }
 
-void QmitkMultiLabelSegmentationView::RenderWindowPartDeactivated(mitk::IRenderWindowPart* /*renderWindowPart*/)
+void QmitkCaPTkInteractiveSegmentationView::RenderWindowPartDeactivated(mitk::IRenderWindowPart* /*renderWindowPart*/)
 {
   m_ToolManager->ActivateTool(-1);
   m_IRenderWindowPart = 0;
   m_Parent->setEnabled(false);
 }
 
-void QmitkMultiLabelSegmentationView::ResetMouseCursor()
+void QmitkCaPTkInteractiveSegmentationView::ResetMouseCursor()
 {
   if (m_MouseCursorSet)
   {
@@ -1226,7 +1226,7 @@ void QmitkMultiLabelSegmentationView::ResetMouseCursor()
   }
 }
 
-void QmitkMultiLabelSegmentationView::SetMouseCursor(const us::ModuleResource resource, int hotspotX, int hotspotY)
+void QmitkCaPTkInteractiveSegmentationView::SetMouseCursor(const us::ModuleResource resource, int hotspotX, int hotspotY)
 {
   // Remove previously set mouse cursor
   if (m_MouseCursorSet)
@@ -1240,7 +1240,7 @@ void QmitkMultiLabelSegmentationView::SetMouseCursor(const us::ModuleResource re
   }
 }
 
-void QmitkMultiLabelSegmentationView::InitializeListeners()
+void QmitkCaPTkInteractiveSegmentationView::InitializeListeners()
 {
   if (m_Interactor.IsNull())
   {
@@ -1270,7 +1270,7 @@ void QmitkMultiLabelSegmentationView::InitializeListeners()
   }
 }
 
-bool QmitkMultiLabelSegmentationView::CheckForSameGeometry(const mitk::Image *image1, const mitk::Image *image2) const
+bool QmitkCaPTkInteractiveSegmentationView::CheckForSameGeometry(const mitk::Image *image1, const mitk::Image *image2) const
 {
   bool isSameGeometry(true);
 
@@ -1295,18 +1295,18 @@ bool QmitkMultiLabelSegmentationView::CheckForSameGeometry(const mitk::Image *im
   }
 }
 
-QString QmitkMultiLabelSegmentationView::GetLastFileOpenPath()
+QString QmitkCaPTkInteractiveSegmentationView::GetLastFileOpenPath()
 {
   return this->GetPreferences()->Get("LastFileOpenPath", "");
 }
 
-void QmitkMultiLabelSegmentationView::SetLastFileOpenPath(const QString &path)
+void QmitkCaPTkInteractiveSegmentationView::SetLastFileOpenPath(const QString &path)
 {
   this->GetPreferences()->Put("LastFileOpenPath", path);
   this->GetPreferences()->Flush();
 }
 
-std::string QmitkMultiLabelSegmentationView::FindNextAvailableSeedsName()
+std::string QmitkCaPTkInteractiveSegmentationView::FindNextAvailableSeedsName()
 {
     // Predicate to find if node is mitk::LabelSetImage
     auto predicateIsLabelSetImage =
@@ -1373,7 +1373,7 @@ std::string QmitkMultiLabelSegmentationView::FindNextAvailableSeedsName()
     }
 }
 
-bool QmitkMultiLabelSegmentationView::IsNumber(const std::string &s)
+bool QmitkCaPTkInteractiveSegmentationView::IsNumber(const std::string &s)
 {
 	return !s.empty() && std::find_if(s.begin(),
 		s.end(), [](char c) { return !std::isdigit(c); }) == s.end();

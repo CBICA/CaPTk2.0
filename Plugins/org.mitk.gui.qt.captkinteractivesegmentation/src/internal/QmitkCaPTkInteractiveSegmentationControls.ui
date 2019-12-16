@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QmitkMultiLabelSegmentationControls</class>
- <widget class="QWidget" name="QmitkMultiLabelSegmentationControls">
+ <class>QmitkCaPTkInteractiveSegmentationControls</class>
+ <widget class="QWidget" name="QmitkCaPTkInteractiveSegmentationControls">
   <property name="geometry">
    <rect>
     <x>0</x>
