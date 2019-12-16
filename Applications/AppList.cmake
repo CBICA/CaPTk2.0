@@ -9,8 +9,6 @@
 # allow early dependency checking
 
 option(MITK_BUILD_APP_CaptkApp "Build the MITK CaptkApp" ON)
-#option(MITK_BUILD_APP_Workbench "Build the MITK Workbench executable" OFF)
-#option(MITK_BUILD_APP_Diffusion "Build the MITK Diffusion executable" OFF)
 
 # This variable is fed to ctkFunctionSetupPlugins() macro in the
 # top-level MITK CMakeLists.txt file. This allows to automatically
@@ -25,6 +23,5 @@ option(MITK_BUILD_APP_CaptkApp "Build the MITK CaptkApp" ON)
 set(MITK_APPS
   CaptkApp^^MITK_BUILD_APP_CaptkApp^^MitkCaptkApp
   #Workbench^^MITK_BUILD_APP_Workbench^^MitkWorkbench
-  #Diffusion^^MITK_BUILD_APP_Diffusion^^MitkDiffusion
 )
 
