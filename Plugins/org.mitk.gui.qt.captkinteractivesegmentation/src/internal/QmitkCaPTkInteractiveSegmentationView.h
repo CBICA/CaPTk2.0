@@ -162,7 +162,7 @@ protected:
   QWidget *m_Parent;
 
   /// \brief Qt GUI file
-  Ui::QmitkMultiLabelSegmentationControls m_Controls;
+  Ui::QmitkCaPTkInteractiveSegmentationControls m_Controls;
 
   mitk::IRenderWindowPart *m_IRenderWindowPart;
 

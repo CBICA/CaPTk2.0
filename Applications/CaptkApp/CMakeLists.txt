@@ -38,6 +38,9 @@ set(_exclude_plugins
   org.mitk.example.gui.multipleperspectives
 )
 
+# For the git tag to get picked up
+include(mitkFunctionGetVersionDescription)
+mitkFunctionGetVersionDescription(${PROJECT_SOURCE_DIR} CaPTk)
 
 mitkFunctionCreateBlueBerryApplication(
   NAME MitkCaptkApp
