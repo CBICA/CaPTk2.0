@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/org.mitk.cbica.captk.ui">
+        
+    </qresource>
+</RCC>

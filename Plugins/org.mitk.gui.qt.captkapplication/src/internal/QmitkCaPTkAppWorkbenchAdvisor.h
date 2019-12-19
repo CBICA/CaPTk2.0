@@ -32,6 +32,10 @@ public:
 
   QString GetInitialWindowPerspectiveId() override;
 
+private:
+  // For CaPTk's about menu
+  berry::IWorkbenchWindowConfigurer::Pointer m_WorkbenchWindowConfigurer;
+
 };
 
 #endif /*QMITKCAPTKAPPWORKBENCHADVISOR_H_*/

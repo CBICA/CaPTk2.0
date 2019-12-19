@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+
+  <extension point="org.blueberry.ui.handlers">
+    <handler
+      commandId="org.blueberry.ui.help.aboutActionCaPTk"
+      class="QcaptkAboutHandler"/>
+  </extension>
+
+</plugin>

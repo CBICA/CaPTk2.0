@@ -1,0 +1,5 @@
+set(Plugin-Name "CaPTk Ext Plugin (UI)")
+set(Plugin-Version "0.1")
+set(Plugin-Vendor "CBICA, UPenn")
+set(Plugin-ContactAddress "https://www.med.upenn.edu/cbica/")
+set(Require-Plugin org.mitk.core.ext org.mitk.gui.qt.ext org.mitk.gui.qt.application)

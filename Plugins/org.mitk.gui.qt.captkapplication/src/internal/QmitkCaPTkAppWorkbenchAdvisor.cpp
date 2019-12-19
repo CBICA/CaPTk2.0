@@ -17,7 +17,8 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include "QmitkCaPTkAppWorkbenchAdvisor.h"
 #include "internal/QmitkCaPTkApplicationPlugin.h"
 
-#include <QmitkExtWorkbenchWindowAdvisor.h>
+#include <QcaptkWorkbenchWindowAdvisor.h>
+#include <src/internal/QmitkCaPTkApplicationPlugin.h>
 
 #include <QMessageBox>
 #include <QMainWindow>
@@ -35,17 +36,17 @@ QmitkCaPTkAppWorkbenchAdvisor::Initialize(berry::IWorkbenchConfigurer::Pointer c
 
   // Change the about page to CaPTk's
   QMainWindow* mainWindow =
-    qobject_cast<QMainWindow*>(configurer->GetWindow()->GetShell()->GetControl());
+    qobject_cast<QMainWindow*>(m_WorkbenchWindowConfigurer->GetWindow()->GetShell()->GetControl());
   QList<QMenu*> menus = mainWindow->menuBar()->findChildren<QMenu*>();
   for (QMenu* menu : menus)
   {
     for (QAction* action : menu->actions())
     {
-      if (action->text() == "About")
+      if (action->text() != nullptr && action->text() == "About")
       {
-        menu->removeAction(action);
-        QAction* newAboutAction = new QAction("About", menu);
-        newAboutAction
+        // menu->removeAction(action);
+        // QAction* newAboutAction = new QAction("About", menu);
+        // newAboutAction
         menu->addAction("About", 
           [this]()
           {
@@ -68,8 +69,12 @@ berry::WorkbenchWindowAdvisor*
 QmitkCaPTkAppWorkbenchAdvisor::CreateWorkbenchWindowAdvisor(
         berry::IWorkbenchWindowConfigurer::Pointer configurer)
 {
-  QmitkExtWorkbenchWindowAdvisor* advisor = new
-    QmitkExtWorkbenchWindowAdvisor(this, configurer);
+  QcaptkWorkbenchWindowAdvisor* advisor = new
+    QcaptkWorkbenchWindowAdvisor(this, configurer);
+
+  advisor->SetContext(
+    QmitkCaPTkApplicationPlugin::GetDefault()->GetPluginContext()
+  );
 
   // Exclude the help perspective from org.blueberry.ui.qt.help from
   // the normal perspective list.
@@ -86,8 +91,9 @@ QmitkCaPTkAppWorkbenchAdvisor::CreateWorkbenchWindowAdvisor(
 
   advisor->SetWindowIcon(":/org.mitk.gui.qt.captkapplication/icon.png");
 
+  m_WorkbenchWindowConfigurer = configurer; // Used for changing "about" to CaPTk's
+
   return advisor;
-  //return new QmitkExtWorkbenchWindowAdvisor(this, configurer);
 }
 
 QString QmitkCaPTkAppWorkbenchAdvisor::GetInitialWindowPerspectiveId()
