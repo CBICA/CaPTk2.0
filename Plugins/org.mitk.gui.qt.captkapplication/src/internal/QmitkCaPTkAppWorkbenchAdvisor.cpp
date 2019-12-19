@@ -19,6 +19,10 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 #include <QmitkExtWorkbenchWindowAdvisor.h>
 
+#include <QMessageBox>
+#include <QMainWindow>
+#include <QMenuBar>
+
 const QString QmitkCaPTkAppWorkbenchAdvisor::DEFAULT_PERSPECTIVE_ID =
     "org.mitk.captkapp.defaultperspective";
 
@@ -28,6 +32,36 @@ QmitkCaPTkAppWorkbenchAdvisor::Initialize(berry::IWorkbenchConfigurer::Pointer c
   berry::QtWorkbenchAdvisor::Initialize(configurer);
 
   configurer->SetSaveAndRestore(true);
+
+  // Change the about page to CaPTk's
+  QMainWindow* mainWindow =
+    qobject_cast<QMainWindow*>(configurer->GetWindow()->GetShell()->GetControl());
+  QList<QMenu*> menus = mainWindow->menuBar()->findChildren<QMenu*>();
+  for (QMenu* menu : menus)
+  {
+    for (QAction* action : menu->actions())
+    {
+      if (action->text() == "About")
+      {
+        menu->removeAction(action);
+        QAction* newAboutAction = new QAction("About", menu);
+        newAboutAction
+        menu->addAction("About", 
+          [this]()
+          {
+            QMessageBox msgError;
+            msgError.setText(
+                "UPenn"
+            );
+            // msgError.setIcon(QMessageBox::Critical);
+            msgError.setWindowTitle("CaPTk");
+            msgError.exec();
+          }
+        );
+        break;
+      }
+    }
+  }
 }
 
 berry::WorkbenchWindowAdvisor*
@@ -51,6 +85,7 @@ QmitkCaPTkAppWorkbenchAdvisor::CreateWorkbenchWindowAdvisor(
   advisor->SetViewExcludeList(excludeViews);
 
   advisor->SetWindowIcon(":/org.mitk.gui.qt.captkapplication/icon.png");
+
   return advisor;
   //return new QmitkExtWorkbenchWindowAdvisor(this, configurer);
 }

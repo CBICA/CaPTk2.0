@@ -21,6 +21,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include "QmitkCaPTkIntroPart.h"
 #include "QmitkCaPTkApplication.h"
 
+#include "mitkWorkbenchUtil.h"
 #include <mitkVersion.h>
 #include <mitkLogMacros.h>
 
@@ -79,6 +80,9 @@ void QmitkCaPTkApplicationPlugin::start(ctkPluginContext* context)
   {
     MITK_WARN << "Configuration Admin service unavailable, cannot set home page url.";
   }
+
+  // Set CBICA logo
+  mitk::WorkbenchUtil::SetDepartmentLogoPreference(":/org.mitk.gui.qt.captkapplication/cbica-logo.jpg", context);
 }
 
 ctkPluginContext* QmitkCaPTkApplicationPlugin::GetPluginContext() const
