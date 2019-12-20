@@ -14,13 +14,18 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 ===================================================================*/
 
-#include "QcaptkAboutHandler.h"
+#ifndef QMITKABOUTHANDLER_H
+#define QMITKABOUTHANDLER_H
 
-#include <QmitkAboutDialog.h>
+#include <berryAbstractHandler.h>
 
-berry::Object::Pointer QcaptkAboutHandler::Execute(const berry::SmartPointer<const berry::ExecutionEvent>& /*event*/)
+class QmitkAboutHandler : public berry::AbstractHandler
 {
-  auto   aboutDialog = new QmitkAboutDialog(QApplication::activeWindow(), nullptr);
-  aboutDialog->open();
-  return berry::Object::Pointer();
-}
+  Q_OBJECT
+
+public:
+
+  Object::Pointer Execute(const berry::SmartPointer<const berry::ExecutionEvent>& event) override;
+};
+
+#endif // QMITKABOUTHANDLER_H

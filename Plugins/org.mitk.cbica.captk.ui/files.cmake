@@ -1,19 +1,36 @@
 set(SRC_CPP_FILES
-  QcaptkWorkbenchWindowAdvisor.cpp
+  QmitkExtActionBarAdvisor.cpp
+  QmitkExtWorkbenchWindowAdvisor.cpp
+  QmitkExtFileSaveProjectAction.cpp
+  QmitkOpenDicomEditorAction.cpp
 )
 
 set(INTERNAL_CPP_FILES
-  QcaptkAboutHandler.cpp
+  QmitkAboutHandler.cpp
+  QmitkAppInstancesPreferencePage.cpp
+  QmitkExternalProgramsPreferencePage.cpp
+  QmitkCommonExtPlugin.cpp
+  QmitkInputDevicesPrefPage.cpp
+  QmitkModuleView.cpp
 )
 
 set(UI_FILES
-
+  src/internal/QmitkAppInstancesPreferencePage.ui
+  src/internal/QmitkExternalProgramsPreferencePage.ui
 )
 
 set(MOC_H_FILES
-  src/QcaptkWorkbenchWindowAdvisor.h
-  src/internal/QcaptkAboutHandler.h
-  src/internal/QcaptkWorkbenchWindowAdvisorHack.h
+  src/QmitkExtFileSaveProjectAction.h
+  src/QmitkExtWorkbenchWindowAdvisor.h
+
+  src/internal/QmitkAboutHandler.h
+  src/internal/QmitkAppInstancesPreferencePage.h
+  src/internal/QmitkExternalProgramsPreferencePage.h
+  src/internal/QmitkCommonExtPlugin.h
+  src/internal/QmitkExtWorkbenchWindowAdvisorHack.h
+  src/internal/QmitkInputDevicesPrefPage.h
+  src/internal/QmitkModuleView.h
+  src/QmitkOpenDicomEditorAction.h
 )
 
 set(CACHED_RESOURCE_FILES
@@ -22,12 +39,13 @@ set(CACHED_RESOURCE_FILES
 # for example the icon used in the menu and tabs for the
 # plug-in views in the workbench
   plugin.xml
+  resources/ModuleView.png
 )
 
 set(QRC_FILES
 # uncomment the following line if you want to use Qt resources
  resources/org_mitk_gui_qt_ext.qrc
- resources/org_mitk_icons.qrc
+ resources/org_mitk_cbica_captk_icons.qrc
 )
 
 set(CPP_FILES )

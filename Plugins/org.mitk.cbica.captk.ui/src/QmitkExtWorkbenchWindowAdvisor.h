@@ -14,8 +14,8 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 ===================================================================*/
 
-#ifndef QcaptkWorkbenchWindowAdvisor_H_
-#define QcaptkWorkbenchWindowAdvisor_H_
+#ifndef QMITKEXTWORKBENCHWINDOWADVISOR_H_
+#define QMITKEXTWORKBENCHWINDOWADVISOR_H_
 
 #include <berryWorkbenchWindowAdvisor.h>
 
@@ -29,30 +29,24 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 #include <QList>
 
-class ctkPluginContext;
-
 class QAction;
 class QMenu;
 
-class CAPTK_UI_EXPORT QcaptkWorkbenchWindowAdvisor : public QObject, public berry::WorkbenchWindowAdvisor
+class MITK_QT_COMMON_EXT_EXPORT QmitkExtWorkbenchWindowAdvisor : public QObject, public berry::WorkbenchWindowAdvisor
 {
   Q_OBJECT
 
 public:
 
-    QcaptkWorkbenchWindowAdvisor(berry::WorkbenchAdvisor* wbAdvisor,
+    QmitkExtWorkbenchWindowAdvisor(berry::WorkbenchAdvisor* wbAdvisor,
         berry::IWorkbenchWindowConfigurer::Pointer configurer);
 
-    ~QcaptkWorkbenchWindowAdvisor() override;
+    ~QmitkExtWorkbenchWindowAdvisor() override;
 
     berry::SmartPointer<berry::ActionBarAdvisor> CreateActionBarAdvisor(
         berry::SmartPointer<berry::IActionBarConfigurer> configurer) override;
 
     QWidget* CreateEmptyWindowContents(QWidget* parent) override;
-
-    // CaPTk-specific
-    void SetContext(ctkPluginContext* context);
-
 
     void PostWindowCreate() override;
 
@@ -101,8 +95,6 @@ protected slots:
 
 private:
 
-  ctkPluginContext* m_Context;
-
   /**
    * Hooks the listeners needed on the window
    *
@@ -133,7 +125,7 @@ private:
   QScopedPointer<berry::IPartListener> imageNavigatorPartListener;
   QScopedPointer<berry::IPartListener> viewNavigatorPartListener;
   QScopedPointer<berry::IPropertyChangeListener> editorPropertyListener;
-  friend struct berry::PropertyChangeIntAdapter<QcaptkWorkbenchWindowAdvisor>;
+  friend struct berry::PropertyChangeIntAdapter<QmitkExtWorkbenchWindowAdvisor>;
   friend class PartListenerForTitle;
   friend class PerspectiveListenerForTitle;
   friend class PerspectiveListenerForMenu;
@@ -184,4 +176,4 @@ private:
   QAction* openDicomEditorAction;
 };
 
-#endif /*QcaptkWorkbenchWindowAdvisor_H_*/
+#endif /*QMITKEXTWORKBENCHWINDOWADVISOR_H_*/

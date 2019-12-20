@@ -14,7 +14,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 ===================================================================*/
 
-#include "QcaptkWorkbenchWindowAdvisor.h"
+#include "QmitkExtWorkbenchWindowAdvisor.h"
 #include "QmitkExtActionBarAdvisor.h"
 
 #include <QMenu>
@@ -71,7 +71,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <vtkVersionMacros.h>
 
 // UGLYYY
-#include "internal/QcaptkWorkbenchWindowAdvisorHack.h"
+#include "internal/QmitkExtWorkbenchWindowAdvisorHack.h"
 #include "internal/QmitkCommonExtPlugin.h"
 #include "mitkUndoController.h"
 #include "mitkVerboseLimitedLinearUndo.h"
@@ -82,11 +82,11 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <QLabel>
 #include <QmitkAboutDialog.h>
 
-QcaptkWorkbenchWindowAdvisorHack
-  * QcaptkWorkbenchWindowAdvisorHack::undohack =
-  new QcaptkWorkbenchWindowAdvisorHack();
+QmitkExtWorkbenchWindowAdvisorHack
+  * QmitkExtWorkbenchWindowAdvisorHack::undohack =
+  new QmitkExtWorkbenchWindowAdvisorHack();
 
-QString QcaptkWorkbenchWindowAdvisor::QT_SETTINGS_FILENAME = "QtSettings.ini";
+QString QmitkExtWorkbenchWindowAdvisor::QT_SETTINGS_FILENAME = "QtSettings.ini";
 
 static bool USE_EXPERIMENTAL_COMMAND_CONTRIBUTIONS = false;
 
@@ -94,7 +94,7 @@ class PartListenerForTitle: public berry::IPartListener
 {
 public:
 
-  PartListenerForTitle(QcaptkWorkbenchWindowAdvisor* wa) :
+  PartListenerForTitle(QmitkExtWorkbenchWindowAdvisor* wa) :
     windowAdvisor(wa)
   {
   }
@@ -145,7 +145,7 @@ public:
   }
 
 private:
-  QcaptkWorkbenchWindowAdvisor* windowAdvisor;
+  QmitkExtWorkbenchWindowAdvisor* windowAdvisor;
 };
 
 class PartListenerForViewNavigator: public berry::IPartListener
@@ -254,7 +254,7 @@ class PerspectiveListenerForTitle: public berry::IPerspectiveListener
 {
 public:
 
-  PerspectiveListenerForTitle(QcaptkWorkbenchWindowAdvisor* wa) :
+  PerspectiveListenerForTitle(QmitkExtWorkbenchWindowAdvisor* wa) :
     windowAdvisor(wa), perspectivesClosed(false)
   {
   }
@@ -363,7 +363,7 @@ public:
   }
 
 private:
-  QcaptkWorkbenchWindowAdvisor* windowAdvisor;
+  QmitkExtWorkbenchWindowAdvisor* windowAdvisor;
   bool perspectivesClosed;
 };
 
@@ -371,7 +371,7 @@ class PerspectiveListenerForMenu: public berry::IPerspectiveListener
 {
 public:
 
-  PerspectiveListenerForMenu(QcaptkWorkbenchWindowAdvisor* wa) :
+  PerspectiveListenerForMenu(QmitkExtWorkbenchWindowAdvisor* wa) :
     windowAdvisor(wa)
   {
   }
@@ -402,10 +402,10 @@ public:
   }
 
 private:
-  QcaptkWorkbenchWindowAdvisor* windowAdvisor;
+  QmitkExtWorkbenchWindowAdvisor* windowAdvisor;
 };
 
-QcaptkWorkbenchWindowAdvisor::QcaptkWorkbenchWindowAdvisor(berry::WorkbenchAdvisor* wbAdvisor,
+QmitkExtWorkbenchWindowAdvisor::QmitkExtWorkbenchWindowAdvisor(berry::WorkbenchAdvisor* wbAdvisor,
                                                                berry::IWorkbenchWindowConfigurer::Pointer configurer) :
 berry::WorkbenchWindowAdvisor(configurer),
   lastInput(nullptr),
@@ -425,11 +425,11 @@ berry::WorkbenchWindowAdvisor(configurer),
   viewExcludeList.push_back("org.mitk.views.viewnavigatorview");
 }
 
-QcaptkWorkbenchWindowAdvisor::~QcaptkWorkbenchWindowAdvisor()
+QmitkExtWorkbenchWindowAdvisor::~QmitkExtWorkbenchWindowAdvisor()
 {
 }
 
-berry::ActionBarAdvisor::Pointer QcaptkWorkbenchWindowAdvisor::CreateActionBarAdvisor(
+berry::ActionBarAdvisor::Pointer QmitkExtWorkbenchWindowAdvisor::CreateActionBarAdvisor(
   berry::IActionBarConfigurer::Pointer configurer)
 {
   if (USE_EXPERIMENTAL_COMMAND_CONTRIBUTIONS)
@@ -444,7 +444,7 @@ berry::ActionBarAdvisor::Pointer QcaptkWorkbenchWindowAdvisor::CreateActionBarAd
   }
 }
 
-QWidget* QcaptkWorkbenchWindowAdvisor::CreateEmptyWindowContents(QWidget* parent)
+QWidget* QmitkExtWorkbenchWindowAdvisor::CreateEmptyWindowContents(QWidget* parent)
 {
   QWidget* parentWidget = static_cast<QWidget*>(parent);
   auto   label = new QLabel(parentWidget);
@@ -456,67 +456,67 @@ QWidget* QcaptkWorkbenchWindowAdvisor::CreateEmptyWindowContents(QWidget* parent
   return label;
 }
 
-void QcaptkWorkbenchWindowAdvisor::ShowClosePerspectiveMenuItem(bool show)
+void QmitkExtWorkbenchWindowAdvisor::ShowClosePerspectiveMenuItem(bool show)
 {
   showClosePerspectiveMenuItem = show;
 }
 
-bool QcaptkWorkbenchWindowAdvisor::GetShowClosePerspectiveMenuItem()
+bool QmitkExtWorkbenchWindowAdvisor::GetShowClosePerspectiveMenuItem()
 {
   return showClosePerspectiveMenuItem;
 }
 
-void QcaptkWorkbenchWindowAdvisor::ShowMemoryIndicator(bool show)
+void QmitkExtWorkbenchWindowAdvisor::ShowMemoryIndicator(bool show)
 {
   showMemoryIndicator = show;
 }
 
-bool QcaptkWorkbenchWindowAdvisor::GetShowMemoryIndicator()
+bool QmitkExtWorkbenchWindowAdvisor::GetShowMemoryIndicator()
 {
   return showMemoryIndicator;
 }
 
-void QcaptkWorkbenchWindowAdvisor::ShowNewWindowMenuItem(bool show)
+void QmitkExtWorkbenchWindowAdvisor::ShowNewWindowMenuItem(bool show)
 {
   showNewWindowMenuItem = show;
 }
 
-void QcaptkWorkbenchWindowAdvisor::ShowViewToolbar(bool show)
+void QmitkExtWorkbenchWindowAdvisor::ShowViewToolbar(bool show)
 {
   showViewToolbar = show;
 }
 
-void QcaptkWorkbenchWindowAdvisor::ShowViewMenuItem(bool show)
+void QmitkExtWorkbenchWindowAdvisor::ShowViewMenuItem(bool show)
 {
   showViewMenuItem = show;
 }
 
-void QcaptkWorkbenchWindowAdvisor::ShowPerspectiveToolbar(bool show)
+void QmitkExtWorkbenchWindowAdvisor::ShowPerspectiveToolbar(bool show)
 {
   showPerspectiveToolbar = show;
 }
 
-void QcaptkWorkbenchWindowAdvisor::ShowVersionInfo(bool show)
+void QmitkExtWorkbenchWindowAdvisor::ShowVersionInfo(bool show)
 {
   showVersionInfo = show;
 }
 
-void QcaptkWorkbenchWindowAdvisor::ShowMitkVersionInfo(bool show)
+void QmitkExtWorkbenchWindowAdvisor::ShowMitkVersionInfo(bool show)
 {
   showMitkVersionInfo = show;
 }
 
-void QcaptkWorkbenchWindowAdvisor::SetProductName(const QString& product)
+void QmitkExtWorkbenchWindowAdvisor::SetProductName(const QString& product)
 {
   productName = product;
 }
 
-void QcaptkWorkbenchWindowAdvisor::SetWindowIcon(const QString& wndIcon)
+void QmitkExtWorkbenchWindowAdvisor::SetWindowIcon(const QString& wndIcon)
 {
   windowIcon = wndIcon;
 }
 
-void QcaptkWorkbenchWindowAdvisor::PostWindowCreate()
+void QmitkExtWorkbenchWindowAdvisor::PostWindowCreate()
 {
   // very bad hack...
   berry::IWorkbenchWindow::Pointer window =
@@ -531,11 +531,8 @@ void QcaptkWorkbenchWindowAdvisor::PostWindowCreate()
   mainWindow->setContextMenuPolicy(Qt::PreventContextMenu);
 
   // Load icon theme
-  QIcon::setThemeSearchPaths(QStringList() << QStringLiteral(":/org_mitk_icons/icons/"));
+  QIcon::setThemeSearchPaths(QStringList() << QStringLiteral(":/org_mitk_cbica_captk_icons/icons/"));
   QIcon::setThemeName(QStringLiteral("awesome"));
-
-  // Pass context to hack
-  QcaptkWorkbenchWindowAdvisorHack::undohack->SetContext(m_Context);
 
   // ==== Application menu ============================
 
@@ -548,7 +545,7 @@ void QcaptkWorkbenchWindowAdvisor::PostWindowCreate()
   menuBar->setNativeMenuBar(false);
 #endif
 
-  auto basePath = QStringLiteral(":/org_mitk_icons/icons/awesome/scalable/actions/");
+  auto basePath = QStringLiteral(":/org_mitk_cbica_captk_icons/icons/awesome/scalable/actions/");
 
   auto fileOpenAction = new QmitkFileOpenAction(berry::QtStyleManager::ThemeIcon(basePath + "document-open.svg"), window);
   fileOpenAction->setShortcut(QKeySequence::Open);
@@ -632,12 +629,12 @@ void QcaptkWorkbenchWindowAdvisor::PostWindowCreate()
     QMenu* editMenu = menuBar->addMenu("&Edit");
     undoAction = editMenu->addAction(berry::QtStyleManager::ThemeIcon(basePath + "edit-undo.svg"),
       "&Undo",
-      QcaptkWorkbenchWindowAdvisorHack::undohack, SLOT(onUndo()),
+      QmitkExtWorkbenchWindowAdvisorHack::undohack, SLOT(onUndo()),
       QKeySequence("CTRL+Z"));
     undoAction->setToolTip("Undo the last action (not supported by all modules)");
     redoAction = editMenu->addAction(berry::QtStyleManager::ThemeIcon(basePath + "edit-redo.svg"),
       "&Redo",
-      QcaptkWorkbenchWindowAdvisorHack::undohack, SLOT(onRedo()),
+      QmitkExtWorkbenchWindowAdvisorHack::undohack, SLOT(onRedo()),
       QKeySequence("CTRL+Y"));
     redoAction->setToolTip("execute the last action that was undone again (not supported by all modules)");
 
@@ -645,7 +642,7 @@ void QcaptkWorkbenchWindowAdvisor::PostWindowCreate()
     QMenu* windowMenu = menuBar->addMenu("Window");
     if (showNewWindowMenuItem)
     {
-      windowMenu->addAction("&New Window", QcaptkWorkbenchWindowAdvisorHack::undohack, SLOT(onNewWindow()));
+      windowMenu->addAction("&New Window", QmitkExtWorkbenchWindowAdvisorHack::undohack, SLOT(onNewWindow()));
       windowMenu->addSeparator();
     }
 
@@ -659,14 +656,14 @@ void QcaptkWorkbenchWindowAdvisor::PostWindowCreate()
     }
     windowMenu->addSeparator();
     resetPerspAction = windowMenu->addAction("&Reset Perspective",
-      QcaptkWorkbenchWindowAdvisorHack::undohack, SLOT(onResetPerspective()));
+      QmitkExtWorkbenchWindowAdvisorHack::undohack, SLOT(onResetPerspective()));
 
     if(showClosePerspectiveMenuItem)
-      closePerspAction = windowMenu->addAction("&Close Perspective", QcaptkWorkbenchWindowAdvisorHack::undohack, SLOT(onClosePerspective()));
+      closePerspAction = windowMenu->addAction("&Close Perspective", QmitkExtWorkbenchWindowAdvisorHack::undohack, SLOT(onClosePerspective()));
 
     windowMenu->addSeparator();
     windowMenu->addAction("&Preferences...",
-      QcaptkWorkbenchWindowAdvisorHack::undohack, SLOT(onEditPreferences()),
+      QmitkExtWorkbenchWindowAdvisorHack::undohack, SLOT(onEditPreferences()),
       QKeySequence("CTRL+P"));
 
     // fill perspective menu
@@ -739,7 +736,7 @@ void QcaptkWorkbenchWindowAdvisor::PostWindowCreate()
   mainActionsToolBar->setToolButtonStyle ( Qt::ToolButtonTextBesideIcon );
 #endif
 
-  basePath = QStringLiteral(":/org.mitk.gui.qt.ext/");
+  basePath = QStringLiteral(":/org.mitk.cbica.captk.ui/");
   imageNavigatorAction = new QAction(berry::QtStyleManager::ThemeIcon(basePath + "image_navigator.svg"), "&Image Navigator", nullptr);
   bool imageNavigatorViewFound = window->GetWorkbench()->GetViewRegistry()->Find("org.mitk.views.imagenavigator");
 
@@ -750,7 +747,7 @@ void QcaptkWorkbenchWindowAdvisor::PostWindowCreate()
 
   if (imageNavigatorViewFound)
   {
-    QObject::connect(imageNavigatorAction, SIGNAL(triggered(bool)), QcaptkWorkbenchWindowAdvisorHack::undohack, SLOT(onImageNavigator()));
+    QObject::connect(imageNavigatorAction, SIGNAL(triggered(bool)), QmitkExtWorkbenchWindowAdvisorHack::undohack, SLOT(onImageNavigator()));
     imageNavigatorAction->setCheckable(true);
 
     // add part listener for image navigator
@@ -772,7 +769,7 @@ void QcaptkWorkbenchWindowAdvisor::PostWindowCreate()
   viewNavigatorFound = window->GetWorkbench()->GetViewRegistry()->Find("org.mitk.views.viewnavigatorview");
   if (viewNavigatorFound)
   {
-    QObject::connect(viewNavigatorAction, SIGNAL(triggered(bool)), QcaptkWorkbenchWindowAdvisorHack::undohack, SLOT(onViewNavigator()));
+    QObject::connect(viewNavigatorAction, SIGNAL(triggered(bool)), QmitkExtWorkbenchWindowAdvisorHack::undohack, SLOT(onViewNavigator()));
     viewNavigatorAction->setCheckable(true);
 
     // add part listener for view navigator
@@ -911,7 +908,7 @@ void QcaptkWorkbenchWindowAdvisor::PostWindowCreate()
   }
 }
 
-void QcaptkWorkbenchWindowAdvisor::PreWindowOpen()
+void QmitkExtWorkbenchWindowAdvisor::PreWindowOpen()
 {
   berry::IWorkbenchWindowConfigurer::Pointer configurer = GetWindowConfigurer();
 
@@ -938,16 +935,17 @@ void QcaptkWorkbenchWindowAdvisor::PreWindowOpen()
   configurer->ConfigureEditorAreaDropListener(dropTargetListener.data());
 }
 
-void QcaptkWorkbenchWindowAdvisor::PostWindowOpen()
+void QmitkExtWorkbenchWindowAdvisor::PostWindowOpen()
 {
   berry::WorkbenchWindowAdvisor::PostWindowOpen();
   // Force Rendering Window Creation on startup.
   berry::IWorkbenchWindowConfigurer::Pointer configurer = GetWindowConfigurer();
 
-  ctkServiceReference serviceRef = m_Context->getServiceReference<mitk::IDataStorageService>();
+  ctkPluginContext* context = QmitkCommonExtPlugin::getContext();
+  ctkServiceReference serviceRef = context->getServiceReference<mitk::IDataStorageService>();
   if (serviceRef)
   {
-    mitk::IDataStorageService *dsService = m_Context->getService<mitk::IDataStorageService>(serviceRef);
+    mitk::IDataStorageService *dsService = context->getService<mitk::IDataStorageService>(serviceRef);
     if (dsService)
     {
       mitk::IDataStorageReference::Pointer dsRef = dsService->GetDataStorage();
@@ -957,24 +955,24 @@ void QcaptkWorkbenchWindowAdvisor::PostWindowOpen()
   }
 }
 
-void QcaptkWorkbenchWindowAdvisor::onIntro()
+void QmitkExtWorkbenchWindowAdvisor::onIntro()
 {
-  QcaptkWorkbenchWindowAdvisorHack::undohack->onIntro();
+  QmitkExtWorkbenchWindowAdvisorHack::undohack->onIntro();
 }
 
-void QcaptkWorkbenchWindowAdvisor::onHelp()
+void QmitkExtWorkbenchWindowAdvisor::onHelp()
 {
-  QcaptkWorkbenchWindowAdvisorHack::undohack->onHelp();
+  QmitkExtWorkbenchWindowAdvisorHack::undohack->onHelp();
 }
 
-void QcaptkWorkbenchWindowAdvisor::onHelpOpenHelpPerspective()
+void QmitkExtWorkbenchWindowAdvisor::onHelpOpenHelpPerspective()
 {
-  QcaptkWorkbenchWindowAdvisorHack::undohack->onHelpOpenHelpPerspective();
+  QmitkExtWorkbenchWindowAdvisorHack::undohack->onHelpOpenHelpPerspective();
 }
 
-void QcaptkWorkbenchWindowAdvisor::onAbout()
+void QmitkExtWorkbenchWindowAdvisor::onAbout()
 {
-  QcaptkWorkbenchWindowAdvisorHack::undohack->onAbout();
+  QmitkExtWorkbenchWindowAdvisorHack::undohack->onAbout();
 }
 
 //--------------------------------------------------------------------------------
@@ -982,15 +980,15 @@ void QcaptkWorkbenchWindowAdvisor::onAbout()
 // and undo buttons are done.
 //--------------------------------------------------------------------------------
 
-QcaptkWorkbenchWindowAdvisorHack::QcaptkWorkbenchWindowAdvisorHack() : QObject()
+QmitkExtWorkbenchWindowAdvisorHack::QmitkExtWorkbenchWindowAdvisorHack() : QObject()
 {
 }
 
-QcaptkWorkbenchWindowAdvisorHack::~QcaptkWorkbenchWindowAdvisorHack()
+QmitkExtWorkbenchWindowAdvisorHack::~QmitkExtWorkbenchWindowAdvisorHack()
 {
 }
 
-void QcaptkWorkbenchWindowAdvisorHack::onUndo()
+void QmitkExtWorkbenchWindowAdvisorHack::onUndo()
 {
   mitk::UndoModel* model = mitk::UndoController::GetCurrentUndoModel();
   if (model)
@@ -1012,7 +1010,7 @@ void QcaptkWorkbenchWindowAdvisorHack::onUndo()
   }
 }
 
-void QcaptkWorkbenchWindowAdvisorHack::onRedo()
+void QmitkExtWorkbenchWindowAdvisorHack::onRedo()
 {
   mitk::UndoModel* model = mitk::UndoController::GetCurrentUndoModel();
   if (model)
@@ -1067,35 +1065,35 @@ static void SafeHandleNavigatorView(QString view_query_name)
   wbench_page->ShowView( view_query_name );
 }
 
-void QcaptkWorkbenchWindowAdvisorHack::onImageNavigator()
+void QmitkExtWorkbenchWindowAdvisorHack::onImageNavigator()
 {
   // show/hide ImageNavigatorView
   SafeHandleNavigatorView("org.mitk.views.imagenavigator");
 }
 
-void QcaptkWorkbenchWindowAdvisorHack::onViewNavigator()
+void QmitkExtWorkbenchWindowAdvisorHack::onViewNavigator()
 {
   // show/hide viewnavigatorView
   SafeHandleNavigatorView("org.mitk.views.viewnavigatorview");
 }
 
-void QcaptkWorkbenchWindowAdvisorHack::onEditPreferences()
+void QmitkExtWorkbenchWindowAdvisorHack::onEditPreferences()
 {
   QmitkPreferencesDialog _PreferencesDialog(QApplication::activeWindow());
   _PreferencesDialog.exec();
 }
 
-void QcaptkWorkbenchWindowAdvisorHack::onQuit()
+void QmitkExtWorkbenchWindowAdvisorHack::onQuit()
 {
   berry::PlatformUI::GetWorkbench()->Close();
 }
 
-void QcaptkWorkbenchWindowAdvisorHack::onResetPerspective()
+void QmitkExtWorkbenchWindowAdvisorHack::onResetPerspective()
 {
   berry::PlatformUI::GetWorkbench()->GetActiveWorkbenchWindow()->GetActivePage()->ResetPerspective();
 }
 
-void QcaptkWorkbenchWindowAdvisorHack::onClosePerspective()
+void QmitkExtWorkbenchWindowAdvisorHack::onClosePerspective()
 {
   berry::IWorkbenchPage::Pointer
     page =
@@ -1103,12 +1101,12 @@ void QcaptkWorkbenchWindowAdvisorHack::onClosePerspective()
   page->ClosePerspective(page->GetPerspective(), true, true);
 }
 
-void QcaptkWorkbenchWindowAdvisorHack::onNewWindow()
+void QmitkExtWorkbenchWindowAdvisorHack::onNewWindow()
 {
   berry::PlatformUI::GetWorkbench()->OpenWorkbenchWindow(nullptr);
 }
 
-void QcaptkWorkbenchWindowAdvisorHack::onIntro()
+void QmitkExtWorkbenchWindowAdvisorHack::onIntro()
 {
   bool hasIntro =
     berry::PlatformUI::GetWorkbench()->GetIntroManager()->HasIntro();
@@ -1139,16 +1137,17 @@ void QcaptkWorkbenchWindowAdvisorHack::onIntro()
   }
 }
 
-void QcaptkWorkbenchWindowAdvisorHack::onHelp()
+void QmitkExtWorkbenchWindowAdvisorHack::onHelp()
 {
-  if (m_Context == nullptr)
+  ctkPluginContext* context = QmitkCommonExtPlugin::getContext();
+  if (context == nullptr)
   {
     MITK_WARN << "Plugin context not set, unable to open context help";
     return;
   }
 
   // Check if the org.blueberry.ui.qt.help plug-in is installed and started
-  QList<QSharedPointer<ctkPlugin> > plugins = m_Context->getPlugins();
+  QList<QSharedPointer<ctkPlugin> > plugins = context->getPlugins();
   foreach(QSharedPointer<ctkPlugin> p, plugins)
   {
     if (p->getSymbolicName() == "org.blueberry.ui.qt.help")
@@ -1169,15 +1168,15 @@ void QcaptkWorkbenchWindowAdvisorHack::onHelp()
     }
   }
 
-  ctkServiceReference eventAdminRef = m_Context->getServiceReference<ctkEventAdmin>();
+  ctkServiceReference eventAdminRef = context->getServiceReference<ctkEventAdmin>();
   ctkEventAdmin* eventAdmin = nullptr;
   if (eventAdminRef)
   {
-    eventAdmin = m_Context->getService<ctkEventAdmin>(eventAdminRef);
+    eventAdmin = context->getService<ctkEventAdmin>(eventAdminRef);
   }
   if (eventAdmin == nullptr)
   {
-    MITK_WARN << "ctkEventAdmin service not found. Unable to open m_Context help";
+    MITK_WARN << "ctkEventAdmin service not found. Unable to open context help";
   }
   else
   {
@@ -1186,27 +1185,48 @@ void QcaptkWorkbenchWindowAdvisorHack::onHelp()
   }
 }
 
-void QcaptkWorkbenchWindowAdvisorHack::onHelpOpenHelpPerspective()
+void QmitkExtWorkbenchWindowAdvisorHack::onHelpOpenHelpPerspective()
 {
   berry::PlatformUI::GetWorkbench()->ShowPerspective("org.blueberry.perspectives.help",
     berry::PlatformUI::GetWorkbench()->GetActiveWorkbenchWindow());
 }
 
-void QcaptkWorkbenchWindowAdvisorHack::onAbout()
+void QmitkExtWorkbenchWindowAdvisorHack::onAbout()
 {
-  auto   aboutDialog = new QmitkAboutDialog(QApplication::activeWindow(),nullptr);
-  aboutDialog->open();
+  // auto   aboutDialog = new QmitkAboutDialog(QApplication::activeWindow(),nullptr);
+  // aboutDialog->open();
+    QMessageBox mb("CaPTk",
+    QString("\
+Cancer Imaging Phenomics Toolkit (CaPTk)<br><br>\
+Contact: software@cbica.upenn.edu<br><br>\
+Disclaimer: CaPTk has been designed for non-commercial research purposes only and has not been reviewed or approved by the Food and Drug Administration (FDA). It is not intended or recommended for clinical application.<br><br>\
+Funding: This work was supported in part by NIH 1U24CA189523-01A1.<br><br>\
+Copyright (c) 2020 Center for Biomedical Image Computing and Analytics, University of Pennsylvania. All rights reserved<br><br>\
+LICENSE: <a href=\"https://www.med.upenn.edu/sbia/software-agreement.html\">https://www.med.upenn.edu/sbia/software-agreement.html</a><br><br>\
+    "),
+                //  QString("Cancer Imaging Phenomics Toolkit\n\n")
+                //     + QString("by CBICA (Center for Biomedical Image Computing & Analytics)\n\n")
+                //     + QString("University of Pennsylvania"),
+                QMessageBox::NoIcon,
+                QMessageBox::Ok | QMessageBox::Default,
+                QMessageBox::NoButton,
+                QMessageBox::NoButton);
+  mb.setTextFormat(Qt::RichText);
+  QPixmap upennIcon(":/org.mitk.gui.qt.ext/upenn.svg");
+  upennIcon = upennIcon.scaled(125, 108);
+  mb.setIconPixmap(upennIcon);
+  mb.exec();
 }
 
-void QcaptkWorkbenchWindowAdvisor::HookTitleUpdateListeners(
+void QmitkExtWorkbenchWindowAdvisor::HookTitleUpdateListeners(
   berry::IWorkbenchWindowConfigurer::Pointer configurer)
 {
   // hook up the listeners to update the window title
   titlePartListener.reset(new PartListenerForTitle(this));
   titlePerspectiveListener.reset(new PerspectiveListenerForTitle(this));
   editorPropertyListener.reset(new berry::PropertyChangeIntAdapter<
-    QcaptkWorkbenchWindowAdvisor>(this,
-    &QcaptkWorkbenchWindowAdvisor::PropertyChange));
+    QmitkExtWorkbenchWindowAdvisor>(this,
+    &QmitkExtWorkbenchWindowAdvisor::PropertyChange));
 
   //    configurer.getWindow().addPageListener(new IPageListener() {
   //      public void pageActivated(IWorkbenchPage page) {
@@ -1226,7 +1246,7 @@ void QcaptkWorkbenchWindowAdvisor::HookTitleUpdateListeners(
   configurer->GetWindow()->GetPartService()->AddPartListener(titlePartListener.data());
 }
 
-QString QcaptkWorkbenchWindowAdvisor::ComputeTitle()
+QString QmitkExtWorkbenchWindowAdvisor::ComputeTitle()
 {
   berry::IWorkbenchWindowConfigurer::Pointer configurer =
     GetWindowConfigurer();
@@ -1302,7 +1322,7 @@ QString QcaptkWorkbenchWindowAdvisor::ComputeTitle()
   return title;
 }
 
-void QcaptkWorkbenchWindowAdvisor::RecomputeTitle()
+void QmitkExtWorkbenchWindowAdvisor::RecomputeTitle()
 {
   berry::IWorkbenchWindowConfigurer::Pointer configurer =
     GetWindowConfigurer();
@@ -1314,7 +1334,7 @@ void QcaptkWorkbenchWindowAdvisor::RecomputeTitle()
   }
 }
 
-void QcaptkWorkbenchWindowAdvisor::UpdateTitle(bool editorHidden)
+void QmitkExtWorkbenchWindowAdvisor::UpdateTitle(bool editorHidden)
 {
   berry::IWorkbenchWindowConfigurer::Pointer configurer =
     GetWindowConfigurer();
@@ -1361,7 +1381,7 @@ void QcaptkWorkbenchWindowAdvisor::UpdateTitle(bool editorHidden)
   RecomputeTitle();
 }
 
-void QcaptkWorkbenchWindowAdvisor::PropertyChange(const berry::Object::Pointer& /*source*/, int propId)
+void QmitkExtWorkbenchWindowAdvisor::PropertyChange(const berry::Object::Pointer& /*source*/, int propId)
 {
   if (propId == berry::IWorkbenchPartConstants::PROP_TITLE)
   {
@@ -1376,27 +1396,27 @@ void QcaptkWorkbenchWindowAdvisor::PropertyChange(const berry::Object::Pointer& 
   }
 }
 
-void QcaptkWorkbenchWindowAdvisor::SetPerspectiveExcludeList(const QList<QString>& v)
+void QmitkExtWorkbenchWindowAdvisor::SetPerspectiveExcludeList(const QList<QString>& v)
 {
   this->perspectiveExcludeList = v;
 }
 
-QList<QString> QcaptkWorkbenchWindowAdvisor::GetPerspectiveExcludeList()
+QList<QString> QmitkExtWorkbenchWindowAdvisor::GetPerspectiveExcludeList()
 {
   return this->perspectiveExcludeList;
 }
 
-void QcaptkWorkbenchWindowAdvisor::SetViewExcludeList(const QList<QString>& v)
+void QmitkExtWorkbenchWindowAdvisor::SetViewExcludeList(const QList<QString>& v)
 {
   this->viewExcludeList = v;
 }
 
-QList<QString> QcaptkWorkbenchWindowAdvisor::GetViewExcludeList()
+QList<QString> QmitkExtWorkbenchWindowAdvisor::GetViewExcludeList()
 {
   return this->viewExcludeList;
 }
 
-void QcaptkWorkbenchWindowAdvisor::PostWindowClose()
+void QmitkExtWorkbenchWindowAdvisor::PostWindowClose()
 {
   berry::IWorkbenchWindow::Pointer window = this->GetWindowConfigurer()->GetWindow();
   QMainWindow* mainWindow = static_cast<QMainWindow*> (window->GetShell()->GetControl());
@@ -1405,8 +1425,8 @@ void QcaptkWorkbenchWindowAdvisor::PostWindowClose()
   settings.setValue("ToolbarPosition", mainWindow->saveState());
 }
 
-QString QcaptkWorkbenchWindowAdvisor::GetQSettingsFile() const
+QString QmitkExtWorkbenchWindowAdvisor::GetQSettingsFile() const
 {
-  QFileInfo settingsInfo = m_Context->getDataFile(QT_SETTINGS_FILENAME);
+  QFileInfo settingsInfo = QmitkCommonExtPlugin::getContext()->getDataFile(QT_SETTINGS_FILENAME);
   return settingsInfo.canonicalFilePath();
 }

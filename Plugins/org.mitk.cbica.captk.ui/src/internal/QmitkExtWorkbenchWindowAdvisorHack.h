@@ -19,7 +19,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 class ctkPluginContext;
 class QmitkPreferencesDialog;
 
-class QcaptkWorkbenchWindowAdvisorHack : public QObject
+class QmitkExtWorkbenchWindowAdvisorHack : public QObject
 {
   Q_OBJECT
 
@@ -52,16 +52,8 @@ class QcaptkWorkbenchWindowAdvisorHack : public QObject
 
   public:
 
-    QcaptkWorkbenchWindowAdvisorHack();
-    ~QcaptkWorkbenchWindowAdvisorHack() override;
+    QmitkExtWorkbenchWindowAdvisorHack();
+    ~QmitkExtWorkbenchWindowAdvisorHack() override;
 
-    static QcaptkWorkbenchWindowAdvisorHack* undohack;
-
-    inline void SetContext(ctkPluginContext* context)
-    {
-      m_Context = context;
-    }
-
-  private:
-    ctkPluginContext* m_Context;
+    static QmitkExtWorkbenchWindowAdvisorHack* undohack;
 };
