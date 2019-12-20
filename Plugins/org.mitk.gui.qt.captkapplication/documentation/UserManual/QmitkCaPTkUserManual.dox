@@ -1,0 +1,10 @@
+/**
+\page org_captk Using The MITK Workbench
+
+\section QMitkCaPTkManualOverview  What is CaPTk
+
+This version of CaPTk is based on MITK
+
+For a basic guide to MITK see \ref MITKUserManualPage .
+
+*/

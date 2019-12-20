@@ -4,15 +4,7 @@ set(SRC_CPP_FILES
 
 set(INTERNAL_CPP_FILES
   mitkPluginActivator.cpp
-  QmitkMultiLabelSegmentationView.cpp
-  QmitkThresholdAction.cpp
-  QmitkAutocropAction.cpp
-  QmitkConvertSurfaceToLabelAction.cpp
-  QmitkConvertMaskToLabelAction.cpp
-  QmitkConvertToMultiLabelSegmentationAction.cpp
-  QmitkCreateMultiLabelSegmentationAction.cpp
-  QmitkLoadMultiLabelPresetAction.cpp
-  QmitkCreateMultiLabelPresetAction.cpp
+  QmitkCaPTkInteractiveSegmentationView.cpp
   Common/QmitkDataSelectionWidget.cpp
   SegmentationUtilities/QmitkMultiLabelSegmentationUtilitiesView.cpp
   SegmentationUtilities/QmitkSegmentationUtilityWidget.cpp
@@ -23,7 +15,7 @@ set(INTERNAL_CPP_FILES
 )
 
 set(UI_FILES
-  src/internal/QmitkMultiLabelSegmentationControls.ui
+  src/internal/QmitkCaPTkInteractiveSegmentationControls.ui
   src/internal/Common/QmitkDataSelectionWidgetControls.ui
   src/internal/SegmentationUtilities/QmitkMultiLabelSegmentationUtilitiesViewControls.ui
   src/internal/SegmentationUtilities/BooleanOperations/QmitkBooleanOperationsWidgetControls.ui
@@ -35,15 +27,7 @@ set(UI_FILES
 set(MOC_H_FILES
   src/QmitkMultiLabelSegmentationPreferencePage.h
   src/internal/mitkPluginActivator.h
-  src/internal/QmitkMultiLabelSegmentationView.h
-  src/internal/QmitkThresholdAction.h
-  src/internal/QmitkAutocropAction.h
-  src/internal/QmitkConvertSurfaceToLabelAction.h
-  src/internal/QmitkLoadMultiLabelPresetAction.h
-  src/internal/QmitkCreateMultiLabelPresetAction.h
-  src/internal/QmitkConvertMaskToLabelAction.h
-  src/internal/QmitkConvertToMultiLabelSegmentationAction.h
-  src/internal/QmitkCreateMultiLabelSegmentationAction.h
+  src/internal/QmitkCaPTkInteractiveSegmentationView.h
   src/internal/Common/QmitkDataSelectionWidget.h
   src/internal/SegmentationUtilities/QmitkMultiLabelSegmentationUtilitiesView.h
   src/internal/SegmentationUtilities/QmitkSegmentationUtilityWidget.h

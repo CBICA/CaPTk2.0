@@ -16,6 +16,7 @@
 #include <QObject>
 #include <QFuture>
 #include <QFutureWatcher>
+#include <QProgressBar>
 
 /** \class CaPTkInteractiveSegmentation
  *  \brief Singleton class that runs the interactive segmentation 
@@ -44,10 +45,20 @@ public:
     void Run(std::vector<mitk::Image::Pointer>& images, 
              mitk::LabelSetImage::Pointer& seeds);
 
+    void SetProgressBar(QProgressBar* progressBar);
+
+    /** \struct Result
+     *  \brief result of the execution of the algorithm
+     * 
+     * if ok == true, then segmentation is populated, 
+     * else errorMessage is populated.
+    */
     typedef struct Result 
     {
-        std::shared_ptr<GeodesicTrainingSegmentation::Coordinator<float,2>::Result> res2D;
-        std::shared_ptr<GeodesicTrainingSegmentation::Coordinator<float,3>::Result> res3D;
+        mitk::LabelSetImage::Pointer seeds;
+        mitk::LabelSetImage::Pointer segmentation;
+        bool ok = true;
+        std::string errorMessage = "";
     } Result;
 
 public slots:
@@ -56,15 +67,38 @@ public slots:
     */
     void OnAlgorithmFinished();
 
-private:
-    CaPTkInteractiveSegmentationAdapter<2>* m_CaPTkInteractiveSegmentationAdapter2D;
-    CaPTkInteractiveSegmentationAdapter<3>* m_CaPTkInteractiveSegmentationAdapter3D;
+protected:
+
+    /** \brief Runs the algorithm after the operations in Run
+     * 
+     * This can serve as a background thread. When the
+     * algorithm finishes, OnAlgorithmFinished() is called.
+     * 
+     * @param images a list of the co-registered input images
+     * @param seeds label image that contains the user drawn seeds
+     * @return the result struct (that contains the output or an errorMessage)
+    */
+    Result RunThread(std::vector<mitk::Image::Pointer>& images, 
+                     mitk::LabelSetImage::Pointer& seeds);
+    
+    /** \brief Used to give the appropriate name to the output segmentation. 
+     * 
+     * The first one is called "Segmentation". Subsequent ones "Segmentation-2" etc 
+    */
+    std::string FindNextAvailableSegmentationName();
+
+    /** \brief Helper function to identify if a string is a number 
+     * 
+    */
+    bool IsNumber(const std::string& s);
+
     bool m_IsRunning = false;
     QFutureWatcher<Result> m_Watcher;
     QFuture<Result> m_FutureResult;
-    unsigned int m_RunDimensionality;
 
     mitk::DataStorage::Pointer m_DataStorage;
+
+    QProgressBar* m_ProgressBar;
 };
 
 #endif // ! CaPTkInteractiveSegmentation_h

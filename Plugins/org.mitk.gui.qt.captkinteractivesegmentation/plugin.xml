@@ -3,11 +3,12 @@
 <plugin>
 
   <extension point="org.blueberry.ui.views">
+
     <view id="org.mitk.views.captkinteractivesegmentation"
       name="CaPTk Interactive Segmentation"
       category="Segmentation"
       icon="resources/mll_icon2.svg"
-      class="QmitkMultiLabelSegmentationView" />
+      class="QmitkCaPTkInteractiveSegmentationView" />
 
 <!--     <view id="org.mitk.views.multilabelsegmentationutilities"
       name="MultiLabel Segmentation Utilities"
@@ -17,23 +18,27 @@
 
   </extension>
 
-  <extension point="org.blueberry.ui.preferencePages">
+  <!-- <extension point="org.blueberry.ui.preferencePages">
     <page id="org.mitk.gui.qt.application.CaPTkInteractiveSegmentationPreferencePage" name="CaPTk Interactive Segmentation" class="QmitkMultiLabelSegmentationPreferencePage">
       <keywordreference id="org.mitk.gui.qt.application.MultiLabelSegmentationPreferencePageKeywords"></keywordreference>
     </page>
   </extension>
 
-   <extension point="org.blueberry.ui.keywords">
+  <extension point="org.blueberry.ui.keywords">
     <keyword id="org.mitk.gui.qt.application.CaPTkInteractiveSegmentationPreferencePageKeywords" label="captk interactive semi-automatic multi segmentation label multilabel multilabelsegmentation 2d display 3d outline draw transparent overlay show volume rendering data node selection mode enable auto-selection mode smoothed surface creation smoothing value decimation rate"></keyword>
-  </extension>
+  </extension> -->
 
-  <extension point="org.mitk.gui.qt.datamanager.contextMenuActions">
+  <!-- <extension point="org.mitk.gui.qt.datamanager.contextMenuActions"> 
+    <contextMenuAction nodeDescriptorName="ImageMask" label="Create Segmentation Interactively" icon="" class="QmitkCaPTkInteractiveSegmentationAction" />
+  </extension> -->
+
+  <!-- <extension point="org.mitk.gui.qt.datamanager.contextMenuActions">
     <contextMenuAction nodeDescriptorName="ImageMask" label="Convert to Label" icon="" class="QmitkConvertMaskToLabelAction" />
     <contextMenuAction nodeDescriptorName="Surface" label="Convert to Label" icon="" class="QmitkConvertSurfaceToLabelAction" />
     <contextMenuAction nodeDescriptorName="Image" label="Create Segmentation" icon="" class="QmitkCreateMultiLabelSegmentationAction" />
     <contextMenuAction nodeDescriptorName="Image" label="Convert to Segmentation" icon="" class="QmitkConvertToMultiLabelSegmentationAction" />
     <contextMenuAction nodeDescriptorName="LabelSetImage" label="Create Preset" icon="" class="QmitkCreateMultiLabelPresetAction" />
     <contextMenuAction nodeDescriptorName="LabelSetImage" label="Load Preset" icon="" class="QmitkLoadMultiLabelPresetAction" />
-  </extension>
+  </extension> -->
 
 </plugin>
