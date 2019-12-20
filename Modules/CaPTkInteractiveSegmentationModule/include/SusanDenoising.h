@@ -110,7 +110,7 @@ typename ImageType::Pointer SusanDenoising::Run(const typename ImageType::Pointe
       float NeighborIntensityValue = ImageIterator.GetPixel(LocalNeighborhoodIterator);
 
       typename itk::NeighborhoodIterator<ImageType>::IndexType neighborindex;
-      for (unsigned int index = 0; index < 3; index++)
+      for (size_t index = 0; index < ImageType::ImageDimension; index++)
         neighborindex[index] = (currentindex[index] - radius[index]) + offsetType1[index];
 
       typename ImageType::IndexType LocalizedVoxelIndex;

@@ -19,6 +19,10 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <QStringList>
 #include <QVariant>
 
+#ifdef _MSC_VER
+#    pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")
+#endif
+
 int main(int argc, char **argv)
 {
   mitk::BaseApplication app(argc, argv);

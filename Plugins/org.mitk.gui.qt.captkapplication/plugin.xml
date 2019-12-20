@@ -8,7 +8,7 @@
   </extension>
 
   <extension id="captk" point="org.blueberry.core.runtime.products">
-    <product name="CaPTk" application="org.mitk.qt.captkapplication" />
+    <product name="CaPTk 2" application="org.mitk.qt.captkapplication" />
   </extension>
 
   <!-- <extension id="fiberfox" point="org.blueberry.core.runtime.products">
@@ -31,7 +31,7 @@
       class="QmitkCaPTkDefaultPerspective"
       icon="resources/icon_research.xpm">
     </perspective>
-    <perspective
+    <!-- <perspective
       id="org.mitk.captkapp.perspectives.editor"
       name="Viewer"
       class="QmitkCaPTkEditorPerspective"
@@ -42,7 +42,7 @@
       name="Visualization"
       class="QmitkCaPTkVisualizationPerspective"
       icon="resources/perspectives/eye.png">
-    </perspective>
+    </perspective> -->
   </extension>
 
    <extension point="org.blueberry.ui.preferencePages">
