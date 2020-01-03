@@ -370,7 +370,7 @@ namespace GeodesicTrainingSegmentation
 				addCoordinatorMapsIfNecessary();
 
 				// Add non-agd images to main vector
-				// addToInputImagesNonAgd();
+				addToInputImagesNonAgd();
 
 				// SVM_LABELS
 				svm<PixelType>(m_input_images, m_labels_image, gtsResult, labelsCountMap, false);
@@ -691,18 +691,18 @@ namespace GeodesicTrainingSegmentation
 			m_input_images = std::vector< InputImagePointer >();
 			m_input_images.push_back(readImage<InputImageType>(inputImagePath));
 		}
-		// void SetExtraInputImagesNotAGDable(std::vector< std::string > inputImagesNonAgdPaths) {
-		// 	if (inputImagesNonAgdPaths.size() != 0) {
-		// 		std::vector< InputImagePointer > inputImagesNonAgd;
+		void SetExtraInputImagesNotAGDable(std::vector< std::string > inputImagesNonAgdPaths) {
+			if (inputImagesNonAgdPaths.size() != 0) {
+				std::vector< InputImagePointer > inputImagesNonAgd;
 
-		// 		for (auto inputImageNonAgdPath : inputImagesNonAgdPaths) {
-		// 			std::string extension = getFileExtension(inputImageNonAgdPath);
-		// 			inputImagesNonAgd.push_back(readImage<InputImageType>(inputImageNonAgdPath));
-		// 		}
+				for (auto inputImageNonAgdPath : inputImagesNonAgdPaths) {
+					std::string extension = getFileExtension(inputImageNonAgdPath);
+					inputImagesNonAgd.push_back(readImage<InputImageType>(inputImageNonAgdPath));
+				}
 
-		// 		m_input_images_non_agd = inputImagesNonAgd; // Replace possible older values
-		// 	}
-		// }
+				m_input_images_non_agd = inputImagesNonAgd; // Replace possible older values
+			}
+		}
 		void SetLabels(LabelsImagePointer labels) {
 			m_labels_image = labels;
 		}
@@ -883,7 +883,7 @@ namespace GeodesicTrainingSegmentation
 
 	private:
 		LabelsImagePointer                                     m_labels_image;
-		std::vector< InputImagePointer >                       m_input_images;//, m_input_images_non_agd;
+		std::vector< InputImagePointer >                       m_input_images, m_input_images_non_agd;
 		InputImagePointer                                      m_reference_image;
 		GeodesicTrainingSegmentation::MODE                     m_mode = GeodesicTrainingSegmentation::MODE::REVERSE_GEOTRAIN;
 		std::vector< double >                                  m_importance_values;       // For mode:  generateconfig
@@ -1893,12 +1893,12 @@ namespace GeodesicTrainingSegmentation
 			}
 		}
 
-		// void addToInputImagesNonAgd()
-		// {	
-		// 	for (auto const& image : m_input_images_non_agd) {
-		// 		m_input_images.push_back(image);
-		// 	}
-		// }
+		void addToInputImagesNonAgd()
+		{	
+			for (auto const& image : m_input_images_non_agd) {
+				m_input_images.push_back(image);
+			}
+		}
 
 		bool validState(std::shared_ptr<Result> gtsResult) {
 			switch (m_mode) {
