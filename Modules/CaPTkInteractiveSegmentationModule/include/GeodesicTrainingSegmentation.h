@@ -883,7 +883,7 @@ namespace GeodesicTrainingSegmentation
 
 	private:
 		LabelsImagePointer                                     m_labels_image;
-		std::vector< InputImagePointer >                       m_input_images, m_input_images_non_agd;
+		std::vector< InputImagePointer >                       m_input_images;//, m_input_images_non_agd;
 		InputImagePointer                                      m_reference_image;
 		GeodesicTrainingSegmentation::MODE                     m_mode = GeodesicTrainingSegmentation::MODE::REVERSE_GEOTRAIN;
 		std::vector< double >                                  m_importance_values;       // For mode:  generateconfig
