@@ -1,17 +1,22 @@
 #include <mitkCommandLineParser.h>
 #include <mitkIOUtil.h>
+#include <mitkDataStorage.h>
+#include <mitkStandaloneDataStorage.h>
 
 #include <CaPTkInteractiveSegmentation.h>
-#include <GeodesicTrainingSegmentationSegmentation.h>
+#include <GeodesicTrainingSegmentation.h>
+
+#include <json/json.h>
 
 #include <algorithm>
 #include <string>
+#include <fstream>
+#include <iostream>
 
 /** \brief command-line app for batch processing of images
  *
  * This command-line app takes a task and and a cohort and runs the algorithm on everything.
  */
-
 int main(int argc, char* argv[])
 {
   mitkCommandLineParser parser;
@@ -58,62 +63,31 @@ int main(int argc, char* argv[])
     return EXIT_FAILURE;
   }
 
-  // // Parse, cast and set required arguments
-  // auto inFilename = us::any_cast<std::string>(parsedArgs["input"]);
-  // auto outFilename = us::any_cast<std::string>(parsedArgs["output"]);
-  // auto offset = us::any_cast<int>(parsedArgs["offset"]);
+  // Parse, cast and set required arguments
+  auto task   = us::any_cast<std::string>(parsedArgs["task"]);
+  auto cohort = us::any_cast<std::string>(parsedArgs["cohort"]);
 
   // // Default values for optional arguments
   // auto verbose = false;
-
   // // Parse, cast and set optional arguments
   // if (parsedArgs.end() != parsedArgs.find("verbose"))
   //   verbose = us::any_cast<bool>(parsedArgs["verbose"]);
 
-  // try
-  // {
-  //   if (verbose)
-  //     MITK_INFO << "Read input file";
-
-  //   auto inImage = mitk::IOUtil::Load<mitk::Image>(inFilename);
-
-  //   if (inImage.IsNull())
-  //   {
-  //     MITK_ERROR << "Could not read \"" << inFilename << "\"!";
-  //     return EXIT_FAILURE;
-  //   }
-
-  //   if (verbose)
-  //     MITK_INFO << "Add offset to image";
-
-    // auto exampleFilter = ExampleImageFilter::New();
-    // exampleFilter->SetInput(inImage);
-    // exampleFilter->SetOffset(offset);
-    // exampleFilter->Update();
-
-    // auto outImage = exampleFilter->GetOutput();
-
-    // if (nullptr == outImage)
-    // {
-    //   MITK_ERROR << "Image processing failed!";
-    //   return EXIT_FAILURE;
-    // }
-
-    // if (verbose)
-    //   MITK_INFO << "Write output file";
-
-    // mitk::IOUtil::Save(outImage, outFilename);
+  try
+  {
+    auto algorithm = new CaPTkInteractiveSegmentation(nullptr);
+    algorithm->Run(task, cohort);
 
     return EXIT_SUCCESS;
-  // }
-  // catch (const std::exception &e)
-  // {
-  //   MITK_ERROR << e.what();
-  //   return EXIT_FAILURE;
-  // }
-  // catch (...)
-  // {
-  //   MITK_ERROR << "Unexpected error!";
-  //   return EXIT_FAILURE;
-  // }
+  }
+  catch (const std::exception &e)
+  {
+    MITK_ERROR << e.what();
+    return EXIT_FAILURE;
+  }
+  catch (...)
+  {
+    MITK_ERROR << "Unexpected error!";
+    return EXIT_FAILURE;
+  }
 }

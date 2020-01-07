@@ -18,6 +18,8 @@
 #include <QFutureWatcher>
 #include <QProgressBar>
 
+#include <json/json.h>
+
 /** \class CaPTkInteractiveSegmentation
  *  \brief Singleton class that runs the interactive segmentation 
  * algorithm and adds the result to the data storage
@@ -44,6 +46,10 @@ public:
     */
     void Run(std::vector<mitk::Image::Pointer>& images, 
              mitk::LabelSetImage::Pointer& seeds);
+
+    void Run(Json::Value& task_json, Json::Value& cohort_json);
+
+    void Run(std::string task_json_path, std::string cohort_json_path);
 
     void SetProgressBar(QProgressBar* progressBar);
 

@@ -1,7 +1,7 @@
 ### Source files need to be relative to src/
 ### Header files need to be relative to module_root
 
-# Function to prepend a string to all list items
+### Function to prepend a string to all list items
 FUNCTION( MAKE_LIST_OF_PATHS_RELATIVE_TO _listname _list _dir )
     unset( _tmp )
     foreach( item ${_list} )
@@ -11,17 +11,23 @@ FUNCTION( MAKE_LIST_OF_PATHS_RELATIVE_TO _listname _list _dir )
     set( ${_listname} ${_tmp} PARENT_SCOPE )
 ENDFUNCTION( MAKE_LIST_OF_PATHS_RELATIVE_TO )
 
-# Find the source files and headers
+### Find the source files and headers
 FILE(GLOB_RECURSE SOURCES "${CMAKE_CURRENT_LIST_DIR}/src/*")
 FILE(GLOB_RECURSE HEADERS "${CMAKE_CURRENT_LIST_DIR}/include/*")
 MAKE_LIST_OF_PATHS_RELATIVE_TO(SOURCES "${SOURCES}" "${CMAKE_CURRENT_LIST_DIR}/src")
 MAKE_LIST_OF_PATHS_RELATIVE_TO(HEADERS "${HEADERS}" "${CMAKE_CURRENT_LIST_DIR}")
 
+# ### Find the source files and headers for third_party jsoncpp
+# FILE(GLOB_RECURSE JSONCPP_SOURCES "${CMAKE_CURRENT_LIST_DIR}/third_party/jsoncpp/src/*")
+# FILE(GLOB_RECURSE JSONCPP_HEADERS "${CMAKE_CURRENT_LIST_DIR}/third_party/jsoncpp/include/*")
+# MAKE_LIST_OF_PATHS_RELATIVE_TO(JSONCPP_SOURCES "${JSONCPP_SOURCES}" "${CMAKE_CURRENT_LIST_DIR}/src")
+# MAKE_LIST_OF_PATHS_RELATIVE_TO(JSONCPP_HEADERS "${JSONCPP_HEADERS}" "${CMAKE_CURRENT_LIST_DIR}")
 
 ### Set the files to the required variables normally
 
 set(CPP_FILES
   "${SOURCES}"
+  # "${JSONCPP_SOURCES}"
 )
 
 set(UI_FILES
@@ -29,6 +35,11 @@ set(UI_FILES
 )
 
 set(MOC_H_FILES
+  # "${HEADERS}"
+  # "${JSONCPP_HEADERS}"
+)
+
+set(H_FILES
   "${HEADERS}"
 )
 

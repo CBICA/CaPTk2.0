@@ -3,6 +3,8 @@ option(BUILD_CaPTkInteractiveSegmentationCmdApp "Build command-line app for CaPT
 if(BUILD_CaPTkInteractiveSegmentationCmdApp)
   mitkFunctionCreateCommandLineApp(
     NAME CaPTkInteractiveSegmentation
-    DEPENDS MitkCaPTkInteractiveSegmentationModule
+    CPP_FILES "${SRC_FILES}" CaPTkInteractiveSegmentation.cpp
+    PACKAGE_DEPENDS ITK OpenCV Qt5|Core+WebEngineWidgets
+    DEPENDS PUBLIC MitkCaPTkInteractiveSegmentationModule
   )
 endif()
