@@ -23,6 +23,8 @@
         "string_view": "cpp",
         "*.tcc": "cpp",
         "array": "cpp",
-        "regex": "cpp"
+        "regex": "cpp",
+        "algorithm": "cpp",
+        "utility": "cpp"
     }
 }

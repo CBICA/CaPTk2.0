@@ -1,17 +1,30 @@
-# Function to prepend a string to all list items
-FUNCTION( MAKE_LIST_OF_PATHS_RELATIVE_TO _listname _list _dir )
-    unset( _tmp )
-    foreach( item ${_list} )
-        file(RELATIVE_PATH _tmpv ${_dir} ${item})
-        list(APPEND _tmp "${_tmpv}")
-    endforeach( item ${_list} )
-    set( ${_listname} ${_tmp} PARENT_SCOPE )
-ENDFUNCTION( MAKE_LIST_OF_PATHS_RELATIVE_TO )
+# # Function to prepend a string to all list items
+# FUNCTION( MAKE_LIST_OF_PATHS_RELATIVE_TO _listname _list _dir )
+#     unset( _tmp )
+#     foreach( item ${_list} )
+#         file(RELATIVE_PATH _tmpv ${_dir} ${item})
+#         list(APPEND _tmp "${_tmpv}")
+#     endforeach( item ${_list} )
+#     set( ${_listname} ${_tmp} PARENT_SCOPE )
+# ENDFUNCTION( MAKE_LIST_OF_PATHS_RELATIVE_TO )
 
-FILE(GLOB_RECURSE YAML_ALL "${CMAKE_CURRENT_LIST_DIR}/src/yaml-cpp/*")
-FILE(GLOB_RECURSE YAML_HEADERS "${CMAKE_CURRENT_LIST_DIR}/yaml-cpp/files/*.h")
-MAKE_LIST_OF_PATHS_RELATIVE_TO(YAML_ALL "${YAML_ALL}" "${CMAKE_CURRENT_LIST_DIR}/src")
-MAKE_LIST_OF_PATHS_RELATIVE_TO(YAML_HEADERS "${YAML_HEADERS}" "${CMAKE_CURRENT_LIST_DIR}")
+# FILE(GLOB_RECURSE YAML_ALL "${CMAKE_CURRENT_LIST_DIR}/third_party/yaml-cpp/*")
+# FILE(GLOB_RECURSE YAML_HEADERS "${CMAKE_CURRENT_LIST_DIR}/yaml-cpp/files/*.h")
+# MAKE_LIST_OF_PATHS_RELATIVE_TO(YAML_ALL "${YAML_ALL}" "${CMAKE_CURRENT_LIST_DIR}/src")
+# MAKE_LIST_OF_PATHS_RELATIVE_TO(YAML_HEADERS "${YAML_HEADERS}" "${CMAKE_CURRENT_LIST_DIR}")
+
+### Fetch the jsoncpp source files (and make them be relative to src/)
+file(GLOB_RECURSE YAMLCPP_FILES RELATIVE 
+  "${CMAKE_CURRENT_SOURCE_DIR}/src" "${CMAKE_CURRENT_SOURCE_DIR}/third_party/yaml-cpp/*"
+)
+### Fetch the jsoncpp source files (and make them be relative to src/)
+file(GLOB_RECURSE JSONCPP_SOURCE_FILES RELATIVE 
+  "${CMAKE_CURRENT_SOURCE_DIR}/src" "${CMAKE_CURRENT_SOURCE_DIR}/third_party/jsoncpp/src/*"
+)
+### Fetch the jsoncpp header files (and make them be relative to module root)
+file(GLOB_RECURSE JSONCPP_HEADER_FILES RELATIVE 
+  "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/third_party/jsoncpp/include/*"
+)
 
 set(CPP_FILES
   CaPTkInteractiveSegmentation.cpp
@@ -37,7 +50,8 @@ set(CPP_FILES
   depends/UtilImageToCvMatGTS.cpp
   depends/UtilItkGTS.cpp 
 
-  ${YAML_ALL}
+  ${YAMLCPP_FILES}
+  ${JSONCPP_SOURCE_FILES}
 )
 
 set(UI_FILES
@@ -70,7 +84,7 @@ set(MOC_H_FILES
   include/UtilImageToCvMatGTS.h
   include/UtilItkGTS.h
 
-  ${YAML_HEADERS}
+  ${JSONCPP_HEADER_FILES}
 )
 
 set(RESOURCE_FILES
