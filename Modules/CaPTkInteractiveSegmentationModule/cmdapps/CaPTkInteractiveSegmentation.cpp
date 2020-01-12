@@ -2,6 +2,7 @@
 #include <mitkIOUtil.h>
 #include <mitkDataStorage.h>
 #include <mitkStandaloneDataStorage.h>
+#include <mitkImageCast.h>
 
 #include <CaPTkInteractiveSegmentation.h>
 #include <GeodesicTrainingSegmentation.h>
@@ -12,6 +13,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <memory>
 
 /**Splits a string into a list using a delimiter*/
 std::vector<std::string> 
@@ -126,10 +128,15 @@ int main(int argc, char* argv[])
 
   /**** Default values for optional arguments ****/
 
-  auto priorImagesPaths = "";
+  std::string priorImagesPaths = "";
   // // Parse, cast and set optional arguments
   if (parsedArgs.end() != parsedArgs.find("priorimages"))
+  {
     priorImagesPaths = us::any_cast<std::string>(parsedArgs["priorimages"]);
+  }
+
+  std::vector<std::string> imagesPathsVector = split(imagesPaths, ',');
+  std::vector<std::string> priorImagesPathsVector = split(priorImagesPaths, ',');
 
   /**** Run ****/
 
@@ -141,32 +148,32 @@ int main(int argc, char* argv[])
 
     /**** Read input ****/
 
-    for (auto& imagePath : imagesPaths)
+    for (std::string& imagePath : imagesPathsVector)
     {
       auto image = mitk::IOUtil::Load<mitk::Image>(imagePath);
       images.push_back(image);
     }
 
-    for (auto& priorImagePath : priorImagesPaths)
+    for (auto& priorImagePath : priorImagesPathsVector)
     {
-      auto priorImage = mitk::IOUtil::Load<mitk::Image>(imagePath);
+      auto priorImage = mitk::IOUtil::Load<mitk::Image>(priorImagePath);
       priorImages.push_back(priorImage);
     }
 
-    seeds = mitk::IOUtil::Load<mitk::Image>(labelsPath);
+    seeds = mitk::IOUtil::Load<mitk::LabelSetImage>(labelsPath);
 
     // auto algorithm = new CaPTkInteractiveSegmentation(nullptr);
     // algorithm->Run(task, cohort);
     
-    if (images[0]]->GetDimension() == 3)
+    if (images[0]->GetDimension() == 3)
     {
       // [ 3D ]
 
       /**** Convert to itk ****/
 
-      std::vector<mitk::Image::Pointer> imagesItk;
-      std::vector<mitk::Image::Pointer> priorImagesItk;
-      mitk::LabelSetImage::Pointer      seedsItk;
+      std::vector<itk::Image<float,3>::Pointer> imagesItk;
+      std::vector<itk::Image<float,3>::Pointer> priorImagesItk;
+      typename itk::Image<int,3>::Pointer       seedsItk;
 
       for (auto& image : images)
       {
@@ -182,21 +189,22 @@ int main(int argc, char* argv[])
         priorImagesItk.push_back(imageItk);
       }
 
-      typename itk::Image<int, 3>::Pointer seedsItk;
       mitk::CastToItkImage(seeds, seedsItk);
 
-      auto geodesicTraining = GeodesicTrainingSegmentation::Coordinator<float,3>();
-      geodesicTraining.SetInputImages(imagesItk);
-      geodesicTraining.SetExtraInputImagesNotAGDable(priorImagesItk);
-      geodesicTraining.SetLabels(seedsItk);
-      geodesicTraining.SetOutputPath(outputDir);
-      // geodesicTraining.SetNumberOfThreads(16);
-      // geodesicTraining.SaveOnlyNormalSegmentation(true, "segmentation");
-      geodesicTraining.SetVerbose(true);
+      std::unique_ptr<GeodesicTrainingSegmentation::Coordinator<float,3>> geodesicTraining(
+        new GeodesicTrainingSegmentation::Coordinator<float,3>()
+      );
+      geodesicTraining->SetInputImages(imagesItk);
+      geodesicTraining->SetExtraInputImagesNotAGDable(priorImagesItk);
+      geodesicTraining->SetLabels(seedsItk);
+      geodesicTraining->SetOutputPath(outputDir);
+      // geodesicTraining->SetNumberOfThreads(16);
+      // geodesicTraining->SaveOnlyNormalSegmentation(true, "segmentation");
+      geodesicTraining->SetVerbose(true);
 
       /**** Run algorithm ****/
 
-     auto result = geodesicTraining.Execute();
+     auto result = geodesicTraining->Execute();
 
       if (result->ok)
       {

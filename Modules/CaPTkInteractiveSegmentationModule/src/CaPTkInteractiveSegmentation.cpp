@@ -27,8 +27,7 @@ CaPTkInteractiveSegmentation::CaPTkInteractiveSegmentation(
 }
 
 void CaPTkInteractiveSegmentation::Run(std::vector<mitk::Image::Pointer> &images,
-									   mitk::LabelSetImage::Pointer &seeds,
-									   std::vector<mitk::Image::Pointer> &priorImages)
+									   mitk::LabelSetImage::Pointer &seeds)
 {
 	std::cout << "[CaPTkInteractiveSegmentation::Run] "
 			  << "Number of images: " << std::to_string(images.size()) << "\n";
