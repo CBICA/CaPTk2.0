@@ -16,22 +16,18 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 #include "mitkPluginActivator.h"
 
-#include "QmitkCaPTkInteractiveSegmentationView.h"
-#include "QmitkMultiLabelSegmentationPreferencePage.h"
-#include "SegmentationUtilities/QmitkMultiLabelSegmentationUtilitiesView.h"
+#include "QmitkCaPTkTrainingPluginView.h"
 
 #include <usModuleInitialization.h>
 
 ctkPluginContext* mitk::PluginActivator::m_Context = nullptr;
 
 //MLI TODO
-US_INITIALIZE_MODULE //("MultiLabelSegmentation", "liborg_mitk_gui_qt_multilabelsegmentation")
+US_INITIALIZE_MODULE //("TrainingPlugin", "liborg_mitk_cbica_captk_trainingplugin")
 
 void mitk::PluginActivator::start(ctkPluginContext *context)
 {
-  BERRY_REGISTER_EXTENSION_CLASS(QmitkCaPTkInteractiveSegmentationView, context)
-  BERRY_REGISTER_EXTENSION_CLASS(QmitkMultiLabelSegmentationPreferencePage, context)
-  BERRY_REGISTER_EXTENSION_CLASS(QmitkMultiLabelSegmentationUtilitiesView, context)
+  BERRY_REGISTER_EXTENSION_CLASS(QmitkCaPTkTrainingPluginView, context)
 
   m_Context = context;
 }

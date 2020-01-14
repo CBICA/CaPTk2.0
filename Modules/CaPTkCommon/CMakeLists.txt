@@ -1,3 +1,5 @@
+include_directories(src/internal)
+
 mitk_create_module(
   #INCLUDE_DIRS 
   #  PUBLIC include third_party/jsoncpp/include

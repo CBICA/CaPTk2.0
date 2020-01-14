@@ -262,9 +262,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <includes>
-  <include location="global">QmitkToolReferenceDataSelectionBox.h</include>
-  <include location="global">QmitkToolGUIArea.h</include>
-  <include location="global">QmitkToolSelectionBox.h</include>
  </includes>
  <resources/>
  <connections/>

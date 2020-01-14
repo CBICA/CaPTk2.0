@@ -14,8 +14,8 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 ===================================================================*/
 
-#ifndef org_mitk_gui_qt_multilabelsegmentation_Activator_h
-#define org_mitk_gui_qt_multilabelsegmentation_Activator_h
+#ifndef org_mitk_cbica_captk_trainingplugin_Activator_h
+#define org_mitk_cbica_captk_trainingplugin_Activator_h
 
 #include <ctkPluginActivator.h>
 
@@ -24,7 +24,7 @@ namespace mitk
   class PluginActivator : public QObject, public ctkPluginActivator
   {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org_mitk_gui_qt_multilabelsegmentation")
+    Q_PLUGIN_METADATA(IID "org_mitk_cbica_captk_trainingplugin")
     Q_INTERFACES(ctkPluginActivator)
 
   public:
@@ -38,4 +38,4 @@ namespace mitk
   };
 }
 
-#endif
+#endif // ! org_mitk_cbica_captk_trainingplugin_Activator_h

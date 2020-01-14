@@ -10,17 +10,10 @@ Copyright (c) 2018 University of Pennsylvania. All rights reserved. <br>
 See COPYING file or https://www.med.upenn.edu/sbia/software-agreement.html
 
 */
-
-#pragma once
+#ifndef CaPTkFeatureScalingClass_h
+#define CaPTkFeatureScalingClass_h
 
 #include "iostream"
-//#include "CAPTk.h"
-#include "CaPTkDefines.h"
-//#include "itkVariableSizeMatrix.h"
-//#include "itkVariableLengthVector.h"
-//
-//using VariableSizeMatrixType = itk::VariableSizeMatrix< double >;
-//using VariableLengthVectorType = itk::VariableLengthVector< double >;
 
 class  FeatureScalingClass
 {
@@ -36,7 +29,8 @@ public:
   \param inputdata Training data
   */
   VariableSizeMatrixType ScaleGivenTrainingFeatures(const VariableSizeMatrixType &inputdata);
-  void ScaleGivenTrainingFeatures(const VariableSizeMatrixType &inputdata, VariableSizeMatrixType &scaledFeatureSet, VariableLengthVectorType &meanVector, VariableLengthVectorType &stdVector);
+  void ScaleGivenTrainingFeatures(const VariableSizeMatrixType &inputdata, VariableSizeMatrixType 
+    &scaledFeatureSet, VariableLengthVectorType &meanVector, VariableLengthVectorType &stdVector);
 
 
   /**
@@ -44,7 +38,9 @@ public:
   \param inputdata Test data
   */
   VariableSizeMatrixType ScaleGivenTestingFeatures(const VariableSizeMatrixType &inputdata);
-    VariableSizeMatrixType ScaleGivenTestingFeatures(const VariableSizeMatrixType &inputdata, const VariableLengthVectorType &meandata, const VariableLengthVectorType &stddata);
+  
+  VariableSizeMatrixType ScaleGivenTestingFeatures(const VariableSizeMatrixType &inputdata, 
+    const VariableLengthVectorType &meandata, const VariableLengthVectorType &stddata);
 
   //!Returns mean of current feature set
   VariableLengthVectorType GetMeanVector()
@@ -107,3 +103,5 @@ private:
   VariableLengthVectorType mStdVector;
 
 };
+
+#endif // ! CaPTkFeatureScalingClass_h
