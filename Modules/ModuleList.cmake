@@ -2,7 +2,7 @@
 
 set(MITK_MODULES
   Delthis
-  CaPTkCommon
+  #CaPTkCommon
   ExampleModule
   CaPTkInteractiveSegmentationModule
 )
