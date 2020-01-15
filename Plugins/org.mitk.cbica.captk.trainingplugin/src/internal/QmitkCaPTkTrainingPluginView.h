@@ -46,8 +46,21 @@ public:
 
 protected slots:
 
+  void OnKernelComboBoxCurrentTextChanged(const QString& text);
+
+  void OnConfigurationComboBoxCurrentTextChanged(const QString& text);
+
+  void OnFeaturesCsvButtonClicked();
+
+  void OnResponsesCsvButtonClicked();
+
+  void OnModelDirectoryButtonClicked();
+
+  void OnOutputDirectoryButtonClicked();
+
   /** \brief CaPTk Training Plugin Run Button clicked slot */
   void OnRunButtonPressed();
+
 
 protected:
 

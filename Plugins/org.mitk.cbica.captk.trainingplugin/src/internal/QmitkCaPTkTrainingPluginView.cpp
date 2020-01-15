@@ -41,6 +41,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QFileDialog>
 
 // CaPTk
 // #include "CaPTkTrainingModule.h"
@@ -73,11 +74,54 @@ void QmitkCaPTkTrainingPluginView::CreateQtPartControl(QWidget *parent)
 
   // m_CaPTkTrainingModule->SetProgressBar(m_Controls.progressBar);
 
-  // TODO: Initialize combo box values
+  /**** Initialize widgets ****/
+
+  // Initialize kernel combo box
+  m_Controls.comboBox_kernel->addItems(QStringList() << "SVM: Linear" << "SVM: RBF");
+  // Set combo box to the last user selected value
+  m_Controls.comboBox_kernel->setCurrentText(
+    this->GetPreferences()->Get("TrainingPluginKernelComboBox", "SVM: Linear")
+  );
+
+  // Initialize kernel combo box
+  m_Controls.comboBox_configuration->addItems(
+    QStringList() << "Cross-validation" << "Split Train/Test" 
+                  << "Split Train" << "Split Test"
+  );
+  // Set combo box to the last user selected value
+  auto prefConfigurationText = this->GetPreferences()->Get(
+    "TrainingPluginConfigurationComboBox", "Cross-validation"
+  );
+  m_Controls.comboBox_configuration->setCurrentText(prefConfigurationText);
+  this->OnConfigurationComboBoxCurrentTextChanged(prefConfigurationText);
 
   //  this->InitializeListeners();
 
-  // TODO: Connect signals/slots
+  /**** Connect signals & slots ****/
+
+  connect(m_Controls.comboBox_kernel, SIGNAL(currentTextChanged(const QString&)),
+    this, SLOT(OnKernelComboBoxCurrentTextChanged(const QString&))
+  );
+
+  connect(m_Controls.comboBox_configuration, SIGNAL(currentTextChanged(const QString&)),
+    this, SLOT(OnConfigurationComboBoxCurrentTextChanged(const QString&))
+  );
+
+  connect(m_Controls.pushButton_features, SIGNAL(clicked()),
+    this, SLOT(OnFeaturesCsvButtonClicked())
+  );
+
+  connect(m_Controls.pushButton_responses, SIGNAL(clicked()),
+    this, SLOT(OnResponsesCsvButtonClicked())
+  );
+
+  connect(m_Controls.pushButton_modeldir, SIGNAL(clicked()),
+    this, SLOT(OnModelDirectoryButtonClicked())
+  );
+
+  connect(m_Controls.pushButton_outputdir, SIGNAL(clicked()),
+    this, SLOT(OnOutputDirectoryButtonClicked())
+  );
 
   /* Run Button */
   connect(m_Controls.pushButtonRun, SIGNAL(clicked()), 
@@ -135,6 +179,124 @@ int QmitkCaPTkTrainingPluginView::ComputePreferredSize(bool width,
 /************************************************************************/
 /* protected slots                                                      */
 /************************************************************************/
+void QmitkCaPTkTrainingPluginView::OnKernelComboBoxCurrentTextChanged(const QString& text)
+{
+  // Remember it
+  this->GetPreferences()->Put("TrainingPluginKernelComboBox", text);
+  this->GetPreferences()->Flush();
+}
+
+void QmitkCaPTkTrainingPluginView::OnConfigurationComboBoxCurrentTextChanged(const QString& text)
+{
+  // Remember it
+  this->GetPreferences()->Put("TrainingPluginConfigurationComboBox", text);
+  this->GetPreferences()->Flush();
+
+  // Show/Hide views below it
+  if (text == "Cross-validation")
+  {
+    m_Controls.lineEdit_folds->setVisible(true);
+    m_Controls.label_folds->setVisible(true);
+    m_Controls.lineEdit_samples->setVisible(false);
+    m_Controls.label_samples->setVisible(false);
+    m_Controls.lineEdit_modeldir->setVisible(false);
+    m_Controls.pushButton_modeldir->setVisible(false);
+  }
+  else if (text == "Split Train/Test")
+  {
+    m_Controls.lineEdit_folds->setVisible(false);
+    m_Controls.label_folds->setVisible(false);
+    m_Controls.lineEdit_samples->setVisible(true);
+    m_Controls.label_samples->setVisible(true);
+    m_Controls.lineEdit_modeldir->setVisible(false);
+    m_Controls.pushButton_modeldir->setVisible(false);
+  }
+  else if (text == "Split Train")
+  {
+    m_Controls.lineEdit_folds->setVisible(false);
+    m_Controls.label_folds->setVisible(false);
+    m_Controls.lineEdit_samples->setVisible(false);
+    m_Controls.label_samples->setVisible(false);
+    m_Controls.lineEdit_modeldir->setVisible(false);
+    m_Controls.pushButton_modeldir->setVisible(false);
+  }
+  else if (text == "Split Test")
+  {
+    m_Controls.lineEdit_folds->setVisible(false);
+    m_Controls.label_folds->setVisible(false);
+    m_Controls.lineEdit_samples->setVisible(false);
+    m_Controls.label_samples->setVisible(false);
+    m_Controls.lineEdit_modeldir->setVisible(true);
+    m_Controls.pushButton_modeldir->setVisible(true);
+  }
+}
+
+void QmitkCaPTkTrainingPluginView::OnFeaturesCsvButtonClicked()
+{
+  auto fileName = QFileDialog::getOpenFileName(m_Parent,
+    tr("Select CSV file"), this->GetLastFileOpenPath(), tr("CSV Files (*.csv)"));
+
+  if(fileName.isEmpty() || fileName.isNull()) { return; }
+
+  // Find and save file information
+  QFileInfo file(fileName);
+  if (!file.exists()) { return; }
+  auto containingDir = file.dir();
+  this->SetLastFileOpenPath(containingDir.absolutePath());
+
+  // Set the path to the QLineEdit
+  m_Controls.lineEdit_features->setText(fileName);
+}
+
+void QmitkCaPTkTrainingPluginView::OnResponsesCsvButtonClicked()
+{
+  auto fileName = QFileDialog::getOpenFileName(m_Parent,
+    tr("Select CSV file"), this->GetLastFileOpenPath(), tr("CSV Files (*.csv)"));
+
+  if(fileName.isEmpty() || fileName.isNull()) { return; }
+
+  // Find and save file information
+  QFileInfo file(fileName);
+  if (!file.exists()) { return; }
+  auto containingDir = file.dir();
+  this->SetLastFileOpenPath(containingDir.absolutePath());
+
+  // Set the path to the QLineEdit
+  m_Controls.lineEdit_responses->setText(fileName);
+}
+
+void QmitkCaPTkTrainingPluginView::OnModelDirectoryButtonClicked()
+{
+  auto dirName = QFileDialog::getExistingDirectory(m_Parent, 
+    tr("Select directory"), this->GetLastFileOpenPath());
+
+  if(dirName.isEmpty() || dirName.isNull()) { return; }
+
+  // Find and save file information
+  QFileInfo file(dirName);
+  if (!file.isDir()) { return; }
+  this->SetLastFileOpenPath(dirName);
+
+  // Set the path to the QLineEdit
+  m_Controls.lineEdit_modeldir->setText(dirName);
+}
+
+void QmitkCaPTkTrainingPluginView::OnOutputDirectoryButtonClicked()
+{
+  auto dirName = QFileDialog::getExistingDirectory(m_Parent, 
+    tr("Select directory"), this->GetLastFileOpenPath());
+
+  if(dirName.isEmpty() || dirName.isNull()) { return; }
+
+  // Find and save file information
+  QFileInfo file(dirName);
+  if (!file.isDir()) { return; }
+  this->SetLastFileOpenPath(dirName);
+
+  // Set the path to the QLineEdit
+  m_Controls.lineEdit_outputdir->setText(dirName);
+}
+
 void QmitkCaPTkTrainingPluginView::OnRunButtonPressed()
 {
 
