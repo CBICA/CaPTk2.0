@@ -1088,8 +1088,8 @@ void QmitkCaPTkInteractiveSegmentationView::OnLooseLabelSetConnection()
   {
     return;
   }
-  mitk::LabelSetImage *workingImage = dynamic_cast<mitk::LabelSetImage *>(m_WorkingNode->GetData());
-  assert(workingImage);
+  // mitk::LabelSetImage *workingImage = dynamic_cast<mitk::LabelSetImage *>(m_WorkingNode->GetData());
+  // assert(workingImage);
 
   // Reset LabelSetWidget Events
   // workingImage->GetActiveLabelSet()->AddLabelEvent -= mitk::MessageDelegate<QmitkLabelSetWidget>(

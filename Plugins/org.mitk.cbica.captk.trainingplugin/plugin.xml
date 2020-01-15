@@ -6,7 +6,7 @@
 
     <view id="org.mitk.views.captk.trainingplugin"
       name="CaPTk Training Plugin"
-      category="General"
+      category="Radiomics"
       icon="resources/training_plugin.svg"
       class="QmitkCaPTkTrainingPluginView" />
 

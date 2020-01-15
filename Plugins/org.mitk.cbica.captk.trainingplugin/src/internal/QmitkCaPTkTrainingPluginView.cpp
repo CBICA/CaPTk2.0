@@ -299,7 +299,16 @@ void QmitkCaPTkTrainingPluginView::OnOutputDirectoryButtonClicked()
 
 void QmitkCaPTkTrainingPluginView::OnRunButtonPressed()
 {
+  QString featuresCsvPath = m_Controls.lineEdit_features->text();
+  QString responsesCsvPath = m_Controls.lineEdit_responses->text();
+  QString classificationKernelStr = m_Controls.comboBox_kernel->currentText();
+  QString configurationStr = m_Controls.comboBox_configuration->currentText();
+  QString folds   = m_Controls.lineEdit_folds->text();
+  QString samples = m_Controls.lineEdit_samples->text();
+  QString modelDirPath = m_Controls.lineEdit_modeldir->text();
+  QString outputDirPath = m_Controls.lineEdit_outputdir->text();
 
+  // TODO
 }
 
 /************************************************************************/
