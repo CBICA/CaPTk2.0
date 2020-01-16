@@ -64,7 +64,12 @@ public:
   VectorDouble TrainData(const VariableSizeMatrixType inputFeatures, const VariableLengthVectorType inputLabels,
     const std::string outputfolder, const int classifiertype);
 
-  bool Run(const std::string inputFeaturesFile, const std::string inputLabelsFile, 
+  /** \brief Runs the algorithm
+   * 
+   * @return first field is true when execution went fine, std::string is the potential error message
+   */
+  std::tuple<bool, std::string> 
+  Run(const std::string inputFeaturesFile, const std::string inputLabelsFile, 
     const std::string outputdirectory,const int classifierType, const int foldtype, 
     const int conftype, const std::string modeldirectory);
 

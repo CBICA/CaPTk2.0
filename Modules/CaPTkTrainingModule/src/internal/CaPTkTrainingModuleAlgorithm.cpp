@@ -19,6 +19,7 @@ See COPYING file or https://www.med.upenn.edu/sbia/software/license.html
 #include "opencv2/core/core.hpp"
 #include "opencv2/ml.hpp"
 
+#include <tuple>
 #include <numeric>
 
 bool captk::TrainingModuleAlgorithm::CheckPerformanceStatus(double ist, double second, double third, double fourth, double fifth, double sixth, double seventh, double eighth, double ninth, double tenth)
@@ -782,9 +783,8 @@ captk::TrainingModuleAlgorithm::CombineEstimates(
 // }
 
 
-
-
-bool captk::TrainingModuleAlgorithm::Run(
+std::tuple<bool, std::string>
+captk::TrainingModuleAlgorithm::Run(
   const std::string inputFeaturesFile, const std::string inputLabelsFile, 
   const std::string outputdirectory, const int classifiertype, 
   const int foldtype, const int confType, const std::string modeldirectory)
@@ -815,7 +815,8 @@ bool captk::TrainingModuleAlgorithm::Run(
   {
     std::cout << std::string(e1.what());
     //std::cerr << ("Cannot find the file 'features.csv' in the input directory. Error code : " + std::string(e1.what()));
-    return false;
+    return std::make_tuple<bool, std::string>(false, "Cannot find the features csv file");
+    // return false;
   }
 
   std::cout << "Remove static features from the feature set." << std::endl;
@@ -869,7 +870,8 @@ bool captk::TrainingModuleAlgorithm::Run(
   {
     std::cerr << "Cannot find the file 'features.csv' in the input directory. Error code : " + std::string(e1.what()) << "\n";
     //std::cerr << ("Cannot find the file 'features.csv' in the input directory. Error code : " + std::string(e1.what()));
-    return false;
+    return std::make_tuple<bool, std::string>(false, "Cannot find the features csv file");
+    // return false;
   }
 
   std::cout << "Data loaded." << std::endl;
@@ -998,7 +1000,7 @@ bool captk::TrainingModuleAlgorithm::Run(
   //std::cout << "Specificity=" << FinalResult[2] << std::endl;
   //std::cout << "Balanced Accuracy=" << FinalResult[3] << std::endl;
 
-  return true;
+  return std::make_tuple<bool, std::string>(true, "");
 }
 
 template <typename T>

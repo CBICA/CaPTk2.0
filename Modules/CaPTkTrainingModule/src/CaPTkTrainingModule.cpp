@@ -6,6 +6,8 @@
 #include <iostream>
 #include <fstream>
 
+#include "CaPTkTrainingModuleAlgorithm.h"
+
 CaPTkTrainingModule::CaPTkTrainingModule(
 	QObject *parent)
 	: QObject(parent)
@@ -118,18 +120,44 @@ CaPTkTrainingModule::RunThread(
 
 	CaPTkTrainingModule::Result runResult;
 
-	// TODO
+	int classificationKernel = (classificationKernelStr.contains("Linear", Qt::CaseInsensitive)) ?
+		1 : 2;
 
-	// Bypass unused parameter
-	// TODO: Delete this
-	featuresCsvPath = featuresCsvPath;
-	responsesCsvPath = responsesCsvPath;
-	classificationKernelStr = classificationKernelStr;
-	configurationStr = configurationStr;
-	folds = folds;
-	samples = samples;
-	modelDirPath = modelDirPath;
-	outputDirPath = outputDirPath;
+	int configuration;
+	if (configurationStr.contains("Cross", Qt::CaseInsensitive))
+	{
+		configuration = 1;
+	}
+	else if (configurationStr.contains("Train/Test", Qt::CaseInsensitive))
+	{
+		configuration = 2;
+	}
+	else if (configurationStr.contains("Train", Qt::CaseInsensitive))
+	{
+		configuration = 3;
+	}
+	else if (configurationStr.contains("Test", Qt::CaseInsensitive))
+	{
+		configuration = 4;
+	}
+
+	int foldsOrSamples = (configuration == 1) ?
+		folds.toInt() :
+		samples.toInt();
+
+	captk::TrainingModuleAlgorithm algorithm = captk::TrainingModuleAlgorithm();
+	auto resAlgorithm = algorithm.Run(
+		featuresCsvPath.toStdString(),
+		responsesCsvPath.toStdString(),
+		outputDirPath.toStdString(),
+		classificationKernel,
+		foldsOrSamples,
+		configuration,
+		modelDirPath.toStdString()
+	);
+
+	runResult.ok = std::get<0>(resAlgorithm);
+	runResult.errorMessage = std::get<1>(resAlgorithm);
 
 	return runResult;
 }
