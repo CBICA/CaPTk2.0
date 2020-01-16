@@ -117,8 +117,6 @@ CaPTkTrainingModule::RunThread(
 	std::cout << "[CaPTkTrainingModule::RunThread]\n";
 
 	CaPTkTrainingModule::Result runResult;
-	runResult.ok = true;
-	runResult.errorMessage = "";
 
 	// TODO
 
