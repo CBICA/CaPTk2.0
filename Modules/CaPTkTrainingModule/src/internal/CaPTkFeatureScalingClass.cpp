@@ -11,6 +11,8 @@ See COPYING file or https://www.med.upenn.edu/sbia/software-agreement.html
 
 */
 
+#include "CaPTkFeatureScalingClass.h"
+
 #include <vtkVersion.h>
 #include "vtkSmartPointer.h"
 #include "vtkDoubleArray.h"
@@ -18,21 +20,20 @@ See COPYING file or https://www.med.upenn.edu/sbia/software-agreement.html
 #include "vtkPCAStatistics.h"
 #include "vtkStringArray.h"
 #include "vtkTable.h"
-#include "FeatureScalingClass.h"
 
-FeatureScalingClass::FeatureScalingClass()
+captk::FeatureScalingClass::FeatureScalingClass()
 {
 
 }
 
-FeatureScalingClass::~FeatureScalingClass()
+captk::FeatureScalingClass::~FeatureScalingClass()
 {
   mMeanVector.SetSize(0);
   mStdVector.SetSize(0);
 }
 
 
-VariableSizeMatrixType FeatureScalingClass::ScaleGivenTrainingFeatures(const VariableSizeMatrixType &inputdata)
+captk::FeatureScalingClass::VariableSizeMatrixType captk::FeatureScalingClass::ScaleGivenTrainingFeatures(const captk::FeatureScalingClass::VariableSizeMatrixType &inputdata)
 {
   unsigned int NumberOfSamples = inputdata.Rows();
   unsigned int NumberOfFeatures = inputdata.Cols() - 1;
@@ -55,7 +56,7 @@ VariableSizeMatrixType FeatureScalingClass::ScaleGivenTrainingFeatures(const Var
     mStdVector[featureNo] = std::sqrt(temp / (NumberOfSamples - 1));
   }
   //---------calculate z-score for each feature value-----------------------------
-  VariableSizeMatrixType scaledFeatureSet;
+  captk::FeatureScalingClass::VariableSizeMatrixType scaledFeatureSet;
   scaledFeatureSet.SetSize(NumberOfSamples, NumberOfFeatures + 1); //+1 to score the actual label
 
   for (unsigned int featureNo = 0; featureNo < NumberOfFeatures; featureNo++)
@@ -70,13 +71,13 @@ VariableSizeMatrixType FeatureScalingClass::ScaleGivenTrainingFeatures(const Var
   return scaledFeatureSet;
 }
 
-VariableSizeMatrixType FeatureScalingClass::ScaleGivenTestingFeatures(const VariableSizeMatrixType &inputdata)
+captk::FeatureScalingClass::VariableSizeMatrixType captk::FeatureScalingClass::ScaleGivenTestingFeatures(const captk::FeatureScalingClass::VariableSizeMatrixType &inputdata)
 {
   unsigned int  NumberOfSamples = inputdata.Rows();
   unsigned int  NumberOfFeatures = inputdata.Cols() - 1;
 
   //---------calculate z-score for each feature value-----------------------------
-  VariableSizeMatrixType scaledFeatureSet;
+  captk::FeatureScalingClass::VariableSizeMatrixType scaledFeatureSet;
   scaledFeatureSet.SetSize(NumberOfSamples, NumberOfFeatures + 1); //+1 to score the actual label
 
   for (unsigned int featureNo = 0; featureNo < NumberOfFeatures; featureNo++)
@@ -90,12 +91,12 @@ VariableSizeMatrixType FeatureScalingClass::ScaleGivenTestingFeatures(const Vari
   
   return scaledFeatureSet;
 }
-double FeatureScalingClass::GetZScore(const double &mean, const double &variance, const double &featureval)
+double captk::FeatureScalingClass::GetZScore(const double &mean, const double &variance, const double &featureval)
 {
   //return (featureval - mean) / (variance + FLT_MIN);
   return (featureval - mean) / (variance + 0.0);
 }
-void FeatureScalingClass::ScaleGivenTrainingFeatures(const VariableSizeMatrixType &inputdata, VariableSizeMatrixType &scaledFeatureSet, VariableLengthVectorType &meanVector, VariableLengthVectorType &stdVector)
+void captk::FeatureScalingClass::ScaleGivenTrainingFeatures(const captk::FeatureScalingClass::VariableSizeMatrixType &inputdata, captk::FeatureScalingClass::VariableSizeMatrixType &scaledFeatureSet, VariableLengthVectorType &meanVector, VariableLengthVectorType &stdVector)
 {
   int NumberOfSamples = inputdata.Rows();
   int NumberOfFeatures = inputdata.Cols();
@@ -124,13 +125,13 @@ void FeatureScalingClass::ScaleGivenTrainingFeatures(const VariableSizeMatrixTyp
       scaledFeatureSet(sampleNo, featureNo) = GetZScore(meanVector[featureNo], stdVector[featureNo], inputdata(sampleNo, featureNo));
   }
 }
-VariableSizeMatrixType FeatureScalingClass::ScaleGivenTestingFeatures(const VariableSizeMatrixType &inputdata, const VariableLengthVectorType &meandata, const VariableLengthVectorType &stddata)
+captk::FeatureScalingClass::VariableSizeMatrixType captk::FeatureScalingClass::ScaleGivenTestingFeatures(const captk::FeatureScalingClass::VariableSizeMatrixType &inputdata, const VariableLengthVectorType &meandata, const VariableLengthVectorType &stddata)
 {
   int NumberOfSamples = inputdata.Rows();
   int NumberOfFeatures = inputdata.Cols();
 
   //---------calculate z-score for each feature value-----------------------------
-  VariableSizeMatrixType scaledFeatureSet;
+  captk::FeatureScalingClass::VariableSizeMatrixType scaledFeatureSet;
   scaledFeatureSet.SetSize(NumberOfSamples, NumberOfFeatures); //+1 to score the actual label
 
   for (int featureNo = 0; featureNo < NumberOfFeatures; featureNo++)

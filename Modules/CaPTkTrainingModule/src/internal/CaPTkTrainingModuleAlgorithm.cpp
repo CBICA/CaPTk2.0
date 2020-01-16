@@ -12,15 +12,16 @@ Copyright (c) 2016 University of Pennsylvania. All rights reserved. <br>
 See COPYING file or https://www.med.upenn.edu/sbia/software/license.html
 
 */
-#include "CaPTkTrainingModule.h"
+#include "CaPTkTrainingModuleAlgorithm.h"
 
-#include "FeatureScalingClass.h"
+#include "CaPTkFeatureScalingClass.h"
 
 #include "opencv2/core/core.hpp"
 #include "opencv2/ml.hpp"
 
+#include <numeric>
 
-bool TrainingModule::CheckPerformanceStatus(double ist, double second, double third, double fourth, double fifth, double sixth, double seventh, double eighth, double ninth, double tenth)
+bool captk::TrainingModuleAlgorithm::CheckPerformanceStatus(double ist, double second, double third, double fourth, double fifth, double sixth, double seventh, double eighth, double ninth, double tenth)
 {
   if (ist<tenth && second<tenth && third<tenth && fourth<tenth && fifth < tenth && sixth <tenth && seventh<tenth && eighth<tenth && ninth < tenth)
     return false;
@@ -28,7 +29,9 @@ bool TrainingModule::CheckPerformanceStatus(double ist, double second, double th
     return true;
 }
 
-VectorDouble TrainingModule::CalculatePerformanceMeasures(VectorDouble predictedLabels, VectorDouble GivenLabels)
+captk::TrainingModuleAlgorithm::VectorDouble captk::TrainingModuleAlgorithm::CalculatePerformanceMeasures(
+  captk::TrainingModuleAlgorithm::VectorDouble predictedLabels, 
+  captk::TrainingModuleAlgorithm::VectorDouble GivenLabels)
 {
   //calcualte performance measures
   double TP = 0;
@@ -37,7 +40,7 @@ VectorDouble TrainingModule::CalculatePerformanceMeasures(VectorDouble predicted
   double FN = 0;
   VectorDouble result;
 
-  for (int index = 0; index< predictedLabels.size(); index++)
+  for (size_t index = 0; index< predictedLabels.size(); index++)
   {
     if (predictedLabels[index] == 1 && GivenLabels[index] == 1)
       TP++;
@@ -61,7 +64,10 @@ VectorDouble TrainingModule::CalculatePerformanceMeasures(VectorDouble predicted
   return result;
 }
 
-VectorDouble TrainingModule::CalculatePerformanceMeasures(VariableLengthVectorType predictedLabels, std::vector<double> GivenLabels)
+captk::TrainingModuleAlgorithm::VectorDouble 
+captk::TrainingModuleAlgorithm::CalculatePerformanceMeasures(
+  captk::TrainingModuleAlgorithm::VariableLengthVectorType predictedLabels, 
+  std::vector<double> GivenLabels)
 {
   //calcualte performance measures
   double TP = 0;
@@ -94,7 +100,10 @@ VectorDouble TrainingModule::CalculatePerformanceMeasures(VariableLengthVectorTy
   return result;
 }
 
-VectorDouble TrainingModule::InternalCrossValidation(VariableSizeMatrixType inputFeatures, std::vector<double> inputLabels, double cValue, double gValue, int kerneltype)
+captk::TrainingModuleAlgorithm::VectorDouble 
+captk::TrainingModuleAlgorithm::InternalCrossValidation(
+  captk::TrainingModuleAlgorithm::VariableSizeMatrixType inputFeatures, 
+  std::vector<double> inputLabels, double cValue, double gValue, int kerneltype)
 {
   VariableLengthVectorType predictedLabels;
   predictedLabels.SetSize(inputLabels.size());
@@ -116,12 +125,12 @@ VectorDouble TrainingModule::InternalCrossValidation(VariableSizeMatrixType inpu
       int currentindex = index * fold_size + index2;
       testingindices.push_back(currentindex);
     }
-    for (int index3 = 0; index3 < inputLabels.size(); index3++)
+    for (size_t index3 = 0; index3 < inputLabels.size(); index3++)
     {
       int found = 0;
-      for (int index4 = 0; index4 < testingindices.size(); index4++)
+      for (size_t index4 = 0; index4 < testingindices.size(); index4++)
       {
-        if (index3 == testingindices[index4])
+        if (static_cast<int>(index3) == testingindices[index4])
         {
           found = 1;
           break;
@@ -164,12 +173,12 @@ VectorDouble TrainingModule::InternalCrossValidation(VariableSizeMatrixType inpu
     }
     else
       svm->setKernel(cv::ml::SVM::LINEAR);
-    bool res = true;
+    //bool res = true;
     std::string msg;
 
     try
     {
-      res = svm->train(trainingData, cv::ml::ROW_SAMPLE, trainingLabels);
+      /*res = */svm->train(trainingData, cv::ml::ROW_SAMPLE, trainingLabels);
     }
     catch (cv::Exception ex)
     {
@@ -188,7 +197,11 @@ VectorDouble TrainingModule::InternalCrossValidation(VariableSizeMatrixType inpu
   return results;
 }
 
-VectorDouble TrainingModule::InternalCrossValidationSplitTrainTest(VariableSizeMatrixType inputFeatures, std::vector<double> inputLabels, double cValue, double gValue, int kerneltype, int counter, std::string outputfolder)
+captk::TrainingModuleAlgorithm::VectorDouble 
+captk::TrainingModuleAlgorithm::InternalCrossValidationSplitTrainTest(
+  captk::TrainingModuleAlgorithm::VariableSizeMatrixType inputFeatures, 
+  std::vector<double> inputLabels, double cValue, double gValue, 
+  int kerneltype, int counter, std::string outputfolder)
 {
   VariableLengthVectorType predictedLabels;
   predictedLabels.SetSize(inputLabels.size());
@@ -249,12 +262,12 @@ VectorDouble TrainingModule::InternalCrossValidationSplitTrainTest(VariableSizeM
   }
   else
     svm->setKernel(cv::ml::SVM::LINEAR);
-  bool res = true;
+  // bool res = true;
   std::string msg;
 
   try
   {
-    res = svm->train(trainingData, cv::ml::ROW_SAMPLE, trainingLabels);
+    /*res = */svm->train(trainingData, cv::ml::ROW_SAMPLE, trainingLabels);
   }
   catch (cv::Exception ex)
   {
@@ -284,7 +297,11 @@ VectorDouble TrainingModule::InternalCrossValidationSplitTrainTest(VariableSizeM
   return results;
 }
 
-VectorDouble TrainingModule::CrossValidation(const VariableSizeMatrixType inputFeatures, const VariableLengthVectorType inputLabels, const std::string outputfolder, const int classifiertype, const int number_of_folds)
+captk::TrainingModuleAlgorithm::VectorDouble 
+captk::TrainingModuleAlgorithm::CrossValidation(
+  const captk::TrainingModuleAlgorithm::VariableSizeMatrixType inputFeatures, 
+  const captk::TrainingModuleAlgorithm::VariableLengthVectorType inputLabels, 
+  const std::string outputfolder, const int classifiertype, const int number_of_folds)
 {
   MapType FoldingDataMap;
   int fold_size = inputLabels.Size() / number_of_folds;
@@ -352,7 +369,7 @@ VectorDouble TrainingModule::CrossValidation(const VariableSizeMatrixType inputF
   for (int index = 0; index < number_of_folds; index++)
   {
     // std::cout << "***************************** index=" << index << "*********************************" << std::endl << std::endl;
-    cbica::Logging(loggerFile, "***************************** index=" + std::to_string(index) + "*********************************\n\n");
+    // cbica::Logging(loggerFile, "***************************** index=" + std::to_string(index) + "*********************************\n\n");
 
     //feature selection mechanism
     //---------------------------
@@ -382,7 +399,7 @@ VectorDouble TrainingModule::CrossValidation(const VariableSizeMatrixType inputF
       VectorDouble performance = InternalCrossValidation(reducedFeatureSet, std::get<1>(FoldingDataMap[index]), 1, 0.01, classifiertype);
       PerFeaturePerformance.push_back(performance[3]);
       //std::cout << "feature #: " << featureNo << "performance=" <<performance[3]<< std::endl;
-      cbica::Logging(loggerFile, "feature #: " + std::to_string(featureNo) + " performance=" + std::to_string(performance[3]) + "\n");
+      // cbica::Logging(loggerFile, "feature #: " + std::to_string(featureNo) + " performance=" + std::to_string(performance[3]) + "\n");
 
       //check whether to contiue the loop or break due to no increase in perfrmance
       if (featureNo >= 10)
@@ -446,8 +463,8 @@ VectorDouble TrainingModule::CrossValidation(const VariableSizeMatrixType inputF
     cv::Mat testingData = cv::Mat::zeros(std::get<5>(FoldingDataMap[index]).Rows(), selectedFeatureSet.Cols(), CV_32FC1);
     cv::Mat testingLabels = cv::Mat::zeros(std::get<4>(FoldingDataMap[index]).size(), 1, CV_32FC1);
 
-    int trainingCounter = 0;
-    int testingCounter = 0;
+    // int trainingCounter = 0;
+    // int testingCounter = 0;
     for (int copyDataCounter = 0; copyDataCounter < trainingData.rows; copyDataCounter++)
     {
       trainingLabels.ptr< float >(copyDataCounter)[0] = std::get<1>(FoldingDataMap[index])[copyDataCounter];
@@ -460,12 +477,12 @@ VectorDouble TrainingModule::CrossValidation(const VariableSizeMatrixType inputF
       for (int copyDataCounter2 = 0; copyDataCounter2 <testingData.cols; copyDataCounter2++)
         testingData.ptr< float >(copyDataCounter)[copyDataCounter2] = std::get<5>(FoldingDataMap[index])(copyDataCounter, indices[copyDataCounter2]);
     }
-    if (classifiertype == 2)
+    // if (classifiertype == 2)
       // std::cout << "index=" << index << ", Best C = " << bestC << ", Best G=" << bestG << ", Best CV=" << bestCV << ", Features=" << numberOfSelectedFeatures << std::endl;
-      cbica::Logging(loggerFile, "index=" + std::to_string(index) + ", Best C = " + std::to_string(bestC) + ", Best G = " + std::to_string(bestG) + ", Best CV = " + std::to_string(bestCV) + ", Features=" + std::to_string(numberOfSelectedFeatures) + "\n");
-    else
+      // cbica::Logging(loggerFile, "index=" + std::to_string(index) + ", Best C = " + std::to_string(bestC) + ", Best G = " + std::to_string(bestG) + ", Best CV = " + std::to_string(bestCV) + ", Features=" + std::to_string(numberOfSelectedFeatures) + "\n");
+    // else
       // std::cout << "index=" << index << ", Best C = " << bestC << ", Best CV=" << bestCV << ", Features=" << numberOfSelectedFeatures << std::endl;
-      cbica::Logging(loggerFile, "index=" + std::to_string(index) + ", Best C = " + std::to_string(bestC) + ", Features=" + std::to_string(numberOfSelectedFeatures) + "\n");
+      // cbica::Logging(loggerFile, "index=" + std::to_string(index) + ", Best C = " + std::to_string(bestC) + ", Features=" + std::to_string(numberOfSelectedFeatures) + "\n");
 
     trainingLabels.convertTo(trainingLabels, CV_32SC1);
     auto svm = cv::ml::SVM::create();
@@ -480,12 +497,12 @@ VectorDouble TrainingModule::CrossValidation(const VariableSizeMatrixType inputF
     else
       svm->setKernel(cv::ml::SVM::LINEAR);
 
-    bool res = true;
+    // bool res = true;
     std::string msg;
     VectorDouble predictedLabels;
     try
     {
-      res = svm->train(trainingData, cv::ml::ROW_SAMPLE, trainingLabels);
+      /*res = */svm->train(trainingData, cv::ml::ROW_SAMPLE, trainingLabels);
       svm->save(outputfolder + "/Model_FoldNo_" + std::to_string(index + 1) + ".xml");
     }
     catch (cv::Exception ex)
@@ -512,7 +529,7 @@ VectorDouble TrainingModule::CrossValidation(const VariableSizeMatrixType inputF
   {
     VectorDouble TargetLabels = std::get<4>(mapiterator.second);
     VectorDouble PredictedLabels = std::get<6>(mapiterator.second);
-    for (int index = 0; index < TargetLabels.size(); index++)
+    for (size_t index = 0; index < TargetLabels.size(); index++)
     {
       FinalTargetLabels.push_back(TargetLabels[index]);
       FinalPredictedLabels.push_back(PredictedLabels[index]);
@@ -538,7 +555,10 @@ VectorDouble TrainingModule::CrossValidation(const VariableSizeMatrixType inputF
 
 
 
-VectorDouble TrainingModule::EffectSizeFeatureSelection(const VariableSizeMatrixType training_features, std::vector<double> target)
+captk::TrainingModuleAlgorithm::VectorDouble 
+captk::TrainingModuleAlgorithm::EffectSizeFeatureSelection(
+  const captk::TrainingModuleAlgorithm::VariableSizeMatrixType training_features, 
+  std::vector<double> target)
 {
   //make set 1and set2
   int NoOfSamplesC1 = 0;
@@ -550,7 +570,7 @@ VectorDouble TrainingModule::EffectSizeFeatureSelection(const VariableSizeMatrix
   VariableLengthVectorType mean_set1;
   VariableLengthVectorType mean_set2;
 
-  for (int index = 0; index < target.size(); index++)
+  for (size_t index = 0; index < target.size(); index++)
   {
     if (target[index] == -1)
       NoOfSamplesC1++;
@@ -622,7 +642,10 @@ VectorDouble TrainingModule::EffectSizeFeatureSelection(const VariableSizeMatrix
 
 
 //----------------------------------------------------------------------------------------------
-VectorDouble TrainingModule::CombineEstimates(const VariableLengthVectorType &estimates1, const VariableLengthVectorType &estimates2)
+captk::TrainingModuleAlgorithm::VectorDouble 
+captk::TrainingModuleAlgorithm::CombineEstimates(
+  const VariableLengthVectorType &estimates1, 
+  const VariableLengthVectorType &estimates2)
 {
   VectorDouble returnVec;
   returnVec.resize(estimates1.Size());
@@ -694,8 +717,11 @@ VectorDouble TrainingModule::CombineEstimates(const VariableLengthVectorType &es
   return returnVec;
 }
 
-VectorDouble TrainingModule::testOpenCVSVM(const VariableSizeMatrixType &testingData, const std::string &inputModelName)
-{
+// captk::TrainingModuleAlgorithm::VectorDouble 
+// captk::TrainingModuleAlgorithm::testOpenCVSVM(
+//   const captk::TrainingModuleAlgorithm::VariableSizeMatrixType &testingData, 
+//   const std::string &inputModelName)
+// {
   //auto svm = cv::Algorithm::load<cv::ml::SVM>(inputModelName);
 
   ////std::ofstream file;
@@ -710,7 +736,7 @@ VectorDouble TrainingModule::testOpenCVSVM(const VariableSizeMatrixType &testing
   ////}
   ////file.close();
 
-  VectorDouble returnVec;
+  // VectorDouble returnVec;
   ////VariableSizeMatrixType returnMat;
   ////returnMat.SetSize(testingData.Rows(), 1);
   ////returnVec.resize(testingData.Rows());
@@ -752,13 +778,16 @@ VectorDouble TrainingModule::testOpenCVSVM(const VariableSizeMatrixType &testing
   ////  returnMat[i] = outputProbs.at<float>(i, 0);
   ////}
 
-  return returnVec;
-}
+  // return returnVec;
+// }
 
 
 
 
-bool TrainingModule::Run(const std::string inputFeaturesFile, const std::string inputLabelsFile, const std::string outputdirectory, const int classifiertype, const int foldtype, const int confType, const std::string modeldirectory)
+bool captk::TrainingModuleAlgorithm::Run(
+  const std::string inputFeaturesFile, const std::string inputLabelsFile, 
+  const std::string outputdirectory, const int classifiertype, 
+  const int foldtype, const int confType, const std::string modeldirectory)
 {
   std::cout << "Training module." << std::endl;
   //reading features and labels from the input data
@@ -785,7 +814,7 @@ bool TrainingModule::Run(const std::string inputFeaturesFile, const std::string 
   catch (const std::exception& e1)
   {
     std::cout << std::string(e1.what());
-    //logger.WriteError("Cannot find the file 'features.csv' in the input directory. Error code : " + std::string(e1.what()));
+    //std::cerr << ("Cannot find the file 'features.csv' in the input directory. Error code : " + std::string(e1.what()));
     return false;
   }
 
@@ -839,18 +868,18 @@ bool TrainingModule::Run(const std::string inputFeaturesFile, const std::string 
   catch (const std::exception& e1)
   {
     std::cerr << "Cannot find the file 'features.csv' in the input directory. Error code : " + std::string(e1.what()) << "\n";
-    //logger.WriteError("Cannot find the file 'features.csv' in the input directory. Error code : " + std::string(e1.what()));
+    //std::cerr << ("Cannot find the file 'features.csv' in the input directory. Error code : " + std::string(e1.what()));
     return false;
   }
 
   std::cout << "Data loaded." << std::endl;
 
-  TrainingModule mTrainingSimulator;
+  captk::TrainingModuleAlgorithm mTrainingSimulator;
   VectorDouble FinalResult;
 
   if (confType == 1)
   {  //scaling of input features and saving corresponding mean and standard deviation in the output directory
-    FeatureScalingClass mFeaturesScaling;
+    captk::FeatureScalingClass mFeaturesScaling;
     VariableSizeMatrixType scaledFeatureSet;
     VariableLengthVectorType meanVector;
     VariableLengthVectorType stdVector;
@@ -905,7 +934,7 @@ bool TrainingModule::Run(const std::string inputFeaturesFile, const std::string 
   else if (confType == 2)
   {
     //scaling of input features and saving corresponding mean and standard deviation in the output directory
-    FeatureScalingClass mFeaturesScaling;
+    captk::FeatureScalingClass mFeaturesScaling;
     VariableSizeMatrixType scaledFeatureSet;
     VariableLengthVectorType meanVector;
     VariableLengthVectorType stdVector;
@@ -969,16 +998,11 @@ bool TrainingModule::Run(const std::string inputFeaturesFile, const std::string 
   //std::cout << "Specificity=" << FinalResult[2] << std::endl;
   //std::cout << "Balanced Accuracy=" << FinalResult[3] << std::endl;
 
-  //cbica::Logging(loggerFile, "Accuracy=" + std::to_string(FinalResult[0]) + "\n");
-  //cbica::Logging(loggerFile, "Sensitivity=" + std::to_string(FinalResult[1]) + "\n");
-  //cbica::Logging(loggerFile, "Specificity=" + std::to_string(FinalResult[2]) + "\n");
-  //cbica::Logging(loggerFile, "Balanced Accuracy=" + std::to_string(FinalResult[3]) + "\n");
-
   return true;
 }
 
 template <typename T>
-std::vector<size_t> TrainingModule::sort_indexes(const std::vector<T> &v)
+std::vector<size_t> captk::TrainingModuleAlgorithm::sort_indexes(const std::vector<T> &v)
 {
   // initialize original index locations
   std::vector<size_t> idx(v.size());
@@ -990,14 +1014,9 @@ std::vector<size_t> TrainingModule::sort_indexes(const std::vector<T> &v)
   return idx;
 }
 
-
-
-
-
-
-
-
-VectorDouble TrainingModule::SplitTrainTest(const VariableSizeMatrixType inputFeatures, const VariableLengthVectorType inputLabels,
+captk::TrainingModuleAlgorithm::VectorDouble 
+captk::TrainingModuleAlgorithm::SplitTrainTest(
+  const VariableSizeMatrixType inputFeatures, const VariableLengthVectorType inputLabels,
   const std::string outputfolder, const int classifiertype, const int training_size)
 {
   MapType FoldingDataMap;
@@ -1205,13 +1224,13 @@ VectorDouble TrainingModule::SplitTrainTest(const VariableSizeMatrixType inputFe
   svm->setC(bestC);
   svm->setKernel(cv::ml::SVM::LINEAR);
 
-  bool res = true;
+  // bool res = true;
   std::string msg;
   VectorDouble predictedLabels;
   VectorDouble predictedDistances;
   try
   {
-    res = svm->train(trainingData, cv::ml::ROW_SAMPLE, trainingLabels);
+    /*res = */svm->train(trainingData, cv::ml::ROW_SAMPLE, trainingLabels);
     svm->save(outputfolder + "/SVM_Model.xml");
   }
   catch (cv::Exception ex)
@@ -1251,14 +1270,16 @@ VectorDouble TrainingModule::SplitTrainTest(const VariableSizeMatrixType inputFe
 
 
 
-VectorDouble TrainingModule::TrainData(const VariableSizeMatrixType inputFeatures, const VariableLengthVectorType inputLabels,
+captk::TrainingModuleAlgorithm::VectorDouble 
+captk::TrainingModuleAlgorithm::TrainData(
+  const VariableSizeMatrixType inputFeatures, const VariableLengthVectorType inputLabels,
   const std::string outputdirectory, const int classifiertype)
 {
 
   //feature scaling mechanism
   //---------------------------
   std::cout << "Scaling started" << std::endl;
-  FeatureScalingClass mFeaturesScaling;
+  captk::FeatureScalingClass mFeaturesScaling;
   VariableSizeMatrixType scaledFeatureSet;
   VariableLengthVectorType meanVector;
   VariableLengthVectorType stdVector;
@@ -1476,13 +1497,13 @@ VectorDouble TrainingModule::TrainData(const VariableSizeMatrixType inputFeature
   svm->setC(bestC);
   svm->setKernel(cv::ml::SVM::LINEAR);
 
-  bool res = true;
+  // bool res = true;
   std::string msg;
   VectorDouble predictedLabels;
   VectorDouble predictedDistances;
   try
   {
-    res = svm->train(trainingData, cv::ml::ROW_SAMPLE, trainingLabels);
+    /*res = */svm->train(trainingData, cv::ml::ROW_SAMPLE, trainingLabels);
     svm->save(outputdirectory + "/SVM_Model.xml");
   }
   catch (cv::Exception ex)
@@ -1522,12 +1543,17 @@ VectorDouble TrainingModule::TrainData(const VariableSizeMatrixType inputFeature
 }
 
 
-VectorDouble TrainingModule::TestData(const VariableSizeMatrixType inputFeatures,  const std::string modeldirectory, const int classifiertype, const std::string outputfolder)
+captk::TrainingModuleAlgorithm::VectorDouble 
+captk::TrainingModuleAlgorithm::TestData(
+  const captk::TrainingModuleAlgorithm::VariableSizeMatrixType inputFeatures, 
+  const std::string modeldirectory, 
+  const int classifiertype, const std::string outputfolder)
 {
-  typedef itk::CSVArray2DFileReader<double> ReaderType;
   VectorDouble results;
   CSVFileReaderType::Pointer reader = CSVFileReaderType::New();
 
+  // Bypass unused parameter classifiertype, without changing the interface
+  if (false) { std::cout << classifiertype; }
 
   MatrixType meanMatrix;
   VariableLengthVectorType mean;
@@ -1547,7 +1573,7 @@ VectorDouble TrainingModule::TestData(const VariableSizeMatrixType inputFeatures
   }
   catch (const std::exception& e1)
   {
-    logger.WriteError("Error in reading the file: " + modeldirectory + "/zscore_mean.csv. Error code : " + std::string(e1.what()));
+    std::cerr << ("Error in reading the file: " + modeldirectory + "/zscore_mean.csv. Error code : " + std::string(e1.what()));
     //return results;
   }
   MatrixType stdMatrix;
@@ -1566,7 +1592,7 @@ VectorDouble TrainingModule::TestData(const VariableSizeMatrixType inputFeatures
   }
   catch (const std::exception& e1)
   {
-    logger.WriteError("Error in reading the file: " + modeldirectory + "/zscore_std.csv. Error code : " + std::string(e1.what()));
+    std::cerr << ("Error in reading the file: " + modeldirectory + "/zscore_std.csv. Error code : " + std::string(e1.what()));
     //return results;
   }
 
@@ -1587,7 +1613,7 @@ VectorDouble TrainingModule::TestData(const VariableSizeMatrixType inputFeatures
   }
   catch (const std::exception& e1)
   {
-    logger.WriteError("Error in reading the file: " + modeldirectory + "/selectedfeatures.csv. Error code : " + std::string(e1.what()));
+    std::cerr << ("Error in reading the file: " + modeldirectory + "/selectedfeatures.csv. Error code : " + std::string(e1.what()));
   }
 
 

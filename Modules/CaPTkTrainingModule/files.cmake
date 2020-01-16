@@ -1,5 +1,7 @@
 set(CPP_FILES
   CaPTkTrainingModule.cpp
+  internal/CaPTkTrainingModuleAlgorithm.cpp
+  internal/CaPTkFeatureScalingClass.cpp
 )
 
 set(UI_FILES
