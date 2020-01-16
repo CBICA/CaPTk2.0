@@ -691,6 +691,9 @@ namespace GeodesicTrainingSegmentation
 			m_input_images = std::vector< InputImagePointer >();
 			m_input_images.push_back(readImage<InputImageType>(inputImagePath));
 		}
+		void SetExtraInputImagesNotAGDable(std::vector< InputImagePointer > inputImagesNonAgd) {
+			m_input_images_non_agd = inputImagesNonAgd; // Replace possible older values
+		}
 		void SetExtraInputImagesNotAGDable(std::vector< std::string > inputImagesNonAgdPaths) {
 			if (inputImagesNonAgdPaths.size() != 0) {
 				std::vector< InputImagePointer > inputImagesNonAgd;
