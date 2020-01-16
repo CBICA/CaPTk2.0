@@ -170,61 +170,61 @@ void CaPTkInteractiveSegmentation::Run(std::vector<mitk::Image::Pointer> &images
 	m_Watcher.setFuture(m_FutureResult);
 }
 
-void CaPTkInteractiveSegmentation::Run(Json::Value& task_json, Json::Value& cohort_json)
-{
-    /* ---- Parse the task ---- */
+// void CaPTkInteractiveSegmentation::Run(Json::Value& task_json, Json::Value& cohort_json)
+// {
+//     /* ---- Parse the task ---- */
     
-	std::string task_name   = task_json.get("task_name", "UTF-8" ).asString();
-	std::string application = task_json.get("application", "UTF-8" ).asString();
-    std::string task_type   = task_json.get("task_type", "UTF-8" ).asString();
+// 	std::string task_name   = task_json.get("task_name", "UTF-8" ).asString();
+// 	std::string application = task_json.get("application", "UTF-8" ).asString();
+//     std::string task_type   = task_json.get("task_type", "UTF-8" ).asString();
 	
-	std::string results_dir = task_json.get("results_dir", "UTF-8" ).asString();
+// 	std::string results_dir = task_json.get("results_dir", "UTF-8" ).asString();
 
-	/* ---- Run for each subject of the cohort ---- */
+// 	/* ---- Run for each subject of the cohort ---- */
 	
-	std::string cohort_name = cohort_json.get("cohort_name", "UTF-8" ).asString();
+// 	std::string cohort_name = cohort_json.get("cohort_name", "UTF-8" ).asString();
 
-	for (auto& subj : cohort_json["subjects"])
-	{
-		auto name = subj["name"];
-		std::cout << name << std::endl;
-		// std::vector<mitk::Image::Pointer> images;
-		// mitk::LabelSetImage::Pointer seeds;
+// 	for (auto& subj : cohort_json["subjects"])
+// 	{
+// 		auto name = subj["name"];
+// 		std::cout << name << std::endl;
+// 		// std::vector<mitk::Image::Pointer> images;
+// 		// mitk::LabelSetImage::Pointer seeds;
 
-		// Find all the images
-		for (auto& image : subj["images"])
-		{
-			auto modality = image["modality"];
-			std::cout << modality << std::endl;
-		}
-	}
+// 		// Find all the images
+// 		for (auto& image : subj["images"])
+// 		{
+// 			auto modality = image["modality"];
+// 			std::cout << modality << std::endl;
+// 		}
+// 	}
 
-	std::cout << "cohort name: " << cohort_name << std::endl;
-}
+// 	std::cout << "cohort name: " << cohort_name << std::endl;
+// }
 
-void CaPTkInteractiveSegmentation::Run(std::string task_json_path, std::string cohort_json_path)
-{
-	try
-	{
-		Json::Value taskRoot, cohortRoot;
+// void CaPTkInteractiveSegmentation::Run(std::string task_json_path, std::string cohort_json_path)
+// {
+// 	try
+// 	{
+// 		Json::Value taskRoot, cohortRoot;
 
-		// Read the two JSON from file
-		std::ifstream taskStream(task_json_path, std::ifstream::binary);
-		taskStream >> taskRoot;
-		std::ifstream cohortStream(cohort_json_path, std::ifstream::binary);
-		cohortStream >> cohortRoot;
+// 		// Read the two JSON from file
+// 		std::ifstream taskStream(task_json_path, std::ifstream::binary);
+// 		taskStream >> taskRoot;
+// 		std::ifstream cohortStream(cohort_json_path, std::ifstream::binary);
+// 		cohortStream >> cohortRoot;
 
-		this->Run(taskRoot, cohortRoot);
-	}
-	catch (const std::exception &e)
-	{
-		MITK_ERROR << e.what();
-	}
-	catch (...)
-	{
-		MITK_ERROR << "Unexpected error!";
-	}
-}
+// 		this->Run(taskRoot, cohortRoot);
+// 	}
+// 	catch (const std::exception &e)
+// 	{
+// 		MITK_ERROR << e.what();
+// 	}
+// 	catch (...)
+// 	{
+// 		MITK_ERROR << "Unexpected error!";
+// 	}
+// }
 
 void CaPTkInteractiveSegmentation::SetProgressBar(QProgressBar* progressBar)
 {
