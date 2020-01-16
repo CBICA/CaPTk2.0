@@ -4,5 +4,6 @@ set(MITK_MODULES
   #Delthis
   #CaPTkCommon
   ExampleModule
+  CaPTkTrainingModule
   CaPTkInteractiveSegmentationModule
 )

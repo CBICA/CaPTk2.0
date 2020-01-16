@@ -44,7 +44,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <QFileDialog>
 
 // CaPTk
-// #include "CaPTkTrainingModule.h"
+#include "CaPTkTrainingModule.h"
 
 #include "tinyxml.h"
 
@@ -57,7 +57,7 @@ const std::string QmitkCaPTkTrainingPluginView::VIEW_ID = "org.mitk.views.captk.
 QmitkCaPTkTrainingPluginView::QmitkCaPTkTrainingPluginView()
   : m_Parent(nullptr)
 {
-  // m_CaPTkTrainingModule = new CaPTkTrainingModule(this);
+  m_CaPTkTrainingModule = new CaPTkTrainingModule(this);
 }
 
 QmitkCaPTkTrainingPluginView::~QmitkCaPTkTrainingPluginView()
@@ -72,7 +72,7 @@ void QmitkCaPTkTrainingPluginView::CreateQtPartControl(QWidget *parent)
 
   m_Controls.setupUi(parent);
 
-  // m_CaPTkTrainingModule->SetProgressBar(m_Controls.progressBar);
+  m_CaPTkTrainingModule->SetProgressBar(m_Controls.progressBar);
 
   /**** Initialize widgets ****/
 
@@ -308,7 +308,16 @@ void QmitkCaPTkTrainingPluginView::OnRunButtonPressed()
   QString modelDirPath = m_Controls.lineEdit_modeldir->text();
   QString outputDirPath = m_Controls.lineEdit_outputdir->text();
 
-  // TODO
+  m_CaPTkTrainingModule->Run(
+    featuresCsvPath,
+    responsesCsvPath,
+    classificationKernelStr,
+    configurationStr,
+    folds,
+    samples,
+    modelDirPath,
+    outputDirPath
+  );
 }
 
 /************************************************************************/

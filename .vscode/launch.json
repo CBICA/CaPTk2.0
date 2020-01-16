@@ -8,11 +8,11 @@
             "name": "Debug",
             "type": "cppdbg",
             "request": "launch",
-            "program": "/opt/MITK/MITK-superbuild/Debug/MITK-build/bin/MitkCaptkApp",
+            "program": "/home/dimitris/Work/MITK/MITK-superbuild/Debug/MITK-build/bin/MitkCaptkApp",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
-            "environment": [{ "name": "LD_LIBRARY_PATH", "value": "/opt/MITK/MITK-superbuild/Debug/MITK-build/lib/plugins" }],
+            "environment": [{ "name": "LD_LIBRARY_PATH", "value": "/home/dimitris/Work/MITK/MITK-superbuild/Debug/MITK-build/lib/plugins" }],
             "externalConsole": false,
             "MIMode": "gdb",
             "setupCommands": [
