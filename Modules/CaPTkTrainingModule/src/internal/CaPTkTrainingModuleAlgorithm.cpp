@@ -16,11 +16,15 @@ See COPYING file or https://www.med.upenn.edu/sbia/software/license.html
 
 #include "CaPTkFeatureScalingClass.h"
 
+#include <QDir>
+
 #include "opencv2/core/core.hpp"
 #include "opencv2/ml.hpp"
 
 #include <tuple>
 #include <numeric>
+#include <dirent.h>
+#include <errno.h>
 
 bool captk::TrainingModuleAlgorithm::CheckPerformanceStatus(double ist, double second, double third, double fourth, double fifth, double sixth, double seventh, double eighth, double ninth, double tenth)
 {
@@ -796,6 +800,27 @@ captk::TrainingModuleAlgorithm::Run(
   typedef vnl_matrix<double> MatrixType;
   MatrixType dataMatrix;
 
+  // Check if outputdirectory exists, and create it otherwise
+  {
+    DIR* dir = opendir(outputdirectory.c_str());
+    if (dir) {
+      /* Directory exists. */
+      closedir(dir);
+    }
+    else if (ENOENT == errno) {
+      /* Directory does not exist. Create it. */
+      QDir d(outputdirectory.c_str());
+      if (!d.mkpath(outputdirectory.c_str()))
+      {
+        return std::make_tuple<bool, std::string>(false, "Can not create output directory");
+      }
+
+    } else {
+        /* opendir() failed for some other reason. */
+        return std::make_tuple<bool, std::string>(false, "Can not open output directory");
+    }
+  }
+
   try
   {
     CSVFileReaderType::Pointer readerMean = CSVFileReaderType::New();
@@ -868,9 +893,9 @@ captk::TrainingModuleAlgorithm::Run(
   }
   catch (const std::exception& e1)
   {
-    std::cerr << "Cannot find the file 'features.csv' in the input directory. Error code : " + std::string(e1.what()) << "\n";
+    std::cerr << "Cannot find the file 'responses.csv' in the input directory. Error code : " + std::string(e1.what()) << "\n";
     //std::cerr << ("Cannot find the file 'features.csv' in the input directory. Error code : " + std::string(e1.what()));
-    return std::make_tuple<bool, std::string>(false, "Cannot find the features csv file");
+    return std::make_tuple<bool, std::string>(false, "Cannot find the responses csv file");
     // return false;
   }
 
