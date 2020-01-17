@@ -47,9 +47,9 @@ public:
     void Run(std::vector<mitk::Image::Pointer>& images, 
              mitk::LabelSetImage::Pointer& seeds);
 
-    void Run(Json::Value& task_json, Json::Value& cohort_json);
+    // void Run(Json::Value& task_json, Json::Value& cohort_json);
 
-    void Run(std::string task_json_path, std::string cohort_json_path);
+    // void Run(std::string task_json_path, std::string cohort_json_path);
 
     void SetProgressBar(QProgressBar* progressBar);
 

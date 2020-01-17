@@ -31,24 +31,24 @@ set(CPP_FILES
   CaPTkInteractiveSegmentationAdapter.cpp
   CaPTkInteractiveSegmentationQtPart.cpp
 
-  depends/AdaptiveGeodesicDistance.cpp
-  depends/ConfigParserRF.cpp
-  depends/ConvertionsOpenCV.cpp
-  depends/ConvertionsYAML.cpp
-  depends/GeodesicTrainingSegmentation.cpp
-  depends/OperationsSvmGTS.cpp
-  depends/RandomForestSuite.cpp
-  depends/RFPrepareTrainData.cpp
-  depends/RFSuiteManager.cpp
-  depends/SvmSuite.cpp
-  depends/SvmSuiteDescription.cpp
-  depends/SvmSuiteManager.cpp
-  depends/SvmSuiteOperations.cpp
-  depends/SvmSuiteUtil.cpp
-  depends/UtilCvMatToImageGTS.cpp
-  depends/UtilGTS.cpp
-  depends/UtilImageToCvMatGTS.cpp
-  depends/UtilItkGTS.cpp 
+  AdaptiveGeodesicDistance.cpp
+  ConfigParserRF.cpp
+  ConvertionsOpenCV.cpp
+  ConvertionsYAML.cpp
+  GeodesicTrainingSegmentation.cpp
+  OperationsSvmGTS.cpp
+  RandomForestSuite.cpp
+  RFPrepareTrainData.cpp
+  RFSuiteManager.cpp
+  SvmSuite.cpp
+  SvmSuiteDescription.cpp
+  SvmSuiteManager.cpp
+  SvmSuiteOperations.cpp
+  SvmSuiteUtil.cpp
+  UtilCvMatToImageGTS.cpp
+  UtilGTS.cpp
+  UtilImageToCvMatGTS.cpp
+  UtilItkGTS.cpp 
 
   ${YAMLCPP_FILES}
   ${JSONCPP_SOURCE_FILES}
