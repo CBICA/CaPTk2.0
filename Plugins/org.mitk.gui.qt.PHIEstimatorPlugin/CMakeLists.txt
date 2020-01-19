@@ -1,9 +1,9 @@
-project(org_mitk_gui_qt_exampleplugin)
+project(org_mitk_gui_qt_PHIEstimatorPlugin)
 
 mitk_create_plugin(
   #DEPENDS MitkCore
   EXPORT_DIRECTIVE EXAMPLE_EXPORT
   EXPORTED_INCLUDE_SUFFIXES src
-  MODULE_DEPENDS PRIVATE MitkQtWidgetsExt MitkExampleModule
+  MODULE_DEPENDS PRIVATE MitkQtWidgetsExt MitkPHIEstimator
   PACKAGE_DEPENDS PUBLIC ITK|ITKIOImageBase+ITKIONIFTI
   )

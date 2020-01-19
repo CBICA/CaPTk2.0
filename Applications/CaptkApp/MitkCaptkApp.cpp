@@ -27,7 +27,6 @@ int main(int argc, char **argv)
 {
   mitk::BaseApplication app(argc, argv);
 
-
   app.setApplicationName("CaptkApp");
   app.setOrganizationName("CBICA");
 
