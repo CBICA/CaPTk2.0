@@ -1,4 +1,4 @@
-project(CaptkApp)
+project(CaPTkApp)
 
 set(_app_options)
 if(MITK_SHOW_CONSOLE_WINDOW)
@@ -8,7 +8,7 @@ endif()
 # Create a cache entry for the provisioning file which is used to export
 # the file name in the MITKConfig.cmake file. This will keep external projects
 # which rely on this file happy.
-set(MITK_CaptkApp_PROVISIONING_FILE "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/MitkCaptkApp.provisioning" CACHE INTERNAL "CaptkApp provisioning file" FORCE)
+set(MITK_CaPTkApp_PROVISIONING_FILE "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/MitkCaPTkApp.provisioning" CACHE INTERNAL "CaPTkApp provisioning file" FORCE)
 
 #set(_plugins
 #  org.mitk.gui.qt.coreapplication
@@ -43,34 +43,34 @@ include(mitkFunctionGetVersionDescription)
 mitkFunctionGetVersionDescription(${PROJECT_SOURCE_DIR} CaPTk)
 
 mitkFunctionCreateBlueBerryApplication(
-  NAME MitkCaptkApp
-  DESCRIPTION "MITK - CaptkApp Application"
+  NAME MitkCaPTkApp
+  DESCRIPTION "MITK - CaPTkApp Application"
   #PLUGINS ${_plugins}
   EXCLUDE_PLUGINS(_exclude_plugins)
   ${_app_options}
 )
 
-mitk_use_modules(TARGET MitkCaptkApp
+mitk_use_modules(TARGET MitkCaPTkApp
   MODULES MitkAppUtil
 )
 
 # subproject support
-#add_dependencies(MITK-CoreUI MitkCaptkApp)
+#add_dependencies(MITK-CoreUI MitkCaPTkApp)
 
 # Add meta dependencies (e.g. on auto-load modules from depending modules)
 if(TARGET ${CMAKE_PROJECT_NAME}-autoload)
-  add_dependencies(MitkCaptkApp ${CMAKE_PROJECT_NAME}-autoload)
+  add_dependencies(MitkCaPTkApp ${CMAKE_PROJECT_NAME}-autoload)
 endif()
 
 #Setting application icon for macOS systems
-#set_target_properties(MitkCaptkApp PROPERTIES MACOSX_BUNDLE_ICON_FILE "icon.icns")
+#set_target_properties(MitkCaPTkApp PROPERTIES MACOSX_BUNDLE_ICON_FILE "icon.icns")
 
 #if(APPLE)
-#  install(FILES "icons/icon.icns" DESTINATION "MitkCaptkApp.app/Contents/Resources")
+#  install(FILES "icons/icon.icns" DESTINATION "MitkCaPTkApp.app/Contents/Resources")
 #endif(APPLE)
 
 # Add a build time dependency to legacy BlueBerry bundles.
 if(MITK_MODULES_ENABLED_PLUGINS)
-  add_dependencies(MitkCaptkApp ${MITK_MODULES_ENABLED_PLUGINS})
+  add_dependencies(MitkCaPTkApp ${MITK_MODULES_ENABLED_PLUGINS})
 endif()
 

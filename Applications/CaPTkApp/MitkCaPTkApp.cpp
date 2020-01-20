@@ -27,7 +27,7 @@ int main(int argc, char **argv)
 {
   mitk::BaseApplication app(argc, argv);
 
-  app.setApplicationName("CaptkApp");
+  app.setApplicationName("CaPTkApp");
   app.setOrganizationName("CBICA");
 
   // Preload the org.mitk.gui.qt.common plug-in (and hence also Qmitk) to speed

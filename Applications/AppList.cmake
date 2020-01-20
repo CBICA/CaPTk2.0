@@ -8,7 +8,7 @@
 # This file is included in the top-level MITK CMakeLists.txt file to
 # allow early dependency checking
 
-option(MITK_BUILD_APP_CaptkApp "Build the MITK CaptkApp" ON)
+option(MITK_BUILD_APP_CaPTkApp "Build the MITK CaPTkApp" ON)
 
 # This variable is fed to ctkFunctionSetupPlugins() macro in the
 # top-level MITK CMakeLists.txt file. This allows to automatically
@@ -21,7 +21,7 @@ option(MITK_BUILD_APP_CaptkApp "Build the MITK CaptkApp" ON)
 
 # Format is "Directory Name^^CMake Option Name^^Executable Name (without file suffix)"
 set(MITK_APPS
-  CaptkApp^^MITK_BUILD_APP_CaptkApp^^MitkCaptkApp
+  CaPTkApp^^MITK_BUILD_APP_CaPTkApp^^MitkCaPTkApp
   #Workbench^^MITK_BUILD_APP_Workbench^^MitkWorkbench
 )
 
