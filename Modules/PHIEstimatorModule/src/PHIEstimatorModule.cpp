@@ -14,17 +14,8 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 ===================================================================*/
 
-#include <ExampleSegTool2DGUI.h>
-#include <ui_ExampleSegTool2DGUI.h>
+#include <PHIEstimatorModule.h>
 
-MITK_TOOL_GUI_MACRO(MITKEXAMPLEMODULE_EXPORT, ExampleSegTool2DGUI, "")
-
-ExampleSegTool2DGUI::ExampleSegTool2DGUI()
-  : m_Ui(new Ui::ExampleSegTool2DGUI)
-{
-  m_Ui->setupUi(this);
-}
-
-ExampleSegTool2DGUI::~ExampleSegTool2DGUI()
+void PHIEstimatorModule::ForceLinkage()
 {
 }

@@ -48,16 +48,16 @@ namespace
   // Helper function to create a fully set up instance of our
   // ExampleImageInteractor, based on the state machine specified in Paint.xml
   // as well as its configuration in PaintConfig.xml. Both files are compiled
-  // into ExtExampleModule as resources.
+  // into ExtPHIEstimatorModule as resources.
   static ExampleImageInteractor::Pointer CreateExampleImageInteractor()
   {
-    auto exampleModule = us::ModuleRegistry::GetModule("MitkExampleModule");
+    auto PHIEstimatorModule = us::ModuleRegistry::GetModule("MitkPHIEstimatorModule");
 
-    if (nullptr != exampleModule)
+    if (nullptr != PHIEstimatorModule)
     {
       auto interactor = ExampleImageInteractor::New();
-      interactor->LoadStateMachine("Paint.xml", exampleModule);
-      interactor->SetEventConfig("PaintConfig.xml", exampleModule);
+      interactor->LoadStateMachine("Paint.xml", PHIEstimatorModule);
+      interactor->SetEventConfig("PaintConfig.xml", PHIEstimatorModule);
       return interactor;
     }
 
@@ -186,7 +186,7 @@ if (maskdata == nullptr)
 
       MITK_INFO << "Process image \"" << imageName << "\" ...";
 
-      // We're finally using the ExampleImageFilter from ExtExampleModule.
+      // We're finally using the ExampleImageFilter from ExtPHIEstimatorModule.
       auto filter = ExampleImageFilter::New();
       filter->SetInput(image);
       filter->SetOffset(offset);

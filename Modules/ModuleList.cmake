@@ -3,7 +3,7 @@
 set(MITK_MODULES
   #Delthis
   #CaPTkCommon
-  PHIEstimator
+  PHIEstimatorModule
   CaPTkTrainingModule
   CaPTkInteractiveSegmentationModule
 )

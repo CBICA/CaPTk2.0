@@ -18,7 +18,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 #define ExampleSegTool2D_h
 
 #include <mitkSegTool2D.h>
-#include <MitkExampleModuleExports.h>
+#include <MitkPHIEstimatorModuleExports.h>
 
 namespace us
 {
@@ -57,7 +57,7 @@ namespace us
 //     in MITK. For an example of how this works, look into ExampleModule.h
 //     and the org_mitk_exampleplugin_eageractivation plugin.
 
-class MITKEXAMPLEMODULE_EXPORT ExampleSegTool2D : public mitk::SegTool2D
+class MITKPHIESTIMATORMODULE_EXPORT ExampleSegTool2D : public mitk::SegTool2D
 {
 public:
   mitkClassMacro(ExampleSegTool2D, SegTool2D)

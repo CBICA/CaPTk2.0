@@ -1,4 +1,4 @@
-mitk_create_module(PHIEstimator
+mitk_create_module(PHIEstimatorModule
   DEPENDS PUBLIC MitkSegmentationUI
   #PACKAGE_DEPENDS PRIVATE GuidelinesSupportLibrary
 )
