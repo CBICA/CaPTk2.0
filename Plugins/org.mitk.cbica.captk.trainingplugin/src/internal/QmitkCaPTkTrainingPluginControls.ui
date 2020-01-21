@@ -65,10 +65,8 @@
         </property>
         <property name="text">
          <string>• Features is a csv file where each column is a feature.
-   The first row is reserved for the feature names.
 • The responses csv file has one column
-   corresponding to the correct responses to the samples.
-   (first row is the title, typically 'Response')</string>
+   corresponding to the correct responses to the samples.</string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>
