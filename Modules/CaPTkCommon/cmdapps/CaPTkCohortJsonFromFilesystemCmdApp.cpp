@@ -3,6 +3,9 @@
 #include <CaPTkCohortJsonFromFilesystem.h>
 #include <CaPTkWriteJsonToFile.h>
 
+//Delete this
+#include <CaPTkROIConstruction.h>
+
 #include <json/json.h>
 
 #include <algorithm>
@@ -98,4 +101,7 @@ int main(int argc, char* argv[])
     std::cerr << "Unexpected error!";
     return EXIT_FAILURE;
   }
+
+  //Test ROI Construction (delete this)
+  auto c = captk::ROIConstruction<itk::Image<float,3>>();
 }
