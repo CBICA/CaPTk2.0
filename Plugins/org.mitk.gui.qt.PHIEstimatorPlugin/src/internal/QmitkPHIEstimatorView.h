@@ -25,7 +25,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 // header file prefixed with "ui_", which is located in the build directory.
 // Use Qt Creator to view and edit .ui files. The generated header file
 // provides a class that contains all of the UI widgets.
-#include <ui_ExampleViewControls.h>
+#include <ui_PHIEstimatorViewControls.h>
 
 // All views in MITK derive from QmitkAbstractView. You have to override
 // at least the two methods CreateQtPartControl() and SetFocus().
@@ -63,7 +63,7 @@ private:
 
   // Generated from the associated UI file, it encapsulates all the widgets
   // of our view.
-  Ui::ExampleViewControls m_Controls;
+  Ui::PHIEstimatorViewControls m_Controls;
 };
 
 #endif

@@ -4,7 +4,7 @@ set(CPP_FILES
 )
 
 set(UI_FILES
-  src/internal/ExampleViewControls.ui
+  src/internal/PHIEstimatorViewControls.ui
 )
 
 set(MOC_H_FILES
