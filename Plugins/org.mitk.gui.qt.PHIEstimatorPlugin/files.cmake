@@ -1,6 +1,6 @@
 set(CPP_FILES
   src/internal/PluginActivator.cpp
-  src/internal/QmitkExampleView.cpp
+  src/internal/QmitkPHIEstimatorView.cpp
 )
 
 set(UI_FILES
@@ -9,7 +9,7 @@ set(UI_FILES
 
 set(MOC_H_FILES
   src/internal/PluginActivator.h
-  src/internal/QmitkExampleView.h
+  src/internal/QmitkPHIEstimatorView.h
 )
 
 # List of resource files that can be used by the plugin system without loading

@@ -27,7 +27,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <EGFRvIIISurrogateIndex.h>
 #include <EGFRStatusPredictor.h>
 
-#include "QmitkExampleView.h"
+#include "QmitkPHIEstimatorView.h"
 
 #include <mitkImageCast.h>
 #include <mitkImageToItk.h>
@@ -66,9 +66,9 @@ namespace
 }
 
 // Don't forget to initialize the VIEW_ID.
-const std::string QmitkExampleView::VIEW_ID = "org.mitk.views.PHIEstimatorview";
+const std::string QmitkPHIEstimatorView::VIEW_ID = "org.mitk.views.PHIEstimatorview";
 
-void QmitkExampleView::CreateQtPartControl(QWidget* parent)
+void QmitkPHIEstimatorView::CreateQtPartControl(QWidget* parent)
 {
   // Setting up the UI is a true pleasure when using .ui files, isn't it?
   m_Controls.setupUi(parent);
@@ -78,12 +78,12 @@ void QmitkExampleView::CreateQtPartControl(QWidget* parent)
   connect(m_Controls.processImageButton, SIGNAL(clicked()), this, SLOT(ProcessSelectedImage()));
 }
 
-void QmitkExampleView::SetFocus()
+void QmitkPHIEstimatorView::SetFocus()
 {
   m_Controls.processImageButton->setFocus();
 }
 
-void QmitkExampleView::OnSelectionChanged(berry::IWorkbenchPart::Pointer, const QList<mitk::DataNode::Pointer>& dataNodes)
+void QmitkPHIEstimatorView::OnSelectionChanged(berry::IWorkbenchPart::Pointer, const QList<mitk::DataNode::Pointer>& dataNodes)
 {
   for (const auto& dataNode : dataNodes)
   {
@@ -101,7 +101,7 @@ void QmitkExampleView::OnSelectionChanged(berry::IWorkbenchPart::Pointer, const 
   m_Controls.selectImageLabel->setVisible(true);
 }
 
-void QmitkExampleView::ProcessSelectedImage()
+void QmitkPHIEstimatorView::ProcessSelectedImage()
 {
   // Before we even think about processing something, we need to make sure
   // that we have valid input. Don't be sloppy, this is a main reason

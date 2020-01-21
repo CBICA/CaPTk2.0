@@ -14,8 +14,8 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 ===================================================================*/
 
-#ifndef QmitkExampleView_h
-#define QmitkExampleView_h
+#ifndef QmitkPHIEstimatorView_h
+#define QmitkPHIEstimatorView_h
 
 #include <berryISelectionListener.h>
 #include <QmitkAbstractView.h>
@@ -29,7 +29,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 // All views in MITK derive from QmitkAbstractView. You have to override
 // at least the two methods CreateQtPartControl() and SetFocus().
-class QmitkExampleView : public QmitkAbstractView
+class QmitkPHIEstimatorView : public QmitkAbstractView
 {
   // As ExampleView derives from QObject and we want to use the Qt
   // signal and slot mechanism, we must not forget the Q_OBJECT macro.

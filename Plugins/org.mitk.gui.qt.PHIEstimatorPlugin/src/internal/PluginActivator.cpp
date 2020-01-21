@@ -15,11 +15,11 @@ See LICENSE.txt or http://www.mitk.org for details.
 ===================================================================*/
 
 #include "PluginActivator.h"
-#include "QmitkExampleView.h"
+#include "QmitkPHIEstimatorView.h"
 
 void PluginActivator::start(ctkPluginContext* context)
 {
-  BERRY_REGISTER_EXTENSION_CLASS(QmitkExampleView, context)
+  BERRY_REGISTER_EXTENSION_CLASS(QmitkPHIEstimatorView, context)
 }
 
 void PluginActivator::stop(ctkPluginContext*)
