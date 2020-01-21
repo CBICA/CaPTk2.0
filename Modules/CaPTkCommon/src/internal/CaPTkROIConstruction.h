@@ -166,7 +166,6 @@ protected:
 
   \param inputImage
   */
-  template< TImageType >
   itk::Vector< float, TImageType::ImageDimension > GetDistances(const typename TImageType::Pointer inputImage);
 
 private:

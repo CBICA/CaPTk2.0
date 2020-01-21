@@ -222,7 +222,7 @@ void captk::ROIConstruction< TImage >::Update()
     //! use the type identified for one of the coordiantes to declare the lattice - fancy C++11 stuff
     std::vector< decltype(start_imageCoordinates) > latticeGrid;
 
-    auto distances = GetDistances< TImage >(m_mask);
+    auto distances = GetDistances(m_mask);
 
     // in case the LatticeWindow has not been defined, don't bother checking for LatticeStep do lattice computation
     if (m_latticeWindow != 0)
@@ -387,17 +387,17 @@ void captk::ROIConstruction< TImage >::Update()
   } // m_algorithmDone check
 }
 
-template< typename TImageType >
-itk::Vector< float, TImageType::ImageDimension > captk::ROIConstruction< TImage >::GetDistances(const typename TImageType::Pointer inputImage)
+template< typename TImage >
+itk::Vector< float, TImage::ImageDimension > captk::ROIConstruction< TImage >::GetDistances(const typename TImage::Pointer inputImage)
 {
-  itk::Vector< float, TImageType::ImageDimension > distances;
-  itk::Point< float, TImageType::ImageDimension > start_worldCoordinates, end_worldCoordinates;
+  itk::Vector< float, TImage::ImageDimension > distances;
+  itk::Point< float, TImage::ImageDimension > start_worldCoordinates, end_worldCoordinates;
 
-  typename TImageType::IndexType start_image, end_image;
+  typename TImage::IndexType start_image, end_image;
 
   auto size = inputImage->GetBufferedRegion().GetSize();
 
-  for (size_t i = 0; i < TImageType::ImageDimension; i++)
+  for (size_t i = 0; i < TImage::ImageDimension; i++)
   {
     start_image[i] = 0;
     end_image[i] = size[i] - 1;
@@ -406,7 +406,7 @@ itk::Vector< float, TImageType::ImageDimension > captk::ROIConstruction< TImage 
   inputImage->TransformIndexToPhysicalPoint(start_image, start_worldCoordinates);
   inputImage->TransformIndexToPhysicalPoint(end_image, end_worldCoordinates);
 
-  for (size_t i = 0; i < TImageType::ImageDimension; i++)
+  for (size_t i = 0; i < TImage::ImageDimension; i++)
   {
     distances[i] = std::abs(end_worldCoordinates[i] - start_worldCoordinates[i]); // real world image span along each axis
   }
