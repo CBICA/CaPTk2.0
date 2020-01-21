@@ -66,7 +66,7 @@ namespace
 }
 
 // Don't forget to initialize the VIEW_ID.
-const std::string QmitkExampleView::VIEW_ID = "org.mitk.views.exampleview";
+const std::string QmitkExampleView::VIEW_ID = "org.mitk.views.PHIEstimatorview";
 
 void QmitkExampleView::CreateQtPartControl(QWidget* parent)
 {
