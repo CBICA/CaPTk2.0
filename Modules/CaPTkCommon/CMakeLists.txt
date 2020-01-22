@@ -9,7 +9,7 @@ mitk_create_module(
   #  PUBLIC include third_party/jsoncpp/include
   #  PRIVATE src third_party/jsoncpp/src
   PACKAGE_DEPENDS ITK Qt5|Core #VTK OpenCV
-  #DEPENDS MitkCore
+  DEPENDS MitkMultilabel #MitkCore
 )
 
 add_subdirectory(cmdapps)
