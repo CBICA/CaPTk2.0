@@ -1,22 +1,22 @@
-#ifndef CaPTkROIConstructionHXX_h
-#define CaPTkROIConstructionHXX_h
+#ifndef CaPTkROIConstructionHelperHXX_h
+#define CaPTkROIConstructionHelperHXX_h
 
 #include <iostream>
 
 template< class TImage >
-void captk::ROIConstruction< TImage >::SetInputMask(typename TImage::Pointer input)
+void captk::ROIConstructionHelper< TImage >::SetInputMask(typename TImage::Pointer input)
 {
   m_mask = input;
   m_algorithmDone = false;
 }
 
 template< class TImage >
-void captk::ROIConstruction< TImage >::SetNewLogFile(const std::string &logFile)
+void captk::ROIConstructionHelper< TImage >::SetNewLogFile(const std::string &logFile)
 {
 }
 
 template< class TImage >
-void captk::ROIConstruction< TImage >::SetSelectedROIsAndLabels(std::vector< int > roi, std::vector< std::string > roi_labels)
+void captk::ROIConstructionHelper< TImage >::SetSelectedROIsAndLabels(std::vector< int > roi, std::vector< std::string > roi_labels)
 {
   m_roi = roi;
   m_roiLabels = roi_labels;
@@ -24,7 +24,7 @@ void captk::ROIConstruction< TImage >::SetSelectedROIsAndLabels(std::vector< int
 }
 
 template< class TImage >
-void captk::ROIConstruction< TImage >::ROIComputation(std::vector< typename TImage::IndexType > &inputLatticeGrid,
+void captk::ROIConstructionHelper< TImage >::ROIComputation(std::vector< typename TImage::IndexType > &inputLatticeGrid,
   itk::Size< TImage::ImageDimension > &inputLatticeRadius)
 {
   TConstIteratorType totalMaskIterator(m_mask, m_mask->GetLargestPossibleRegion());
@@ -193,12 +193,12 @@ void captk::ROIConstruction< TImage >::ROIComputation(std::vector< typename TIma
   } // end of m_roi.empty() check
   else
   {
-    std::cerr << ("m_roi is empty in captk::ROIConstruction::NonLatticeComputation");
+    std::cerr << ("m_roi is empty in captk::ROIConstructionHelper::NonLatticeComputation");
   }
 }
 
 template< class TImage >
-void captk::ROIConstruction< TImage >::Update()
+void captk::ROIConstructionHelper< TImage >::Update()
 {
   if (!m_algorithmDone) // if this flag has not been set, it means processing has not happened
   {
@@ -388,7 +388,7 @@ void captk::ROIConstruction< TImage >::Update()
 }
 
 template< typename TImage >
-itk::Vector< float, TImage::ImageDimension > captk::ROIConstruction< TImage >::GetDistances(const typename TImage::Pointer inputImage)
+itk::Vector< float, TImage::ImageDimension > captk::ROIConstructionHelper< TImage >::GetDistances(const typename TImage::Pointer inputImage)
 {
   itk::Vector< float, TImage::ImageDimension > distances;
   itk::Point< float, TImage::ImageDimension > start_worldCoordinates, end_worldCoordinates;
@@ -414,4 +414,4 @@ itk::Vector< float, TImage::ImageDimension > captk::ROIConstruction< TImage >::G
   return distances;
 }
 
-#endif // ! #ifndef CaPTkROIConstructionHXX_h
+#endif // ! #ifndef CaPTkROIConstructionHelperHXX_h
