@@ -14,14 +14,17 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 ===================================================================*/
 
-#ifndef ExampleModule_h
-#define ExampleModule_h
+#include <ExampleSegTool2DGUI.h>
+#include <ui_ExampleSegTool2DGUI.h>
 
-#include <MitkExampleModuleExports.h>
+MITK_TOOL_GUI_MACRO(MITKPHIESTIMATORMODULE_EXPORT, ExampleSegTool2DGUI, "")
 
-namespace ExampleModule
+ExampleSegTool2DGUI::ExampleSegTool2DGUI()
+  : m_Ui(new Ui::ExampleSegTool2DGUI)
 {
-  MITKEXAMPLEMODULE_EXPORT void ForceLinkage();
+  m_Ui->setupUi(this);
 }
 
-#endif
+ExampleSegTool2DGUI::~ExampleSegTool2DGUI()
+{
+}

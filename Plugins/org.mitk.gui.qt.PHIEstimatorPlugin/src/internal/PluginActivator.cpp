@@ -14,17 +14,14 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 ===================================================================*/
 
-#include <ExampleSegTool2DGUI.h>
-#include <ui_ExampleSegTool2DGUI.h>
+#include "PluginActivator.h"
+#include "QmitkPHIEstimatorView.h"
 
-MITK_TOOL_GUI_MACRO(MITKEXAMPLEMODULE_EXPORT, ExampleSegTool2DGUI, "")
-
-ExampleSegTool2DGUI::ExampleSegTool2DGUI()
-  : m_Ui(new Ui::ExampleSegTool2DGUI)
+void PluginActivator::start(ctkPluginContext* context)
 {
-  m_Ui->setupUi(this);
+  BERRY_REGISTER_EXTENSION_CLASS(QmitkPHIEstimatorView, context)
 }
 
-ExampleSegTool2DGUI::~ExampleSegTool2DGUI()
+void PluginActivator::stop(ctkPluginContext*)
 {
 }

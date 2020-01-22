@@ -2,7 +2,7 @@
 
 set(MITK_MODULES
   #CaPTkCommon
-  ExampleModule
+  PHIEstimatorModule
   CaPTkTrainingModule
   CaPTkInteractiveSegmentationModule
 )

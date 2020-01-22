@@ -14,8 +14,14 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 ===================================================================*/
 
-#include <ExampleModule.h>
+#ifndef ExampleModule_h
+#define ExampleModule_h
 
-void ExampleModule::ForceLinkage()
+#include <MitkPHIEstimatorModuleExports.h>
+
+namespace PHIEstimatorModule
 {
+	MITKPHIESTIMATORMODULE_EXPORT void ForceLinkage();
 }
+
+#endif
