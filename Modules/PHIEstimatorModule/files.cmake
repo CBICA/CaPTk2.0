@@ -1,7 +1,7 @@
 set(CPP_FILES
   ExampleImageFilter.cpp
   ExampleImageInteractor.cpp
-  ExampleModule.cpp
+  PHIEstimatorModule.cpp
   ExampleSegTool2D.cpp
   ExampleSegTool2DGUI.cpp
   EGFRvIIISurrogateIndex.cpp

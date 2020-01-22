@@ -27,7 +27,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <EGFRvIIISurrogateIndex.h>
 #include <EGFRStatusPredictor.h>
 
-#include "QmitkExampleView.h"
+#include "QmitkPHIEstimatorView.h"
 
 #include <mitkImageCast.h>
 #include <mitkImageToItk.h>
@@ -48,16 +48,16 @@ namespace
   // Helper function to create a fully set up instance of our
   // ExampleImageInteractor, based on the state machine specified in Paint.xml
   // as well as its configuration in PaintConfig.xml. Both files are compiled
-  // into ExtExampleModule as resources.
+  // into ExtPHIEstimatorModule as resources.
   static ExampleImageInteractor::Pointer CreateExampleImageInteractor()
   {
-    auto exampleModule = us::ModuleRegistry::GetModule("MitkExampleModule");
+    auto PHIEstimatorModule = us::ModuleRegistry::GetModule("MitkPHIEstimatorModule");
 
-    if (nullptr != exampleModule)
+    if (nullptr != PHIEstimatorModule)
     {
       auto interactor = ExampleImageInteractor::New();
-      interactor->LoadStateMachine("Paint.xml", exampleModule);
-      interactor->SetEventConfig("PaintConfig.xml", exampleModule);
+      interactor->LoadStateMachine("Paint.xml", PHIEstimatorModule);
+      interactor->SetEventConfig("PaintConfig.xml", PHIEstimatorModule);
       return interactor;
     }
 
@@ -66,9 +66,9 @@ namespace
 }
 
 // Don't forget to initialize the VIEW_ID.
-const std::string QmitkExampleView::VIEW_ID = "org.mitk.views.exampleview";
+const std::string QmitkPHIEstimatorView::VIEW_ID = "org.mitk.views.PHIEstimatorview";
 
-void QmitkExampleView::CreateQtPartControl(QWidget* parent)
+void QmitkPHIEstimatorView::CreateQtPartControl(QWidget* parent)
 {
   // Setting up the UI is a true pleasure when using .ui files, isn't it?
   m_Controls.setupUi(parent);
@@ -78,12 +78,12 @@ void QmitkExampleView::CreateQtPartControl(QWidget* parent)
   connect(m_Controls.processImageButton, SIGNAL(clicked()), this, SLOT(ProcessSelectedImage()));
 }
 
-void QmitkExampleView::SetFocus()
+void QmitkPHIEstimatorView::SetFocus()
 {
   m_Controls.processImageButton->setFocus();
 }
 
-void QmitkExampleView::OnSelectionChanged(berry::IWorkbenchPart::Pointer, const QList<mitk::DataNode::Pointer>& dataNodes)
+void QmitkPHIEstimatorView::OnSelectionChanged(berry::IWorkbenchPart::Pointer, const QList<mitk::DataNode::Pointer>& dataNodes)
 {
   for (const auto& dataNode : dataNodes)
   {
@@ -101,7 +101,7 @@ void QmitkExampleView::OnSelectionChanged(berry::IWorkbenchPart::Pointer, const 
   m_Controls.selectImageLabel->setVisible(true);
 }
 
-void QmitkExampleView::ProcessSelectedImage()
+void QmitkPHIEstimatorView::ProcessSelectedImage()
 {
   // Before we even think about processing something, we need to make sure
   // that we have valid input. Don't be sloppy, this is a main reason
@@ -186,7 +186,7 @@ if (maskdata == nullptr)
 
       MITK_INFO << "Process image \"" << imageName << "\" ...";
 
-      // We're finally using the ExampleImageFilter from ExtExampleModule.
+      // We're finally using the ExampleImageFilter from ExtPHIEstimatorModule.
       auto filter = ExampleImageFilter::New();
       filter->SetInput(image);
       filter->SetOffset(offset);
