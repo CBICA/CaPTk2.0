@@ -72,7 +72,7 @@ void QmitkCaPTkApplicationPlugin::start(ctkPluginContext* context)
   {
     ctkConfigurationPtr conf = configAdmin->getConfiguration("org.blueberry.services.help", QString());
     ctkDictionary helpProps;
-    helpProps.insert("homePage", "qthelp://org.mitk.gui.qt.captkapplication/bundle/index.html");
+    helpProps.insert("homePage", "qthelp://org.mitk.cbica.captk.application/bundle/index.html");
     conf->update(helpProps);
     context->ungetService(cmRef);
   }
@@ -82,7 +82,7 @@ void QmitkCaPTkApplicationPlugin::start(ctkPluginContext* context)
   }
 
   // Set CBICA logo
-  mitk::WorkbenchUtil::SetDepartmentLogoPreference(":/org.mitk.gui.qt.captkapplication/cbica-logo.jpg", context);
+  mitk::WorkbenchUtil::SetDepartmentLogoPreference(":/org.mitk.cbica.captk.application/cbica-logo.jpg", context);
 }
 
 ctkPluginContext* QmitkCaPTkApplicationPlugin::GetPluginContext() const

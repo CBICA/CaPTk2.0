@@ -5,6 +5,6 @@ set(MITK_PLUGINS
   org.mitk.exampleplugin.eageractivation:ON
   org.mitk.cbica.captk.interactivesegmentation:ON
   org.mitk.cbica.captk.ui:ON
-  org.mitk.gui.qt.captkapplication:ON
+  org.mitk.cbica.captk.application:ON
   org.mitk.cbica.captk.trainingplugin:ON
 )

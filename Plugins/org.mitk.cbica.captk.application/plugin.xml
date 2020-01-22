@@ -20,7 +20,7 @@
       class="QmitkCaPTkIntroPart"
       role="editor"/>
     <introProductBinding
-      productId="org.mitk.gui.qt.captkapplication.captk"
+      productId="org.mitk.cbica.captk.application.captk"
       introId="org.mitk.qt.captkapplicationintro"/>
   </extension>
 

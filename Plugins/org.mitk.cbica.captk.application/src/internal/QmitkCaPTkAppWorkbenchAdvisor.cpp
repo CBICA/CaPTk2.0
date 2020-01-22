@@ -85,7 +85,7 @@ QmitkCaPTkAppWorkbenchAdvisor::CreateWorkbenchWindowAdvisor(
   excludeViews.push_back( "org.blueberry.ui.internal.introview" );
   advisor->SetViewExcludeList(excludeViews);
 
-  advisor->SetWindowIcon(":/org.mitk.gui.qt.captkapplication/icon.png");
+  advisor->SetWindowIcon(":/org.mitk.cbica.captk.application/icon.png");
 
   m_WorkbenchWindowConfigurer = configurer; // Used for changing "about" to CaPTk's
 
