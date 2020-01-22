@@ -19,7 +19,6 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 #include <QmitkAbstractView.h>
 
-#include "mitkSegmentationInteractor.h"
 #include <mitkILifecycleAwarePart.h>
 
 #include "ui_QmitkCaPTkInteractiveSegmentationControls.h"
@@ -31,11 +30,8 @@ class CaPTkInteractiveSegmentation;
 
 class QmitkRenderWindow;
 
-/**
- * \ingroup ToolManagerEtAl
- * \ingroup org_mitk_gui_qt_multilabelsegmentation_internal
- */
-class QmitkCaPTkInteractiveSegmentationView : public QmitkAbstractView, public mitk::ILifecycleAwarePart
+class QmitkCaPTkInteractiveSegmentationView : public QmitkAbstractView, 
+                                              public mitk::ILifecycleAwarePart
 {
   Q_OBJECT
 
@@ -177,7 +173,7 @@ protected:
   bool m_AutoSelectionEnabled;
   bool m_MouseCursorSet;
 
-  mitk::SegmentationInteractor::Pointer m_Interactor;
+  // mitk::SegmentationInteractor::Pointer m_Interactor;
 
   /**
    * Reference to the service registration of the observer,

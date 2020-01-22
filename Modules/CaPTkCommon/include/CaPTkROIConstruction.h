@@ -63,7 +63,7 @@ public:
     void SetLatticeGridStep(float step);
 
 private:
-    CaPTkROIConstructionHelper m_CaPTkROIConstructionHelper;
+    captk::ROIConstructionHelper m_CaPTkROIConstructionHelper;
 
 };
 }

@@ -1,5 +1,5 @@
 set(SRC_CPP_FILES
-  QmitkMultiLabelSegmentationPreferencePage.cpp
+  
 )
 
 set(INTERNAL_CPP_FILES
@@ -25,7 +25,6 @@ set(UI_FILES
 )
 
 set(MOC_H_FILES
-  src/QmitkMultiLabelSegmentationPreferencePage.h
   src/internal/mitkPluginActivator.h
   src/internal/QmitkCaPTkInteractiveSegmentationView.h
   src/internal/Common/QmitkDataSelectionWidget.h
