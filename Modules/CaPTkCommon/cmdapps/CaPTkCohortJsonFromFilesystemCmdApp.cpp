@@ -3,8 +3,8 @@
 #include <CaPTkCohortJsonFromFilesystem.h>
 #include <CaPTkWriteJsonToFile.h>
 
-//Delete this
-#include <CaPTkROIConstruction.h>
+#include <QString>
+#include <QStringList>
 
 #include <json/json.h>
 
@@ -13,18 +13,6 @@
 #include <fstream>
 #include <iostream>
 #include <memory>
-
-/**Splits a string into a list using a delimiter*/
-std::vector<std::string> 
-split(const std::string &s, char delim) {
-	std::stringstream ss(s);
-	std::string item;
-	std::vector<std::string> elems;
-	while (std::getline(ss, item, delim)) {
-		elems.push_back(std::move(item));
-	}
-	return elems;
-}
 
 /** \brief command-line app for batch processing of images
  *
@@ -87,7 +75,11 @@ int main(int argc, char* argv[])
   auto directories = us::any_cast<std::string>(parsedArgs["directories"]);
   auto outputfile  = us::any_cast<std::string>(parsedArgs["outputfile"]);
 
-  std::vector<std::string> directoriesVector = split(directories, ',');
+  std::vector<std::string> directoriesVector;
+  foreach (QString s, QString(directories.c_str()).split(","))
+  {
+    directoriesVector.push_back(s.toStdString());
+  }
 
   /**** Run ****/
 
@@ -101,9 +93,4 @@ int main(int argc, char* argv[])
     std::cerr << "Unexpected error!";
     return EXIT_FAILURE;
   }
-
-  //Test ROI Construction (delete this)
-  auto c = new captk::ROIConstruction();
-
-  delete c;
 }
