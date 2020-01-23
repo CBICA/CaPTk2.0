@@ -202,7 +202,7 @@ void captk::ROIConstructionHelper< TImage >::Update()
 {
   if (!m_algorithmDone) // if this flag has not been set, it means processing has not happened
   {
-    auto t1 = std::chrono::high_resolution_clock::now();
+    // auto t1 = std::chrono::high_resolution_clock::now();
     if (m_mask.IsNull())
     {
       std::cerr << ("The mask image is not defined or has not been read properly.");
@@ -382,7 +382,7 @@ void captk::ROIConstructionHelper< TImage >::Update()
     } // end of m_roi.empty() check
 
     m_algorithmDone = true;
-    auto t2 = std::chrono::high_resolution_clock::now();
+    // auto t2 = std::chrono::high_resolution_clock::now();
     // std::cout << "ROI Construction took " << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count() << " milliseconds\n";
   } // m_algorithmDone check
 }

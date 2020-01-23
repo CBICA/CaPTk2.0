@@ -103,5 +103,7 @@ int main(int argc, char* argv[])
   }
 
   //Test ROI Construction (delete this)
-  auto c = captk::ROIConstruction<itk::Image<float,3>>();
+  auto c = new captk::ROIConstruction();
+
+  delete c;
 }
