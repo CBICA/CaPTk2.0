@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/org.mitk.gui.qt.captkapplication">
+    <qresource prefix="/org.mitk.cbica.captk.application">
         <file>icon.png</file>
         <file>cbica-logo.jpg</file>
         <file>perspectives/eye.png</file>

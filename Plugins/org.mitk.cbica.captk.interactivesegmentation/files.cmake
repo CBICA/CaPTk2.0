@@ -6,65 +6,27 @@ set(INTERNAL_CPP_FILES
   mitkPluginActivator.cpp
   QmitkCaPTkInteractiveSegmentationView.cpp
   Common/QmitkDataSelectionWidget.cpp
-  SegmentationUtilities/QmitkMultiLabelSegmentationUtilitiesView.cpp
-  SegmentationUtilities/QmitkSegmentationUtilityWidget.cpp
-  SegmentationUtilities/BooleanOperations/QmitkBooleanOperationsWidget.cpp
-  SegmentationUtilities/MorphologicalOperations/QmitkMorphologicalOperationsWidget.cpp
-  SegmentationUtilities/SurfaceToImage/QmitkSurfaceToImageWidget.cpp
-  SegmentationUtilities/ImageMasking/QmitkImageMaskingWidget.cpp
 )
 
 set(UI_FILES
   src/internal/QmitkCaPTkInteractiveSegmentationControls.ui
   src/internal/Common/QmitkDataSelectionWidgetControls.ui
-  src/internal/SegmentationUtilities/QmitkMultiLabelSegmentationUtilitiesViewControls.ui
-  src/internal/SegmentationUtilities/BooleanOperations/QmitkBooleanOperationsWidgetControls.ui
-  src/internal/SegmentationUtilities/MorphologicalOperations/QmitkMorphologicalOperationsWidgetControls.ui
-  src/internal/SegmentationUtilities/SurfaceToImage/QmitkSurfaceToImageWidgetControls.ui
-  src/internal/SegmentationUtilities/ImageMasking/QmitkImageMaskingWidgetControls.ui
 )
 
 set(MOC_H_FILES
   src/internal/mitkPluginActivator.h
   src/internal/QmitkCaPTkInteractiveSegmentationView.h
   src/internal/Common/QmitkDataSelectionWidget.h
-  src/internal/SegmentationUtilities/QmitkMultiLabelSegmentationUtilitiesView.h
-  src/internal/SegmentationUtilities/QmitkSegmentationUtilityWidget.h
-  src/internal/SegmentationUtilities/BooleanOperations/QmitkBooleanOperationsWidget.h
-  src/internal/SegmentationUtilities/MorphologicalOperations/QmitkMorphologicalOperationsWidget.h
-  src/internal/SegmentationUtilities/SurfaceToImage/QmitkSurfaceToImageWidget.h
-  src/internal/SegmentationUtilities/ImageMasking/QmitkImageMaskingWidget.h
 )
 
 set(CACHED_RESOURCE_FILES
-  resources/BooleanDifference_48x48.png
-  resources/BooleanIntersection_48x48.png
-  resources/BooleanOperations_48x48.png
-  resources/BooleanUnion_48x48.png
-  resources/Closing_48x48.png
-  resources/CTKWidgets_48x48.png
-  resources/deformablePlane.png
-  resources/Dilate_48x48.png
-  resources/Erode_48x48.png
-  resources/FillHoles_48x48.png
-  resources/Icons.svg
-  resources/ImageMasking_48x48.png
-  resources/MorphologicalOperations_48x48.png
-  resources/multilabelsegmentation.svg
-  resources/multilabelsegmentation_utilities.svg
-  resources/NewLabel_48x48.png
   resources/NewSegmentationSession_48x48.png
-  resources/Opening_48x48.png
-  resources/SurfaceToImage_48x48.png
   resources/mll_icon2.svg
   plugin.xml
 )
 
 set(QRC_FILES
-  resources/multilabelsegmentation.qrc
-  resources/MultiLabelSegmentationUtilities.qrc
-  resources/MorphologicalOperationsWidget.qrc
-  resources/BooleanOperationsWidget.qrc
+  resources/captkinteractivesegmentation.qrc
 )
 
 set(CPP_FILES)

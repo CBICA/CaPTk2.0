@@ -1,19 +1,3 @@
-/*===================================================================
-
-The Medical Imaging Interaction Toolkit (MITK)
-
-Copyright (c) German Cancer Research Center,
-Division of Medical and Biological Informatics.
-All rights reserved.
-
-This software is distributed WITHOUT ANY WARRANTY; without
-even the implied warranty of MERCHANTABILITY or FITNESS FOR
-A PARTICULAR PURPOSE.
-
-See LICENSE.txt or http://www.mitk.org for details.
-
-===================================================================*/
-
 #ifndef QmitkCaPTkInteractiveSegmentationView_h
 #define QmitkCaPTkInteractiveSegmentationView_h
 
@@ -64,52 +48,14 @@ protected slots:
   /** \brief CaPTk Interactive Segmentation Run Button clicked slot */
   void OnRunButtonPressed();
 
-  /// \brief reaction to the selection of any 2D segmentation tool
-  void OnManualTool2DSelected(int id);
-
-  /// \brief reaction to button "New Label"
-  void OnNewLabel();
-
-  /// \brief reaction to button "Show Label Table"
-  void OnShowLabelTable(bool value);
-
   /// \brief reaction to button "New Segmentation Session"
   void OnNewSegmentationSession();
-
-  /// \brief reaction to signal "goToLabel" from labelset widget
-  void OnGoToLabel(const mitk::Point3D &pos);
-
-  void OnResetView();
-
-  // reaction to the button "Add Layer"
-  void OnAddLayer();
-
-  // reaction to the button "Delete Layer"
-  void OnDeleteLayer();
-
-  // reaction to the button "Previous Layer"
-  void OnPreviousLayer();
-
-  // reaction to the button "Next Layer"
-  void OnNextLayer();
-
-  // reaction to the combobox change "Change Layer"
-  void OnChangeLayer(int);
-
-  // reaction to the button "Deactive Active Tool"
-  void OnDeactivateActiveTool();
-
-  // reaction to the button "Lock exterior"
-  void OnLockExteriorToggled(bool);
 
   /// \brief reaction to the selection of a new patient (reference) image in the DataStorage combobox
   void OnReferenceSelectionChanged(const mitk::DataNode* node);
 
   /// \brief reaction to the selection of a new Segmentation (working) image in the DataStorage combobox
   void OnSegmentationSelectionChanged(const mitk::DataNode* node);
-
-  /// \brief reaction to ...
-  void OnInterpolationSelectionChanged(int);
 
 protected:
 
@@ -133,15 +79,9 @@ protected:
 
   void UpdateControls();
 
-  void RenderWindowPartActivated(mitk::IRenderWindowPart *renderWindowPart);
-
-  void RenderWindowPartDeactivated(mitk::IRenderWindowPart *renderWindowPart);
-
   void ResetMouseCursor();
 
   void SetMouseCursor(const us::ModuleResource, int hotspotX, int hotspotY);
-
-  void InitializeListeners();
 
   /// \brief Checks if two images have the same size and geometry
   bool CheckForSameGeometry(const mitk::Image *image1, const mitk::Image *image2) const;
@@ -160,10 +100,6 @@ protected:
   /// \brief Qt GUI file
   Ui::QmitkCaPTkInteractiveSegmentationControls m_Controls;
 
-  mitk::IRenderWindowPart *m_IRenderWindowPart;
-
-  mitk::ToolManager *m_ToolManager;
-
   mitk::DataNode::Pointer m_ReferenceNode;
   mitk::DataNode::Pointer m_WorkingNode;
 
@@ -181,7 +117,7 @@ protected:
    */
   us::ServiceRegistration<mitk::InteractionEventObserver> m_ServiceRegistration;
 
-  /*CaPTkInteractiveSegmentationModule*/
+  /** The algorithm */
   CaPTkInteractiveSegmentation* m_CaPTkInteractiveSegmentationModule;
 };
 

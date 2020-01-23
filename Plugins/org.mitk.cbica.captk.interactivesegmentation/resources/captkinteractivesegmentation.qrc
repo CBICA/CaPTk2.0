@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/captkinteractivesegmentation" >
+    <file>NewSegmentationSession_48x48.png</file>
+  </qresource>
+</RCC>

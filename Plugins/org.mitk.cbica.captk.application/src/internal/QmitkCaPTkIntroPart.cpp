@@ -201,7 +201,7 @@ void QmitkCaPTkIntroPart::CreateQtPartControl(QWidget* parent)
     auto page = new QmitkWebEnginePage(this, parent);
     m_Impl->View->setPage(page);
 
-    QUrl urlQtResource(QString("qrc:/org.mitk.cbica.captk.welcomescreen/captkwelcomeview.html"),  QUrl::TolerantMode );
+    QUrl urlQtResource(QString("qrc:/org.mitk.cbica.captk.captkwelcomescreen/captkwelcomeview.html"),  QUrl::TolerantMode );
     m_Impl->View->load( urlQtResource );
 
     // adds the webview as a widget

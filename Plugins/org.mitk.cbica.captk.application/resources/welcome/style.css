@@ -94,7 +94,7 @@ img{border:none;}
 }
 
 .welcomeTutorialButton {
-    background-image: url(qrc:/org.mitk.gui.qt.captkwelcomescreen/pics/WelcomeMITK.png);
+    background-image: url(qrc:/org.mitk.cbica.captk.captkwelcomescreen/pics/WelcomeMITK.png);
 }
 
 .textLink{
@@ -113,7 +113,7 @@ img{border:none;}
 }
 
 .mitk-logo {
-    background-image: url(qrc:/org.mitk.gui.qt.captkwelcomescreen/pics/button_mitk.png);
+    background-image: url(qrc:/org.mitk.cbica.captk.captkwelcomescreen/pics/button_mitk.png);
     background-size: 100px;
     display: inline-block;
     height: 92px;

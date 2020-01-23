@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/org.mitk.gui.qt.captkwelcomescreen">
+    <qresource prefix="/org.mitk.cbica.captk.captkwelcomescreen">
         <file>style.css</file>
         <file>function.js</file>
         <file>pics/background.jpg</file>
@@ -10,7 +10,7 @@
         <file>pics/WelcomeMITK.png</file>
         <file>captkwelcomeview.html</file>
     </qresource>
-    <qresource prefix="/org.mitk.gui.qt.captkwelcomescreen.welcome.tutorial">
+    <qresource prefix="/org.mitk.cbica.captk.captkwelcomescreen.welcome.tutorial">
         <file>WelcomePresentation.html</file>
         <file>js/reveal.js</file>
         <file>css/print/paper.css</file>

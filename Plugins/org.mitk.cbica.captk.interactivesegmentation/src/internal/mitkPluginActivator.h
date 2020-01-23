@@ -8,7 +8,7 @@ namespace mitk
   class PluginActivator : public QObject, public ctkPluginActivator
   {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org_mitk_gui_qt_multilabelsegmentation")
+    Q_PLUGIN_METADATA(IID "org_mitk_cbica_captk_interactivesegmentation")
     Q_INTERFACES(ctkPluginActivator)
 
   public:
