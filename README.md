@@ -1,3 +1,3 @@
-CaPTk2.0
-========
-This repository contains MITK plugins for CaPTk functionalities.
+### This repository is under development and not ready for use. It contains experimentation for integrating CaPTk algorithms into the MITK framework by DKFZ.
+
+### If you are a user looking for CaPTk please go [[HERE]](https://github.com/CBICA/CaPTk).
