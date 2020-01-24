@@ -27,7 +27,7 @@ CohortJsonMergeObjects(QList<QSharedPointer<QJsonDocument>>& jsons);
 
 /** \brief Get a QJsonDocument containing the information of a cohort from file */
 MITKCAPTKCOMMON_EXPORT QSharedPointer<QJsonDocument> 
-CohortJsonFromFilesystem(QString& directory);
+CohortJsonFromDirectoryStructure(QString& directory);
 
 /** \namespace internal Contains helper functions for cohort json processing */
 namespace internal
