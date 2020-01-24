@@ -2,12 +2,13 @@
 
 #include <CaPTkCohortJsonOperations.h>
 
+#include "mitkException.h"
+#include "mitkLogMacros.h"
+
 #include <QString>
 #include <QStringList>
 #include <QFile>
 #include <QJsonDocument>
-
-#include <json/json.h>
 
 #include <algorithm>
 #include <string>
@@ -18,11 +19,11 @@
 // MODE_DIR_TO_JSON:  input directory structure -> json
 // MODE_MERGE_JSONS: input json files -> one merged json file
 
-final const QString MODE_DIR_TO_JSON = "dirtojson";
-final const QString MODE_MERGE_JSONS = "mergejsons";
+const QString MODE_DIR_TO_JSON = "dirtojson";
+const QString MODE_MERGE_JSONS = "mergejsons";
 
 /** list of all the modes (operations) */
-final const QStringList MODES = QStringList() 
+const QStringList MODES = QStringList() 
   << MODE_DIR_TO_JSON
   << MODE_MERGE_JSONS;
 
@@ -111,7 +112,7 @@ int main(int argc, char* argv[])
   auto outputfile = QString(us::any_cast<std::string>(parsedArgs["outputfile"]).c_str());
   auto mode = QString(us::any_cast<std::string>(parsedArgs["mode"]).c_str());
 
-  if (!MODE.contains(mode))
+  if (!MODES.contains(mode))
   {
     std::cerr << "Unknown mode\n";
     return EXIT_FAILURE;
@@ -120,7 +121,7 @@ int main(int argc, char* argv[])
   /*---- Partially required parameters ----*/
 
   QStringList directories;
-  QString jsons;
+  QStringList jsons;
 
   if (mode == MODE_DIR_TO_JSON)
   {
@@ -162,7 +163,7 @@ int main(int argc, char* argv[])
       // Save merged json to file
       QFile jsonFile(outputfile);
       jsonFile.open(QFile::WriteOnly);
-      jsonFile.write(mergedJson.toJson(QJsonDocument::Indented));
+      jsonFile.write(mergedJson->toJson(QJsonDocument::Indented));
     }
     else if (mode == MODE_MERGE_JSONS)
     {
@@ -172,7 +173,13 @@ int main(int argc, char* argv[])
       {
         QFile jsonFile(json);
         jsonFile.open(QFile::ReadOnly);
-        jsonDocs.append(QJsonDocument().fromJson(jsonFile.readAll()));
+        QJsonDocument doc = QJsonDocument::fromJson(jsonFile.readAll());
+        // Looks bad, but tries to avoid making unnecessary copies
+        jsonDocs.append(
+          QSharedPointer<QJsonDocument>(
+            new QJsonDocument(std::move(doc))
+          )
+        );
       }
 
       // Create merged json from all the jsonDocs
@@ -181,10 +188,10 @@ int main(int argc, char* argv[])
       // Save merged json to file
       QFile jsonFile(outputfile);
       jsonFile.open(QFile::WriteOnly);
-      jsonFile.write(mergedJson.toJson(QJsonDocument::Indented));
+      jsonFile.write(mergedJson->toJson(QJsonDocument::Indented));
     }
   }
-  catch()
+  catch (const mitk::Exception& e)
   {
     MITK_ERROR << "MITK Exception: " << e.what();
   }

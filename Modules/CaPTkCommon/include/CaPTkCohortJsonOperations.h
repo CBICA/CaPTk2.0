@@ -23,7 +23,7 @@ namespace captk
  * Each subject that appears on both will have it's images concatenated
  */
 MITKCAPTKCOMMON_EXPORT QSharedPointer<QJsonDocument> 
-CohortJsonMergeObjects(QList<QSharedPointer<QJsonDocument>>& jsons);
+CohortJsonMergeObjects(QList<QSharedPointer<QJsonDocument>> jsons);
 
 /** \brief Get a QJsonDocument containing the information of a cohort from file */
 MITKCAPTKCOMMON_EXPORT QSharedPointer<QJsonDocument> 
