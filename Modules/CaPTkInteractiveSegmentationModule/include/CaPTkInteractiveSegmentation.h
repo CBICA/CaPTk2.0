@@ -18,8 +18,6 @@
 #include <QFutureWatcher>
 #include <QProgressBar>
 
-#include <json/json.h>
-
 /** \class CaPTkInteractiveSegmentation
  *  \brief Singleton class that runs the interactive segmentation 
  * algorithm and adds the result to the data storage

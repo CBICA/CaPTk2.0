@@ -1,5 +1,0 @@
-set(Plugin-Name "Eager Activation Example Plugin")
-set(Plugin-Version "1.0")
-set(Plugin-Vendor "CAMIC")
-set(Plugin-ContactAddress "https://mitk.org")
-set(Plugin-ActivationPolicy eager)
