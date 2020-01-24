@@ -1,5 +1,10 @@
-#include "CaPTkCohortJsonFromFilesystem.h"
+#include "CaPTkCohortJsonOperations.h"
 
+#include "mitkExceptionMacro.h"
+
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
 #include <QString>
 #include <QStringList>
 #include <QDir>
@@ -7,100 +12,96 @@
 #include <QFileInfo>
 #include <QDebug>
 
-Json::Value captk::CohortMergeJsonObjects(std::vector<Json::Value> jsons)
+QSharedPointer<QJsonDocument> 
+captk::CohortJsonMergeObjects(QList<QSharedPointer<QJsonDocument>>& jsons)
 {
 	if (jsons.size() == 0)
 	{
-		return Json::Value();
+		return QJsonObject();
 	}
 	if (jsons.size() == 1)
 	{
 		return jsons[0];
 	}
 
-	// Actual merging
-
-	//you will need
-	// const Json::Value subjects = root["subjects"];
-	// if (!subjects.isObject() || subjects.isNull())
-	// {
-	// 	return root;
-	// }
-
-	return Json::Value(); // delete this
+	// TODO: Actual merging
+	std::cout << "\n!MERGING JSON OBJECTS NOT IMPLEMENTED YET!\n\n";
+	return QJsonObject(); // delete this when actual implementation is here
 }
 
-Json::Value captk::CohortJsonFromFilesystem(std::string directory)
+QSharedPointer<QJsonDocument> 
+captk::CohortJsonFromDirectoryStructure(QStringList& directory)
 {
-	Json::Value root;
+	QJsonObject root;
 
 	// ---- Cohort name ----
 
-	if (!captk::IsDir(directory))
+	if (!captk::internal::IsDir(directory))
 	{
+		mitkThrow() << "Directory doesn't exist";
 		return root;
 	}
 	else
 	{
-		root["cohort_name"] = captk::GetFileNameFromPath(directory);
+		root["cohort_name"] = captk::internal::GetFileNameFromPath(directory);
 	}
 
 	// ---- Subjects ----
 
-	root["subjects"] = Json::Value(Json::arrayValue); // Create empty array
+	root["subjects"] = QJsonArray(); // Create empty array
 
 	// For iterating the subdirectories of the cohort.
 	// Each directory is a subject
-	auto subjPaths = captk::GetSubdirectories(directory);
+	auto subjPaths = captk::internal::GetSubdirectories(directory);
 
 	for (auto& subjPath : subjPaths)
 	{
-		if (!captk::IsDir(subjPath)) { continue; }
-		auto subj = captk::GetFileNameFromPath(subjPath);
+		if (!captk::internal::IsDir(subjPath)) { continue; }
+		auto subj = captk::internal::GetFileNameFromPath(subjPath);
 		qDebug() << subj.c_str();
 		
 		// ---- Create subject ----
-		Json::Value subject;
+		QJsonObject subject;
 		subject["name"]   = subj;
-		subject["studies"] = Json::Value(Json::arrayValue);
+		subject["studies"] = QJsonObject(Json::arrayValue);
 
 		// ---- Add all the images ----
 
-		auto studiesPaths = captk::GetSubdirectories(subjPath);
+		auto studiesPaths = captk::internal::GetSubdirectories(subjPath);
 
 		for (auto& studyPath : studiesPaths)
 		{
-			if (!captk::IsDir(studyPath)) { continue; }
-			auto study = captk::GetFileNameFromPath(studyPath);
+			if (!captk::internal::IsDir(studyPath)) { continue; }
+			auto study = captk::internal::GetFileNameFromPath(studyPath);
 			qDebug() << "\t" << study.c_str();
 
-			Json::Value studyjson;
+			QJsonObject studyjson;
 			studyjson["name"]   = study;
-			studyjson["images"] = Json::Value(Json::arrayValue);
+			studyjson["images"] = QJsonObject(Json::arrayValue);
 
-			auto modalitiesPaths = captk::GetSubdirectories(studyPath);
+			auto modalitiesPaths = captk::internal::GetSubdirectories(studyPath);
 			for (auto& modalityPath : modalitiesPaths)
 			{
-				if (!captk::IsDir(modalityPath)) { continue; }
-				auto modality = captk::GetFileNameFromPath(modalityPath);
+				if (!captk::internal::IsDir(modalityPath)) { continue; }
+				auto modality = captk::internal::GetFileNameFromPath(modalityPath);
 				qDebug() << "\t" << "\t"<< modality.c_str();
 
-				auto serDescPaths = captk::GetSubdirectories(modalityPath);
+				auto serDescPaths = captk::internal::GetSubdirectories(modalityPath);
 				for (auto& serDescPath : serDescPaths)
 				{
-					if (!captk::IsDir(serDescPath)) { continue; }
-					auto serDesc = captk::GetFileNameFromPath(serDescPath);
+					if (!captk::internal::IsDir(serDescPath)) { continue; }
+					auto serDesc = captk::internal::GetFileNameFromPath(serDescPath);
 					qDebug() << "\t" << "\t" << "\t" << serDesc.c_str();
 
-					auto filesPaths = captk::GetContainedFiles(serDescPath);
+					auto filesPaths = captk::internal::GetContainedFiles(serDescPath);
 					qDebug() << filesPaths.size();
 					
-					std::string image_path = "";
-					std::string image_info = "";
+					QString image_path = "";
+					QString image_info = "";
 					for (auto& filePath : filesPaths)
 					{
-						if (captk::IsDir(filePath)) { continue; /*Discard dirs*/}
-						auto fileName = captk::GetFileNameFromPath(filePath);
+						if (captk::internal::IsDir(filePath)) { continue; /*Discard dirs*/}
+						auto fileName = captk::internal::GetFileNameFromPath(filePath);
 						qDebug() << "\t" << "\t" << "\t" << "\t" << fileName.c_str();
 
 						if (QString(fileName.c_str()).endsWith(QString("json")))
@@ -115,7 +116,7 @@ Json::Value captk::CohortJsonFromFilesystem(std::string directory)
 
 					if (image_path == "") { continue; }
 
-					Json::Value image;
+					QJsonObject image;
 					image["path"] = image_path;
 					image["modality"] = modality;
 					if (serDesc != "segmentation")
@@ -151,27 +152,15 @@ Json::Value captk::CohortJsonFromFilesystem(std::string directory)
 	return root;
 }
 
-Json::Value captk::CohortJsonFromFilesystem(std::vector<std::string> directoriesVector)
+QStringList captk::internal::GetSubdirectories(QString& directory)
 {
-	std::vector<Json::Value> jsons;
+	QStringList list;
 
-	for (std::string& directory : directoriesVector)
-	{
-		jsons.push_back(captk::CohortJsonFromFilesystem(directory));
-	}
-
-	return captk::CohortMergeJsonObjects(jsons);
-}
-
-std::vector<std::string> captk::GetSubdirectories(std::string directory)
-{
 	QFileInfo directoryFileInfo(directory.c_str());
 	if (!directoryFileInfo.exists() || !directoryFileInfo.isDir())
 	{
-		return std::vector<std::string>();
+		return list;
 	}
-
-	QStringList list;
 	
 	QDirIterator iter(directory.c_str(), QDir::Dirs | QDir::NoDotAndDotDot);
 	while(iter.hasNext())
@@ -184,7 +173,7 @@ std::vector<std::string> captk::GetSubdirectories(std::string directory)
 	list.sort(Qt::CaseInsensitive);
 
 	// Convert to vector
-	std::vector<std::string> res;
+	QStringList res;
 	for (QString s : list)
 	{
 		res.push_back(s.toStdString());
@@ -192,12 +181,12 @@ std::vector<std::string> captk::GetSubdirectories(std::string directory)
 	return res;
 }
 
-std::vector<std::string> captk::GetContainedFiles(std::string directory)
+QStringList captk::internal::GetContainedFiles(QString& directory)
 {
 	QFileInfo directoryFileInfo(directory.c_str());
 	if (!directoryFileInfo.exists() || !directoryFileInfo.isDir())
 	{
-		return std::vector<std::string>();
+		return QStringList();
 	}
 
 	QStringList list;
@@ -212,7 +201,7 @@ std::vector<std::string> captk::GetContainedFiles(std::string directory)
 	list.sort(Qt::CaseInsensitive);
 
 	// Convert to vector
-	std::vector<std::string> res;
+	QStringList res;
 	for (QString s : list)
 	{
 		res.push_back(s.toStdString());
@@ -220,13 +209,13 @@ std::vector<std::string> captk::GetContainedFiles(std::string directory)
 	return res;	
 }
 
-std::string captk::GetFileNameFromPath(std::string path)
+QString captk::internal::GetFileNameFromPath(QString& path)
 {
 	QFileInfo fileInfo(path.c_str());
 	return fileInfo.fileName().toStdString();
 }
 
-bool captk::IsDir(std::string path)
+bool captk::internal::IsDir(QString& path)
 {
 	QFileInfo fileInfo(path.c_str());
 	return fileInfo.isDir();
