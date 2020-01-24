@@ -83,7 +83,7 @@ captk::CohortJsonFromDirectoryStructure(QString& directory)
 
 			QJsonObject studyjson;
 			studyjson["name"] = study;
-			auto images = QJsonArray();
+			auto series_of_study = QJsonArray();
 
 			auto modalitiesPaths = captk::internal::GetSubdirectories(studyPath);
 			for (auto& modalityPath : modalitiesPaths)
@@ -99,53 +99,65 @@ captk::CohortJsonFromDirectoryStructure(QString& directory)
 					auto serDesc = captk::internal::GetFileNameFromPath(serDescPath);
 					qDebug() << "\t" << "\t" << "\t" << serDesc;
 
+					auto series = QJsonObject();
+					series["modality"] = modality;
+					if (modality != "seg")
+					{
+						series["series_description"] = serDesc;
+					}
+					else 
+					{
+						series["segment_label"] = serDesc;
+					}
+
+					auto images = QJsonArray();
+
 					auto filesPaths = captk::internal::GetContainedFiles(serDescPath);
-					qDebug() << filesPaths.size();
 					
-					QString image_path = "";
-					QString image_info = "";
 					for (auto& filePath : filesPaths)
 					{
 						if (captk::internal::IsDir(filePath)) { continue; /*Discard dirs*/}
+						if (filePath.endsWith("json")) { continue; }
+						if (filePath.endsWith("csv")) { continue; }
+
 						auto fileName = captk::internal::GetFileNameFromPath(filePath);
 						qDebug() << "\t" << "\t" << "\t" << "\t" << fileName;
 
-						if (fileName.endsWith(QString("json")))
+						// Add image
+						auto image = QJsonObject();
+						image["path"] = filePath;
+						
+						// Check if an "image_info" file exists for the image that will be added
+						// That file should be in the same directory and have the same basename, but
+						// end in .json
+						// i.e.: patient0_flair.dcm -> patient0_flair.json
+						QFileInfo fi (filePath);
+						auto dirOfFile =  fi.absoluteDir().absolutePath();
+						auto baseName = fi.completeBaseName();
+						// Remove .nii in case of .nii.gz
+						if (baseName.endsWith(".nii")) { baseName = QFileInfo(baseName).completeBaseName(); }
+						if (filesPaths.contains(dirOfFile + QDir::separator() + baseName + ".json"))
 						{
-							image_info = filePath;
+							image["image_info"] = dirOfFile 
+								+ QDir::separator()
+								+ baseName 
+								+ ".json";
 						}
-						else
-						{
-							image_path = filePath;
-						}
+						
+						images.push_back(image);
 					}
 
-					if (image_path == "") { continue; }
-
-					QJsonObject image;
-					image["path"] = image_path;
-					image["modality"] = modality;
-					if (serDesc != "segmentation")
-					{
-						image["series_description"] = serDesc;
+					if (images.size() > 0) {
+						series["images"] = images;
+						series_of_study.push_back(series);
 					}
-					else
-					{
-						image["segmentation_of"] = serDesc;
-					}
-					if (image_info != "")
-					{
-						image["image_info_path"] = image_info;
-					} 
-
-					images.push_back(image);
-				}				
+				}
 			}
 
-			if (images.size() > 0)
+			if (series_of_study.size() > 0)
 			{
-				studyjson["images"] = images;
-				studies.push_back(studyjson);			
+				studyjson["series"] = series_of_study;
+				studies.push_back(studyjson);
 			}
 		}
 
