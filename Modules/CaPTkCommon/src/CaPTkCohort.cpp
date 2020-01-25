@@ -1,4 +1,5 @@
 #include "CaPTkCohort.h"
+
 #include "CaPTkCohortSubject.h"
 
 captk::Cohort::Cohort(QObject* parent) :

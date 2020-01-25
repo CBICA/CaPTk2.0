@@ -6,6 +6,12 @@
 // that you want to be part of the public interface of your module.
 #include <MitkCaPTkCommonExports.h>
 
+namespace captk
+{
+class Cohort;
+}
+
+#include <QObject>
 #include <QString>
 #include <QStringList>
 #include <QList>
@@ -28,6 +34,10 @@ CohortJsonMergeObjects(QList<QSharedPointer<QJsonDocument>> jsons);
 /** \brief Get a QJsonDocument containing the information of a cohort from file */
 MITKCAPTKCOMMON_EXPORT QSharedPointer<QJsonDocument> 
 CohortJsonFromDirectoryStructure(QString& directory);
+
+/** \brief Load from json -> captk::Cohort */
+MITKCAPTKCOMMON_EXPORT captk::Cohort* 
+CohortJsonLoad(QSharedPointer<QJsonDocument> json, QObject* parent = nullptr);
 
 /** \namespace internal Contains helper functions for cohort json processing */
 namespace internal

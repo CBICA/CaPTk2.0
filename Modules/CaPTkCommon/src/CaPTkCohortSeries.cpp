@@ -27,6 +27,11 @@ QString captk::CohortSeries::GetSeriesDescription()
     return m_SeriesDescription;
 }
 
+QString captk::CohortSeries::GetSegmentLabel()
+{
+    return m_SegmentLabel;
+}
+
 QList<captk::CohortImage*> captk::CohortSeries::GetImages()
 {
     return m_Images; 
@@ -80,6 +85,11 @@ void captk::CohortSeries::SetModality(QString modality)
 void captk::CohortSeries::SetSeriesDescription(QString seriesDescription)
 {
     m_SeriesDescription = seriesDescription;
+}
+
+void captk::CohortSeries::SetSegmentLabel(QString segmentLabel)
+{
+    m_SegmentLabel = segmentLabel;
 }
 
 void captk::CohortSeries::SetImages(QList<captk::CohortImage*> images)

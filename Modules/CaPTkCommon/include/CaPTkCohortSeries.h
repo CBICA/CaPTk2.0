@@ -37,6 +37,9 @@ public:
     /** \brief Series description (i.e. t1) for the series */
     QString GetSeriesDescription();
 
+    /** \brief Only application for "seg" modality (segmentation) */
+    QString GetSegmentLabel();
+
     /** \brief Returns a list of all the images in the series 
      * 
      * For nifti and similar, expect only an image per series. 
@@ -68,6 +71,8 @@ public:
 
     void SetSeriesDescription(QString seriesDescription);
 
+    void SetSegmentLabel(QString segmentLabel);
+
     /** \brief Set the images of series
      * 
      * For nifti and similar that is one file.
@@ -78,7 +83,7 @@ public:
 private:
     QString m_Modality;
     QString m_SeriesDescription;
-    QString m_SegmentationLabel;
+    QString m_SegmentLabel;
     QList<captk::CohortImage*> m_Images;
 };
 }

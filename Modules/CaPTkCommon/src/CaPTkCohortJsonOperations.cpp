@@ -1,5 +1,11 @@
 #include "CaPTkCohortJsonOperations.h"
 
+#include "CaPTkCohort.h"
+#include "CaPTkCohortSubject.h"
+#include "CaPTkCohortStudy.h"
+#include "CaPTkCohortSeries.h"
+#include "CaPTkCohortImage.h"
+
 #include "mitkExceptionMacro.h"
 
 #include <QJsonDocument>
@@ -173,6 +179,169 @@ captk::CohortJsonFromDirectoryStructure(QString& directory)
 	root["subjects"] = subjects;
 
 	return QSharedPointer<QJsonDocument>(new QJsonDocument(root));
+}
+
+captk::Cohort* 
+captk::CohortJsonLoad(
+	QSharedPointer<QJsonDocument> json,
+	QObject* parent)
+{
+	captk::Cohort* cohort = new captk::Cohort(parent);
+	
+	QJsonObject root = json->object();
+
+	if (root.contains("cohort_name"))
+	{
+		cohort->SetName(root["cohort_name"].toString());
+	}
+
+	if (!root.contains("subjects"))
+	{
+		return cohort; // No subjects found
+	}
+
+	QList<captk::CohortSubject*> subjects;
+
+	// Iterate over the subjects of the cohort
+	for (QJsonValueRef subjRef : root["subjects"].toArray())
+	{
+		auto subjObj = subjRef.toObject();
+
+		captk::CohortSubject* subject = new captk::CohortSubject(cohort);
+
+		if (subjObj.contains("name"))
+		{
+			subject->SetName(subjObj["name"].toString());
+		}
+		if (!subjObj.contains("studies"))
+		{
+			delete subject;
+			continue;
+		}
+
+		QList<captk::CohortStudy*> studies;
+
+		// Iterate over the studies of the subject
+		for (QJsonValueRef studyRef : subjObj["studies"].toArray())
+		{
+			auto studyObj = studyRef.toObject();
+
+			captk::CohortStudy* study = new captk::CohortStudy(subject);
+
+			if (studyObj.contains("name"))
+			{
+				study->SetName(studyObj["name"].toString());
+			}
+			if (!studyObj.contains("series"))
+			{
+				delete study;
+				continue;
+			}
+
+			QList<captk::CohortSeries*> series_of_study;
+
+			// Iterate over the collection of series of the study
+			for (QJsonValueRef seriesRef : studyObj["series"].toArray())
+			{
+				auto seriesObj = seriesRef.toObject();
+
+				captk::CohortSeries* series = new captk::CohortSeries(study);
+
+				if (seriesObj.contains("modality"))
+				{
+					auto modality = seriesObj["modality"].toString();
+					series->SetModality(modality);
+
+					if (modality != "seg")
+					{
+						if (seriesObj.contains("series_description"))
+						{
+							series->SetSeriesDescription(
+								seriesObj["series_description"].toString()
+							);
+						}
+					}
+					else
+					{
+						if (seriesObj.contains("segment_label"))
+						{
+							series->SetSegmentLabel(
+								seriesObj["segment_label"].toString()
+							);
+						}						
+					}
+				}
+
+				if (!seriesObj.contains("images"))
+				{
+					delete series;
+					continue;
+				}
+
+				QList<captk::CohortImage*> images;
+
+				// Iterate over the images and add them
+				for (QJsonValueRef imageRef : seriesObj["images"].toArray())
+				{
+					auto imageObj = imageRef.toObject();
+
+					captk::CohortImage* image = new captk::CohortImage(series);
+
+					if (!imageObj.contains("path"))
+					{
+						delete image;
+						continue;
+					}
+
+					image->SetPath(imageObj["path"].toString());
+
+					if (imageObj.contains("image_info"))
+					{
+						image->SetImageInfoPath(imageObj["image_info"].toString());
+					}
+
+					images.push_back(image);
+				}
+
+				if (images.size() == 0)
+				{
+					delete series;
+					continue;
+				}
+
+				// Add to series
+				series->SetImages(images);
+
+				series_of_study.push_back(series);
+			}
+
+			if (series_of_study.size() == 0)
+			{
+				delete study;
+				continue;
+			}
+
+			// Add to study
+			study->SetSeries(series_of_study);
+
+			studies.push_back(study);
+		}
+
+		// Check if there are any studies
+		if (studies.size() == 0)
+		{
+			delete subject;
+			continue;
+		}
+
+		// Add to subject
+		subject->SetStudies(studies);
+
+		subjects.push_back(subject);
+	}
+
+	cohort->SetSubjects(subjects);
+	return cohort;
 }
 
 QStringList captk::internal::GetSubdirectories(QString& directory)

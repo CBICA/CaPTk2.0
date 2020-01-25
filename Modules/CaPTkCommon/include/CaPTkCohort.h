@@ -26,6 +26,8 @@ public:
 
     ~Cohort();
 
+    void LoadFromJson(QString jsonPath);
+
     /* Getters */
 
     QString GetName();
