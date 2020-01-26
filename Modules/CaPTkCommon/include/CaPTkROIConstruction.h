@@ -6,7 +6,8 @@
 
 #include "itkImage.h"
 
-#include "CaPTkROIConstructionImplementation.h"
+// #include "CaPTkROIConstructionImplementation.h"
+#include "CaPTkROIConstructionItkHelper.h"
 
 #include <vector>
 #include <string>
@@ -66,21 +67,38 @@ public:
 
 private:
     /** \brief Convert the seeds to 2D itk::Image (because mitk::LabelSetImage is always at least 3D) */
-    typename itk::Image<float,2>::Pointer
+    typename itk::Image<int,2>::Pointer
     Mitk3DLabelSetImageToItk2D(mitk::LabelSetImage::Pointer mask);
 
-    typedef struct ROIIndices
-    {
-        std::vector<
-            captk::ROIConstructionImplementation<itk::Image<float,2>>::ROIProperties
-        > ind2D;
-        std::vector<
-            captk::ROIConstructionImplementation<itk::Image<float,3>>::ROIProperties
-        > ind3D;
-        unsigned int dimension = 3;
-    } ROIIndices;
+    // typedef struct ROIIndices
+    // {
+    //     std::vector<
+    //         captk::ROIConstructionImplementation<itk::Image<int,2>>::ROIProperties
+    //     > ind2D;
+    //     std::vector<
+    //         captk::ROIConstructionImplementation<itk::Image<int,3>>::ROIProperties
+    //     > ind3D;
+    //     std::vector<
+    //         captk::ROIConstructionImplementation<itk::Image<int,4>>::ROIProperties
+    //     > ind4D;
+    //     unsigned int dimension = 3;
+    // } ROIIndices;
 
-    ROIIndices* m_ROIIndices;
+    // std::shared_ptr<ROIIndices> m_ROIIndices;
+
+    // template < typename TPixel, unsigned int VImageDimension >
+    // void ItkMaskFromIndeces(
+    //     typename itk::Image<TPixel,VImageDimension>* mask
+    // );
+
+    template < typename TPixel, unsigned int VImageDimension >
+    void CreateHelper(
+        typename itk::Image<TPixel,VImageDimension>* mask
+    );
+
+    captk::ROIConstructionItkHelper<short int, 2> m_Helper2D;
+    captk::ROIConstructionItkHelper<short int, 3> m_Helper3D;
+    captk::ROIConstructionItkHelper<short int, 4> m_Helper4D;
 
     /** The input label mask */
     mitk::LabelSetImage::Pointer m_Input;
@@ -88,5 +106,7 @@ private:
     size_t m_CurrentIndex;
 };
 }
+
+#include "CaPTkROIConstruction.hxx"
 
 #endif // ! CaPTkROIConstruction_h
