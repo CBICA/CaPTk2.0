@@ -17,14 +17,13 @@ See COPYING file or https://www.med.upenn.edu/sbia/software/license.html
 #include "CaPTkFeatureScalingClass.h"
 
 #include <QDir>
+#include <QFileInfo>
 
 #include "opencv2/core/core.hpp"
 #include "opencv2/ml.hpp"
 
 #include <tuple>
 #include <numeric>
-#include <dirent.h>
-#include <errno.h>
 
 bool captk::TrainingModuleAlgorithm::CheckPerformanceStatus(double ist, double second, double third, double fourth, double fifth, double sixth, double seventh, double eighth, double ninth, double tenth)
 {
@@ -802,22 +801,19 @@ captk::TrainingModuleAlgorithm::Run(
 
   // Check if outputdirectory exists, and create it otherwise
   {
-    DIR* dir = opendir(outputdirectory.c_str());
-    if (dir) {
-      /* Directory exists. */
-      closedir(dir);
-    }
-    else if (ENOENT == errno) {
+    QDir d(outputdirectory.c_str());
+    if (!d.exists()) 
+    {
       /* Directory does not exist. Create it. */
-      QDir d(outputdirectory.c_str());
       if (!d.mkpath(outputdirectory.c_str()))
       {
         return std::make_tuple<bool, std::string>(false, "Can not create output directory");
       }
 
-    } else {
-        /* opendir() failed for some other reason. */
-        return std::make_tuple<bool, std::string>(false, "Can not open output directory");
+    }
+    if (!QFileInfo(outputdirectory.c_str()).isWritable())
+    {
+        return std::make_tuple<bool, std::string>(false, "Output directory is not writable");
     }
   }
 
