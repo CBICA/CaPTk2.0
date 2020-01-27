@@ -1,4 +1,4 @@
-option(BUILD_CaPTkInteractiveSegmentationCmdApp "Build command-line app for CaPTkInteractiveSegmentation" ON)
+option(BUILD_CaPTkInteractiveSegmentationCmdApp "Build command-line app for CaPTkInteractiveSegmentation" OFF)
 
 if(BUILD_CaPTkInteractiveSegmentationCmdApp)
   mitkFunctionCreateCommandLineApp(

@@ -145,6 +145,20 @@ CaPTkTrainingModule::RunThread(
 		folds.toInt() :
 		samples.toInt();
 
+	if (foldsOrSamples < 2 && configuration == 1)
+	{
+		runResult.ok = false;
+		runResult.errorMessage = "\"Folds\" need to be at least 2";
+		return runResult;		
+	}
+
+	if (foldsOrSamples < 2 && configuration == 2)
+	{
+		runResult.ok = false;
+		runResult.errorMessage = "\"Samples\" need to be a positive number";
+		return runResult;
+	}
+
 	captk::TrainingModuleAlgorithm algorithm = captk::TrainingModuleAlgorithm();
 	auto resAlgorithm = algorithm.Run(
 		featuresCsvPath.toStdString(),
