@@ -270,7 +270,7 @@ void captk::ROIConstructionImplementation< TImage >::Update()
     // if both the latticeWindow and latticeStep are valid sizes, proceed with grid construction
     if (m_latticeEnabled)
     {
-      std::cerr << ("Found valid latticeStep and latticeWindowSize; lattice-based computation has been enabled");
+      std::cout << "Found valid latticeStep and latticeWindowSize; lattice-based computation has been enabled\n";
       //totalROIsToCompute *= numberOfSteps;
 
       ///

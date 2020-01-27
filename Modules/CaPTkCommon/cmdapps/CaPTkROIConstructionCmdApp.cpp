@@ -191,6 +191,7 @@ int main(int argc, char* argv[])
         step
       );
 
+      int counter = 1;
       while(constructor.HasNext())
       {
           auto miniMask = constructor.GetNext();
@@ -199,17 +200,18 @@ int main(int argc, char* argv[])
           auto value = QString::number(constructor.GetCurrentValue());
 
           auto outputPath = outputDir + QDir::separator() 
+            + QString::number(counter)
             + name + "_" + value + "_" + 
             maskFileName;
 
-          std::cout << std::endl
-                    << ">Will save ROI to file "
-                    << outputPath.toStdString().c_str();
+          std::cout << ">Will save ROI to file "
+                    << outputPath.toStdString() << "\n";
 
           mitk::IOUtil::Save(
 		        miniMask, 
 		        outputPath.toStdString()
 	        );
+          counter++;
       }
   }
   catch (const mitk::Exception& e)

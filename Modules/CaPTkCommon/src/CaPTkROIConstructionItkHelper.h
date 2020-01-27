@@ -79,6 +79,15 @@ public:
         roiConstructor.SetPatchConstructionConditionNone(patchConstructionNone);
         roiConstructor.Update();
 
+        // Show info
+        std::cout << "\nNumber of valid lattice points: " 
+                  << roiConstructor.GetNumberOfValidLatticePoints()
+                  << std::endl;
+
+        std::cout << "Lattice radius: " 
+                  << roiConstructor.GetLatticeRadius()
+                  << std::endl;
+
         m_Properties = roiConstructor.GetOutput();
     }
 
