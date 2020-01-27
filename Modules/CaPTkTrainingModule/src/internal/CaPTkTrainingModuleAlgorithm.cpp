@@ -17,6 +17,7 @@ See COPYING file or https://www.med.upenn.edu/sbia/software/license.html
 #include "CaPTkFeatureScalingClass.h"
 
 #include <QDir>
+#include <QFileInfo>
 
 #include "opencv2/core/core.hpp"
 #include "opencv2/ml.hpp"
@@ -809,6 +810,10 @@ captk::TrainingModuleAlgorithm::Run(
         return std::make_tuple<bool, std::string>(false, "Can not create output directory");
       }
 
+    }
+    if (!QFileInfo(outputdirectory.c_str()).isWritable())
+    {
+        return std::make_tuple<bool, std::string>(false, "Output directory is not writable");
     }
   }
 
