@@ -1,13 +1,17 @@
 #ifndef CaPTkROIConstruction_h
 #define CaPTkROIConstruction_h
 
+namespace captk
+{
+class ROIConstructionItkHelperBase;
+}
+
+#include "CaPTkROIConstructionItkHelper.h"
+
 #include "mitkLabel.h"
 #include "mitkLabelSetImage.h"
 
 #include "itkImage.h"
-
-#include "CaPTkROIConstructionItkHelperBase.h"
-#include "CaPTkROIConstructionItkHelper.h"
 
 #include <vector>
 #include <string>

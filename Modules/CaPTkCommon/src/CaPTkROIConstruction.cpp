@@ -6,6 +6,8 @@
 #include <mitkLabelSetImageConverter.h>
 #include <mitkITKImageImport.h>
 
+#include "CaPTkROIConstructionItkHelperBase.h"
+
 captk::ROIConstruction::ROIConstruction() :
     m_CurrentIndex(0)
 {
