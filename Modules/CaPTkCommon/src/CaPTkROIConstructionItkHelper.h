@@ -105,6 +105,12 @@ public:
         size_t patchPos, 
         mitk::LabelSetImage::Pointer miniMask) override
     {
+        // Add label and label name
+        mitk::Label::Pointer label = mitk::Label::New();
+        label->SetName(m_Properties[patchPos].label);
+        label->SetValue(m_Properties[patchPos].value);
+        miniMask->GetActiveLabelSet()->AddLabel(label);
+
         // Convert mitk::LabelSetImage::Pointer to TImageType
         using ImageToItkType = mitk::ImageToItk<TImageType>;
         typename ImageToItkType::Pointer imagetoitk = ImageToItkType::New();
@@ -119,10 +125,11 @@ public:
 
         // Patch: this->m_Properties[patchPos]
         // Patch is generally a collection of points
+        auto currentValue = this->m_Properties[patchPos].value;
         for (auto& index : this->m_Properties[patchPos].nonZeroIndeces)
         {
             iter_mm.SetIndex(index);
-            iter_mm.Set(1);
+            iter_mm.Set(currentValue);
         }
     }
 
