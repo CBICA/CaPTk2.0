@@ -1,13 +1,3 @@
-#[[ The Guidelines Support Library isn't really used in the project template.
-    It serves as an example of how to add external projects, though.
-
-    Also see the following files to get an overview of what is
-    necessary to add an external project:
-
-      - CMakeExternals/ExternalProjectList.cmake
-      - CMake/FindGuidlinesSupportLibrary.cmake
-      - CMake/PackageDepends/MITK_GuidelinesSupportLibrary_Config.cmake ]]
-
 set(proj yaml-cpp)
 set(proj_DEPENDENCIES "")
 
