@@ -30,7 +30,8 @@ int main(int argc, char* argv[])
   parser.setTitle("CaPTk ROI Construction Cmd App");
   parser.setContributor("CBICA");
   parser.setDescription(
-    "This command-line app supports operations for lattice ROI construction for feature extraction.");
+    std::string("This command-line app supports operations for lattice ") + 
+    std::string("ROI construction for feature extraction."));
 
   // How should arguments be prefixed
   parser.setArgumentPrefix("--", "-");
@@ -173,11 +174,6 @@ int main(int argc, char* argv[])
       patchConstructionNone = us::any_cast<bool>(parsedArgs["patch-construction-none"]);
   }
 
-  if (!lattice)
-  {
-      step = window = 0;
-  }
-
   /*---- Run ----*/
 
   auto maskFileName = QFileInfo(maskPath).fileName();
@@ -185,10 +181,8 @@ int main(int argc, char* argv[])
   try
   {
       captk::ROIConstruction constructor;
-      constructor.SetInputMask(
-          mitk::IOUtil::Load<mitk::LabelSetImage>(maskPath.toStdString())
-      );
       constructor.Update(
+        mitk::IOUtil::Load<mitk::LabelSetImage>(maskPath.toStdString()),
         lattice,
         window,
         fluxNeumannCondition,
@@ -213,9 +207,9 @@ int main(int argc, char* argv[])
                     << outputPath.toStdString().c_str();
 
           mitk::IOUtil::Save(
-		    miniMask, 
-		    outputPath.toStdString()
-	      );
+		        miniMask, 
+		        outputPath.toStdString()
+	        );
       }
   }
   catch (const mitk::Exception& e)

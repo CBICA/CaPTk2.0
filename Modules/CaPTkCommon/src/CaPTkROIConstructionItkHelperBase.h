@@ -36,6 +36,10 @@ public:
         float step
     ) = 0;
 
+    virtual std::string GetPropertyLabel(size_t patchPos) = 0;
+
+    virtual int GetPropertyValue(size_t patchPos) = 0;
+
     virtual void PopulateMaskAtPatch(
         size_t patchPos, 
         mitk::LabelSetImage::Pointer miniMask) = 0;

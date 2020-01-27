@@ -25,6 +25,7 @@ class MITKCAPTKCOMMON_EXPORT ROIConstructionItkHelper :
                       public ROIConstructionItkHelperBase
 {
 public:
+
     using TImageType = itk::Image<TPixel, VImageDimension>;
     using TImageTypePointer = typename TImageType::Pointer;
 
@@ -81,12 +82,16 @@ public:
         m_Properties = roiConstructor.GetOutput();
     }
 
-private:
-    std::vector<
-        typename captk::ROIConstructionImplementation<TImageType>::ROIProperties
-    > m_Properties;
+    std::string GetPropertyLabel(size_t patchPos) override
+    {
+        return this->m_Properties[patchPos].label;
+    }
 
-public:
+    int GetPropertyValue(size_t patchPos) override
+    {
+        return this->m_Properties[patchPos].value;
+    }
+
     void PopulateMaskAtPatch (
         size_t patchPos, 
         mitk::LabelSetImage::Pointer miniMask) override
@@ -104,7 +109,7 @@ public:
         );
 
         // Patch: this->m_Properties[patchPos]
-        // Patch == collection of points
+        // Patch is generally a collection of points
         for (auto& index : this->m_Properties[patchPos].nonZeroIndeces)
         {
             iter_mm.SetIndex(index);
@@ -112,8 +117,12 @@ public:
         }
     }
 
+private:
 
-private:    
+    std::vector<
+        typename captk::ROIConstructionImplementation<TImageType>::ROIProperties
+    > m_Properties;
+
     TImageTypePointer m_Mask;
     std::vector<int> m_Values;
     std::vector<std::string> m_Names;

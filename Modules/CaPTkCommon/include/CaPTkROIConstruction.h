@@ -6,7 +6,6 @@
 
 #include "itkImage.h"
 
-// #include "CaPTkROIConstructionImplementation.h"
 #include "CaPTkROIConstructionItkHelperBase.h"
 #include "CaPTkROIConstructionItkHelper.h"
 
@@ -34,8 +33,6 @@ public:
     ROIConstruction();
     ~ROIConstruction();
 
-    void SetInputMask(mitk::LabelSetImage::Pointer input);
-
     /** \brief Find all the different lattice points
      * 
      * See CaPTkROIConstructionImplementation for what the parameters are
@@ -43,6 +40,7 @@ public:
     void Update(
         // JUST CALCULATE FOR ALL LABELS std::vector<mitk::Label::PixelType> rois,
         // CAN BE DEDUCED: std::vector< std::string > roi_labels,
+        mitk::LabelSetImage::Pointer input,
         bool  lattice,
         float window,
         bool  fluxNeumannCondition,
@@ -67,44 +65,18 @@ public:
     int GetCurrentValue();
 
 private:
-    /** \brief Convert the seeds to 2D itk::Image (because mitk::LabelSetImage is always at least 3D) */
-    typename itk::Image<int,2>::Pointer
-    Mitk3DLabelSetImageToItk2D(mitk::LabelSetImage::Pointer mask);
-
-    // typedef struct ROIIndices
-    // {
-    //     std::vector<
-    //         captk::ROIConstructionImplementation<itk::Image<int,2>>::ROIProperties
-    //     > ind2D;
-    //     std::vector<
-    //         captk::ROIConstructionImplementation<itk::Image<int,3>>::ROIProperties
-    //     > ind3D;
-    //     std::vector<
-    //         captk::ROIConstructionImplementation<itk::Image<int,4>>::ROIProperties
-    //     > ind4D;
-    //     unsigned int dimension = 3;
-    // } ROIIndices;
-
-    // std::shared_ptr<ROIIndices> m_ROIIndices;
-
-    // template < typename TPixel, unsigned int VImageDimension >
-    // void ItkMaskFromIndeces(
-    //     typename itk::Image<TPixel,VImageDimension>* mask
-    // );
+    // /** \brief Convert the seeds to 2D itk::Image (because mitk::LabelSetImage is always at least 3D) */
+    // typename itk::Image<int,2>::Pointer
+    // Mitk3DLabelSetImageToItk2D(mitk::LabelSetImage::Pointer mask);
 
     template < typename TPixel, unsigned int VImageDimension >
     void CreateHelper(
         typename itk::Image<TPixel,VImageDimension>* mask
     );
 
-    // captk::ROIConstructionItkHelper<short int, 2> m_Helper2D;
-    // captk::ROIConstructionItkHelper<short int, 3> m_Helper3D;
-    // captk::ROIConstructionItkHelper<short int, 4> m_Helper4D;
-
     std::shared_ptr<captk::ROIConstructionItkHelperBase> m_Helper;
-
-    /** The input label mask */
-    mitk::LabelSetImage::Pointer m_Input;
+    
+    mitk::LabelSetImage::Pointer m_MaskTemplate;
     
     size_t m_CurrentIndex;
 };
