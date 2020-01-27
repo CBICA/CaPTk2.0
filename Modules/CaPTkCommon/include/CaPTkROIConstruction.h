@@ -7,6 +7,7 @@
 #include "itkImage.h"
 
 // #include "CaPTkROIConstructionImplementation.h"
+#include "CaPTkROIConstructionItkHelperBase.h"
 #include "CaPTkROIConstructionItkHelper.h"
 
 #include <vector>
@@ -96,9 +97,11 @@ private:
         typename itk::Image<TPixel,VImageDimension>* mask
     );
 
-    captk::ROIConstructionItkHelper<short int, 2> m_Helper2D;
-    captk::ROIConstructionItkHelper<short int, 3> m_Helper3D;
-    captk::ROIConstructionItkHelper<short int, 4> m_Helper4D;
+    // captk::ROIConstructionItkHelper<short int, 2> m_Helper2D;
+    // captk::ROIConstructionItkHelper<short int, 3> m_Helper3D;
+    // captk::ROIConstructionItkHelper<short int, 4> m_Helper4D;
+
+    std::shared_ptr<captk::ROIConstructionItkHelperBase> m_Helper;
 
     /** The input label mask */
     mitk::LabelSetImage::Pointer m_Input;

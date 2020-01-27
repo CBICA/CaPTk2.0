@@ -3,6 +3,7 @@
 #include <mitkImageCast.h>
 #include <itkExtractImageFilter.h>
 #include <mitkImageAccessByItk.h>
+#include <mitkLabelSetImageConverter.h>
 
 #include <mitkITKImageImport.h>
 // #include <boost/preprocessor/tuple/rem.hpp>
@@ -92,42 +93,53 @@ void captk::ROIConstruction::Update(
 
     AccessByItk(m_Input, CreateHelper);
 
-    if (m_Input->GetDimension() == 2)
-    {
-        m_Helper2D.SetValuesAndNames(roiValues, roiNames);
-        m_Helper2D.Update(
-            lattice,
-            window,
-            fluxNeumannCondition,
-            patchConstructionROI,
-            patchConstructionNone,
-            step
-        );
-    }
-    else if (m_Input->GetDimension() == 3)
-    {
-        m_Helper3D.SetValuesAndNames(roiValues, roiNames);
-        m_Helper3D.Update(
-            lattice,
-            window,
-            fluxNeumannCondition,
-            patchConstructionROI,
-            patchConstructionNone,
-            step
-        );
-    }
-    else if (m_Input->GetDimension() == 4)
-    {
-        m_Helper3D.SetValuesAndNames(roiValues, roiNames);
-        m_Helper3D.Update(
-            lattice,
-            window,
-            fluxNeumannCondition,
-            patchConstructionROI,
-            patchConstructionNone,
-            step
-        );
-    }
+    m_Helper->SetValuesAndNames(roiValues, roiNames);
+
+    m_Helper->Update(
+        lattice,
+        window,
+        fluxNeumannCondition,
+        patchConstructionROI,
+        patchConstructionNone,
+        step
+    );
+
+    // if (m_Input->GetDimension() == 2)
+    // {
+    //     m_Helper2D.SetValuesAndNames(roiValues, roiNames);
+    //     m_Helper2D.Update(
+    //         lattice,
+    //         window,
+    //         fluxNeumannCondition,
+    //         patchConstructionROI,
+    //         patchConstructionNone,
+    //         step
+    //     );
+    // }
+    // else if (m_Input->GetDimension() == 3)
+    // {
+    //     m_Helper3D.SetValuesAndNames(roiValues, roiNames);
+    //     m_Helper3D.Update(
+    //         lattice,
+    //         window,
+    //         fluxNeumannCondition,
+    //         patchConstructionROI,
+    //         patchConstructionNone,
+    //         step
+    //     );
+    // }
+    // else if (m_Input->GetDimension() == 4)
+    // {
+    //     m_Helper3D.SetValuesAndNames(roiValues, roiNames);
+    //     m_Helper3D.Update(
+    //         lattice,
+    //         window,
+    //         fluxNeumannCondition,
+    //         patchConstructionROI,
+    //         patchConstructionNone,
+    //         step
+    //     );
+    // }
 
     // // ---- Different operation depending on dimensionality
     // if (m_Input->GetDimension() == 2 || (m_Input->GetDimension() == 3 && m_Input->GetDimension(2) == 1))
@@ -235,19 +247,20 @@ bool captk::ROIConstruction::HasNext()
     //     total = m_ROIIndices->ind4D.size();
     // }
 
-    size_t total = 0;
-    if (m_Input->GetDimension() == 2)
-    {
-        total = m_Helper2D.GetPropertiesSize();
-    }
-    else if (m_Input->GetDimension() == 3)
-    {
-        total = m_Helper3D.GetPropertiesSize();
-    }
-    else if (m_Input->GetDimension() == 4)
-    {
-        total = m_Helper4D.GetPropertiesSize();
-    }
+    size_t total = m_Helper->GetPropertiesSize();
+    // size_t total = 0;
+    // if (m_Input->GetDimension() == 2)
+    // {
+    //     total = m_Helper2D.GetPropertiesSize();
+    // }
+    // else if (m_Input->GetDimension() == 3)
+    // {
+    //     total = m_Helper3D.GetPropertiesSize();
+    // }
+    // else if (m_Input->GetDimension() == 4)
+    // {
+    //     total = m_Helper4D.GetPropertiesSize();
+    // }
     return (m_CurrentIndex < total - 1);
 }
 
@@ -256,7 +269,8 @@ mitk::LabelSetImage::Pointer captk::ROIConstruction::GetNext()
 {
     // TODO
     auto result = mitk::LabelSetImage::New();
-    result->InitializeByLabeledImage(static_cast<mitk::Image::Pointer>(m_Input));
+    // result->InitializeByLabeledImage(static_cast<mitk::Image::Pointer>(m_Input));
+        result->InitializeByLabeledImage(mitk::ConvertLabelSetImageToImage(m_Input.GetPointer()));
 
     // AccessByItk(result.GetPointer(), 
     //     ItkMaskFromIndeces
@@ -272,18 +286,19 @@ mitk::LabelSetImage::Pointer captk::ROIConstruction::GetNext()
     //         //     currentMaskIterator.SetIndex(allROIs[j].nonZeroIndeces[m]);
     //         // currentMaskIterator.Set(1);
 
-    if (m_Input->GetDimension() == 2)
-    {
-        m_Helper2D.PopulateMaskAtPatch(m_CurrentIndex, result);
-    }
-    else if (m_Input->GetDimension() == 3)
-    {
-        m_Helper3D.PopulateMaskAtPatch(m_CurrentIndex, result);
-    }
-    else if (m_Input->GetDimension() == 4)
-    {
-        m_Helper4D.PopulateMaskAtPatch(m_CurrentIndex, result);
-    }
+    m_Helper->PopulateMaskAtPatch(m_CurrentIndex, result);
+    // if (m_Input->GetDimension() == 2)
+    // {
+    //     m_Helper2D.PopulateMaskAtPatch(m_CurrentIndex, result);
+    // }
+    // else if (m_Input->GetDimension() == 3)
+    // {
+    //     m_Helper3D.PopulateMaskAtPatch(m_CurrentIndex, result);
+    // }
+    // else if (m_Input->GetDimension() == 4)
+    // {
+    //     m_Helper4D.PopulateMaskAtPatch(m_CurrentIndex, result);
+    // }
 
     m_CurrentIndex++;
     return result;

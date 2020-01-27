@@ -6,6 +6,7 @@
 // that you want to be part of the public interface of your module.
 #include <MitkCaPTkCommonExports.h>
 
+#include "CaPTkROIConstructionItkHelperBase.h"
 #include "CaPTkROIConstructionImplementation.h"
 
 #include <mitkImageCast.h>
@@ -20,28 +21,32 @@
 namespace captk
 {
 template <typename TPixel, unsigned int VImageDimension>
-class MITKCAPTKCOMMON_EXPORT ROIConstructionItkHelper
+class MITKCAPTKCOMMON_EXPORT ROIConstructionItkHelper :
+                      public ROIConstructionItkHelperBase
 {
 public:
     using TImageType = itk::Image<TPixel, VImageDimension>;
     using TImageTypePointer = typename TImageType::Pointer;
 
-    ROIConstructionItkHelper() {}
-
-    void SetMask(TImageTypePointer mask)
+    ROIConstructionItkHelper(TImageTypePointer mask) 
     {
         m_Mask = mask;
     }
 
+    ~ROIConstructionItkHelper()
+    {
+
+    }
+
     void SetValuesAndNames(
         std::vector<int> values, 
-        std::vector<std::string> names)
+        std::vector<std::string> names) override
     {
         m_Values = values;
         m_Names = names;
     }
 
-    size_t GetPropertiesSize()
+    size_t GetPropertiesSize() override
     {
         return m_Properties.size();
     }
@@ -56,7 +61,7 @@ public:
         bool  fluxNeumannCondition,
         bool  patchConstructionROI,
         bool  patchConstructionNone,
-        float step)
+        float step) override
     {
         if (!lattice)
         {
@@ -82,7 +87,9 @@ private:
     > m_Properties;
 
 public:
-    void PopulateMaskAtPatch(size_t patchPos, mitk::LabelSetImage::Pointer miniMask)
+    void PopulateMaskAtPatch (
+        size_t patchPos, 
+        mitk::LabelSetImage::Pointer miniMask) override
     {
         // Convert mitk::LabelSetImage::Pointer to TImageType
         using ImageToItkType = mitk::ImageToItk<TImageType>;
