@@ -21,7 +21,6 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 #include <QMessageBox>
 
-#include <ExampleImageFilter.h>
 #include <ExampleImageInteractor.h>
 
 #include <EGFRvIIISurrogateIndex.h>
