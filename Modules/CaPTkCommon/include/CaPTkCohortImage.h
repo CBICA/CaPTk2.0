@@ -6,17 +6,14 @@
 // that you want to be part of the public interface of your module.
 #include <MitkCaPTkCommonExports.h>
 
-#include <QObject>
 #include <QString>
 
 namespace captk
 {
-class MITKCAPTKCOMMON_EXPORT CohortImage : public QObject
+class MITKCAPTKCOMMON_EXPORT CohortImage
 {
-    Q_OBJECT
-
 public:
-    explicit CohortImage(QObject* parent = nullptr);
+    CohortImage();
 
     ~CohortImage();
 

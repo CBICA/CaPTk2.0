@@ -20,20 +20,52 @@
 
 #include <utility>
 
-captk::Cohort* 
-captk::CohortMergeCohorts(QList<captk::Cohort*> cohorts)
+QSharedPointer<captk::Cohort> 
+captk::CohortMerge(QList<QSharedPointer<captk::Cohort>> cohorts)
 {
+	QSharedPointer<captk::Cohort> mergedCohort(new captk::Cohort());
+
 	if (cohorts.size() == 0)
 	{
-		return new captk::Cohort();
+		return mergedCohort;
 	}
 
-	captk::Cohort* mergedCohort = new captk::Cohort();
-	QList<captk::CohortSubject*> mergedCohortSubjects;
 	QString mergedCohortName = QString();
 
-	for(captk::Cohort* cohort : cohorts)
-	{cohort=cohort;
+	QList<QSharedPointer<captk::CohortSubject>> mergedCohortSubjects;
+	QStringList mergedCohortSubjectNames;
+
+	for (QSharedPointer<captk::Cohort> cohort : cohorts)
+	{
+		if (mergedCohortName == "")
+		{
+			mergedCohortName = cohort->GetName();
+		}
+		else
+		{
+			mergedCohortName += "_" + cohort->GetName();
+		}
+
+		for (auto subject : cohort->GetSubjects())
+		{
+			// Check if new subject
+			if (!mergedCohortSubjectNames.contains(subject->GetName()))
+			{
+				mergedCohortSubjectNames.append(subject->GetName());
+				mergedCohortSubjects.append(subject);
+				continue;
+			}
+			
+			// From now one assume it's a duplicate subject
+
+			// for (auto study : subject->GetStudies())
+			// {
+			// 	// Check if new study
+			// 	for (auto study_s : )
+			// 	if (!)
+			// }
+		}		
+		
 		// TODO: Actual merging
 		std::cout << "\n!MERGING COHORTS NOT IMPLEMENTED YET!\n\n";
 	}
@@ -121,7 +153,7 @@ captk::CohortJsonFromDirectoryStructure(QString& directory)
 
 					auto images = QJsonArray();
 
-					auto filesPaths = captk::internal::GetContainedFiles(serDescPath);
+					auto filesPaths = captk::internal::GetFilesInDir(serDescPath);
 					
 					for (auto& filePath : filesPaths)
 					{
@@ -184,12 +216,10 @@ captk::CohortJsonFromDirectoryStructure(QString& directory)
 	return QSharedPointer<QJsonDocument>(new QJsonDocument(root));
 }
 
-captk::Cohort* 
-captk::CohortJsonLoad(
-	QSharedPointer<QJsonDocument> json,
-	QObject* parent)
+QSharedPointer<captk::Cohort> 
+captk::CohortJsonLoad(QSharedPointer<QJsonDocument> json)
 {
-	captk::Cohort* cohort = new captk::Cohort(parent);
+	QSharedPointer<captk::Cohort> cohort(new captk::Cohort());
 	
 	QJsonObject root = json->object();
 
@@ -203,14 +233,14 @@ captk::CohortJsonLoad(
 		return cohort; // No subjects found
 	}
 
-	QList<captk::CohortSubject*> subjects;
+	QList<QSharedPointer<captk::CohortSubject>> subjects;
 
 	// Iterate over the subjects of the cohort
 	for (QJsonValueRef subjRef : root["subjects"].toArray())
 	{
 		auto subjObj = subjRef.toObject();
 
-		captk::CohortSubject* subject = new captk::CohortSubject(cohort);
+		QSharedPointer<captk::CohortSubject> subject(new captk::CohortSubject());
 
 		if (subjObj.contains("name"))
 		{
@@ -218,18 +248,17 @@ captk::CohortJsonLoad(
 		}
 		if (!subjObj.contains("studies"))
 		{
-			delete subject;
 			continue;
 		}
 
-		QList<captk::CohortStudy*> studies;
+		QList<QSharedPointer<captk::CohortStudy>> studies;
 
 		// Iterate over the studies of the subject
 		for (QJsonValueRef studyRef : subjObj["studies"].toArray())
 		{
 			auto studyObj = studyRef.toObject();
 
-			captk::CohortStudy* study = new captk::CohortStudy(subject);
+			QSharedPointer<captk::CohortStudy> study(new captk::CohortStudy());
 
 			if (studyObj.contains("name"))
 			{
@@ -237,18 +266,17 @@ captk::CohortJsonLoad(
 			}
 			if (!studyObj.contains("series"))
 			{
-				delete study;
 				continue;
 			}
 
-			QList<captk::CohortSeries*> series_of_study;
+			QList<QSharedPointer<captk::CohortSeries>> series_of_study;
 
 			// Iterate over the collection of series of the study
 			for (QJsonValueRef seriesRef : studyObj["series"].toArray())
 			{
 				auto seriesObj = seriesRef.toObject();
 
-				captk::CohortSeries* series = new captk::CohortSeries(study);
+				QSharedPointer<captk::CohortSeries> series(new captk::CohortSeries());
 
 				if (seriesObj.contains("modality"))
 				{
@@ -277,22 +305,20 @@ captk::CohortJsonLoad(
 
 				if (!seriesObj.contains("images"))
 				{
-					delete series;
 					continue;
 				}
 
-				QList<captk::CohortImage*> images;
+				QList<QSharedPointer<captk::CohortImage>> images;
 
 				// Iterate over the images and add them
 				for (QJsonValueRef imageRef : seriesObj["images"].toArray())
 				{
 					auto imageObj = imageRef.toObject();
 
-					captk::CohortImage* image = new captk::CohortImage(series);
+					QSharedPointer<captk::CohortImage> image(new captk::CohortImage());
 
 					if (!imageObj.contains("path"))
 					{
-						delete image;
 						continue;
 					}
 
@@ -308,7 +334,6 @@ captk::CohortJsonLoad(
 
 				if (images.size() == 0)
 				{
-					delete series;
 					continue;
 				}
 
@@ -320,7 +345,6 @@ captk::CohortJsonLoad(
 
 			if (series_of_study.size() == 0)
 			{
-				delete study;
 				continue;
 			}
 
@@ -333,7 +357,6 @@ captk::CohortJsonLoad(
 		// Check if there are any studies
 		if (studies.size() == 0)
 		{
-			delete subject;
 			continue;
 		}
 
@@ -348,7 +371,7 @@ captk::CohortJsonLoad(
 }
 
 QSharedPointer<QJsonDocument>
-captk::CohortToJson(captk::Cohort* /*cohort*/)
+captk::CohortToJson(QSharedPointer<captk::Cohort> /*cohort*/)
 {
 	// TODO
 	return QSharedPointer<QJsonDocument>(new QJsonDocument());
@@ -358,27 +381,30 @@ QStringList captk::internal::GetSubdirectories(QString& directory)
 {
 	QStringList list;
 
+	// Check if input is actually a directory
 	QFileInfo directoryFileInfo(directory);
 	if (!directoryFileInfo.exists() || !directoryFileInfo.isDir())
 	{
 		return list;
 	}
 	
+	// Iterator only for subdirs
 	QDirIterator iter(directory, QDir::Dirs | QDir::NoDotAndDotDot);
 	while(iter.hasNext())
 	{
 		QString subDirPath = iter.next();
-		QFileInfo subDirFileInfo(subDirPath);
 		list << subDirPath;
 	}
 
+	// We want the first one alphabetically to show up first
 	list.sort(Qt::CaseInsensitive);
 
 	return list;
 }
 
-QStringList captk::internal::GetContainedFiles(QString& directory)
+QStringList captk::internal::GetFilesInDir(QString& directory)
 {
+	// Check if input is actually a directory
 	QFileInfo directoryFileInfo(directory);
 	if (!directoryFileInfo.exists() || !directoryFileInfo.isDir())
 	{
@@ -387,6 +413,7 @@ QStringList captk::internal::GetContainedFiles(QString& directory)
 
 	QStringList list;
 	
+	// Iterator only for sub-files
 	QDirIterator iter(directory, QDir::Files);
 	while(iter.hasNext())
 	{
@@ -394,6 +421,7 @@ QStringList captk::internal::GetContainedFiles(QString& directory)
 		list << subDirPath;
 	}
 
+	// We (maybe) want the alphabetically smaller -> first
 	list.sort(Qt::CaseInsensitive);
 
 	return list;	

@@ -11,38 +11,34 @@ namespace captk
 class CohortSubject;
 }
 
-#include <QObject>
 #include <QString>
 #include <QList>
+#include <QSharedPointer>
 
 namespace captk
 {
-class MITKCAPTKCOMMON_EXPORT Cohort : public QObject
+class MITKCAPTKCOMMON_EXPORT Cohort
 {
-    Q_OBJECT
-
 public:
-    explicit Cohort(QObject* parent = nullptr);
+    Cohort();
 
     ~Cohort();
-
-    void LoadFromJson(QString jsonPath);
 
     /* Getters */
 
     QString GetName();
 
-    QList<CohortSubject*> GetSubjects();
+    QList<QSharedPointer<CohortSubject>> GetSubjects();
 
     /* Setters */
 
     void SetName(QString name);
 
-    void SetSubjects(QList<CohortSubject*> subjects);
+    void SetSubjects(QList<QSharedPointer<CohortSubject>> subjects);
 
 private:
     QString m_Name;
-    QList<CohortSubject*> m_Subjects;
+    QList<QSharedPointer<CohortSubject>> m_Subjects;
 };
 }
 

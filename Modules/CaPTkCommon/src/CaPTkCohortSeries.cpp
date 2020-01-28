@@ -6,8 +6,7 @@
 #include "mitkLogMacros.h"
 #include "mitkIOUtil.h"
 
-captk::CohortSeries::CohortSeries(QObject* parent) :
-    QObject(parent)
+captk::CohortSeries::CohortSeries()
 {
 
 }
@@ -32,7 +31,7 @@ QString captk::CohortSeries::GetSegmentLabel()
     return m_SegmentLabel;
 }
 
-QList<captk::CohortImage*> captk::CohortSeries::GetImages()
+QList<QSharedPointer<captk::CohortImage>> captk::CohortSeries::GetImages()
 {
     return m_Images; 
 }
@@ -92,7 +91,7 @@ void captk::CohortSeries::SetSegmentLabel(QString segmentLabel)
     m_SegmentLabel = segmentLabel;
 }
 
-void captk::CohortSeries::SetImages(QList<captk::CohortImage*> images)
+void captk::CohortSeries::SetImages(QList<QSharedPointer<captk::CohortImage>> images)
 {
     m_Images = images;
 }

@@ -1,7 +1,6 @@
 #include "CaPTkCohortImage.h"
 
-captk::CohortImage::CohortImage(QObject* parent) :
-    QObject(parent)
+captk::CohortImage::CohortImage()
 {
 
 }

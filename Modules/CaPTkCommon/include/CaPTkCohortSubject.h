@@ -11,18 +11,16 @@ namespace captk
 class CohortStudy;
 }
 
-#include <QObject>
 #include <QString>
 #include <QList>
+#include <QSharedPointer>
 
 namespace captk
 {
-class MITKCAPTKCOMMON_EXPORT CohortSubject : public QObject
+class MITKCAPTKCOMMON_EXPORT CohortSubject
 {
-    Q_OBJECT
-
 public:
-    explicit CohortSubject(QObject* parent = nullptr);
+    CohortSubject();
 
     ~CohortSubject();
 
@@ -30,17 +28,17 @@ public:
 
     QString GetName();
 
-    QList<captk::CohortStudy*> GetStudies();
+    QList<QSharedPointer<CohortStudy>> GetStudies();
 
     /* Setters */
 
     void SetName(QString name);
 
-    void SetStudies(QList<captk::CohortStudy*> studies);
+    void SetStudies(QList<QSharedPointer<CohortStudy>> studies);
 
 private:
     QString m_Name;
-    QList<captk::CohortStudy*> m_Studies;
+    QList<QSharedPointer<CohortStudy>> m_Studies;
 };
 }
 

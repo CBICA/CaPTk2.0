@@ -30,28 +30,39 @@ namespace captk
  * \param cohorts list of all the cohorts to be merged
  * \return a unified cohort
  */
-MITKCAPTKCOMMON_EXPORT captk::Cohort* 
-CohortMergeCohorts(QList<captk::Cohort*> cohorts);
+MITKCAPTKCOMMON_EXPORT QSharedPointer<captk::Cohort> 
+CohortMerge(QList<QSharedPointer<captk::Cohort>> cohorts);
 
 /** \brief Get a QJsonDocument containing the information of a cohort from file */
 MITKCAPTKCOMMON_EXPORT QSharedPointer<QJsonDocument> 
 CohortJsonFromDirectoryStructure(QString& directory);
 
 /** \brief Load from json -> captk::Cohort */
-MITKCAPTKCOMMON_EXPORT captk::Cohort* 
-CohortJsonLoad(QSharedPointer<QJsonDocument> json, QObject* parent = nullptr);
+MITKCAPTKCOMMON_EXPORT QSharedPointer<captk::Cohort> 
+CohortJsonLoad(QSharedPointer<QJsonDocument> json);
 
 MITKCAPTKCOMMON_EXPORT QSharedPointer<QJsonDocument>
-CohortToJson(captk::Cohort* cohort);
+CohortToJson(QSharedPointer<captk::Cohort> cohort);
 
 /** \namespace internal 
- * \brief Contains helper functions for cohort json processing
+ * \brief Contains helper functions for cohort processing
  */
 namespace internal
-{	
-	MITKCAPTKCOMMON_EXPORT QStringList GetSubdirectories(QString& directory);
-	MITKCAPTKCOMMON_EXPORT QStringList GetContainedFiles(QString& directory); /// of a dir
+{
+	// ---- For cohort merging ----
 
+	// MITKCAPTKCOMMON_EXPORT bool 
+	// IsImageInList(
+	// 	captk::CohortImage* image,
+	// 	QList<captk::CohortImage*> list
+	// );
+
+	// MITKCAPTKCOMMON_EXPORT captk::Series*
+
+	// ---- Basic operations ----
+
+	MITKCAPTKCOMMON_EXPORT QStringList GetSubdirectories(QString& directory);
+	MITKCAPTKCOMMON_EXPORT QStringList GetFilesInDir(QString& directory);
 	MITKCAPTKCOMMON_EXPORT QString GetFileNameFromPath(QString& path);
 	MITKCAPTKCOMMON_EXPORT bool IsDir(QString& path);
 }

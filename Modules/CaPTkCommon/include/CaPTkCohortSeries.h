@@ -14,18 +14,16 @@ class CohortImage;
 #include "mitkImage.h"
 #include "mitkLabelSetImage.h"
 
-#include <QObject>
 #include <QString>
 #include <QList>
+#include <QSharedPointer>
 
 namespace captk
 {
-class MITKCAPTKCOMMON_EXPORT CohortSeries : public QObject
+class MITKCAPTKCOMMON_EXPORT CohortSeries
 {
-    Q_OBJECT
-
 public:
-    explicit CohortSeries(QObject* parent = nullptr);
+    CohortSeries();
 
     ~CohortSeries();
 
@@ -47,7 +45,7 @@ public:
      * Regardless, a single mitk::Image::Pointer can be obtained 
      * using Load*ImagesAsOne()
     */
-    QList<captk::CohortImage*> GetImages();
+    QList<QSharedPointer<CohortImage>> GetImages();
 
     /** \brief Get a single image for the series
      * 
@@ -78,13 +76,13 @@ public:
      * For nifti and similar that is one file.
      * For DICOM it might be multiple (i.e. one file per slice)
     */
-    void SetImages(QList<captk::CohortImage*> images);
+    void SetImages(QList<QSharedPointer<CohortImage>> images);
 
 private:
     QString m_Modality;
     QString m_SeriesDescription;
     QString m_SegmentLabel;
-    QList<captk::CohortImage*> m_Images;
+    QList<QSharedPointer<CohortImage>> m_Images;
 };
 }
 
