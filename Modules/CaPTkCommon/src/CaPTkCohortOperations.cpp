@@ -348,10 +348,64 @@ captk::CohortJsonLoad(QSharedPointer<QJsonDocument> json)
 }
 
 QSharedPointer<QJsonDocument>
-captk::CohortToJson(QSharedPointer<captk::Cohort> /*cohort*/)
+captk::CohortToJson(QSharedPointer<captk::Cohort> cohort)
 {
-	// TODO
-	return QSharedPointer<QJsonDocument>(new QJsonDocument());
+	QSharedPointer<QJsonDocument> jsonDoc(new QJsonDocument());
+	
+	QJsonObject cohortObj;
+	cohortObj["cohort_name"] = cohort->GetName();
+	QJsonArray subjectObjs;
+
+	for (auto subject : cohort->GetSubjects())
+	{
+		QJsonObject subjectObj;
+		subjectObj["name"] = subject->GetName();
+		QJsonArray studyObjs;
+
+		for (auto study : subject->GetStudies())
+		{
+			QJsonObject studyObj;
+			studyObj["name"] = study->GetName();
+			QJsonArray seriesObjs;
+
+			for (auto series : study->GetSeries())
+			{
+				QJsonObject seriesObj;
+				seriesObj["modality"] = series->GetModality();
+				if (series->GetSeriesDescription() != "")
+				{
+					seriesObj["series_description"] = series->GetSeriesDescription();
+				}
+				else if (series->GetSegmentLabel() != "")
+				{
+					seriesObj["segment_label"] = series->GetSegmentLabel();
+				} 
+				QJsonArray imageObjs;
+
+				for (auto image : series->GetImages())
+				{
+					QJsonObject imageObj;
+					imageObj["path"] = image->GetPath();
+					imageObj["image_info"] = image->GetImageInfoPath();
+					
+					imageObjs.push_back(imageObj);
+				}
+
+				seriesObj["images"] = imageObjs;
+				seriesObjs.push_back(seriesObj);								
+			}
+
+			studyObj["series"] = seriesObjs;
+			studyObjs.push_back(studyObj);
+		}
+
+		subjectObj["studies"] = studyObjs;
+		subjectObjs.push_back(subjectObj);
+	}
+	
+	cohortObj["subjects"] = subjectObjs;
+	jsonDoc->setObject(cohortObj);
+	return jsonDoc;
 }
 
 bool captk::internal::CohortIsImagePathInImageList(
