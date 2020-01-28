@@ -1,9 +1,9 @@
 #include <mitkCommandLineParser.h>
 
-#include <CaPTkCohortJsonOperations.h>
+#include "CaPTkCohortOperations.h"
 
-#include "mitkException.h"
-#include "mitkLogMacros.h"
+#include <mitkException.h>
+#include <mitkLogMacros.h>
 
 #include <QString>
 #include <QStringList>
@@ -158,7 +158,13 @@ int main(int argc, char* argv[])
       }
 
       // Create merged json from all the jsonDocs
-      auto mergedJson = captk::CohortJsonMergeObjects(jsonDocs);
+      QList<captk::Cohort*> cohorts;
+      for (auto jsonDoc : jsonDocs)
+      {
+        cohorts.push_back(captk::CohortJsonLoad(jsonDoc));
+      }
+      auto mergedCohort = captk::CohortMergeCohorts(cohorts);
+      auto mergedJson = captk::CohortToJson(mergedCohort);
       
       // Save merged json to file
       QFile jsonFile(outputfile);
@@ -183,7 +189,13 @@ int main(int argc, char* argv[])
       }
 
       // Create merged json from all the jsonDocs
-      auto mergedJson = captk::CohortJsonMergeObjects(jsonDocs);
+      QList<captk::Cohort*> cohorts;
+      for (auto jsonDoc : jsonDocs)
+      {
+        cohorts.push_back(captk::CohortJsonLoad(jsonDoc));
+      }
+      auto mergedCohort = captk::CohortMergeCohorts(cohorts);
+      auto mergedJson = captk::CohortToJson(mergedCohort);
 
       // Save merged json to file
       QFile jsonFile(outputfile);

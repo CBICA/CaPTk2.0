@@ -1,4 +1,4 @@
-#include "CaPTkCohortJsonOperations.h"
+#include "CaPTkCohortOperations.h"
 
 #include "CaPTkCohort.h"
 #include "CaPTkCohortSubject.h"
@@ -20,25 +20,28 @@
 
 #include <utility>
 
-QSharedPointer<QJsonDocument> 
-captk::CohortJsonMergeObjects(QList<QSharedPointer<QJsonDocument>> jsons)
+captk::Cohort* 
+captk::CohortMergeCohorts(QList<captk::Cohort*> cohorts)
 {
-	if (jsons.size() == 0)
+	if (cohorts.size() == 0)
 	{
-		return QSharedPointer<QJsonDocument>(new QJsonDocument());
+		return new captk::Cohort();
 	}
 
-	// Start with the first and merge the rest to it
-	QSharedPointer<QJsonDocument> mergedJson = jsons[0];
-	jsons.pop_front(); // Remove the first entry
+	captk::Cohort* mergedCohort = new captk::Cohort();
+	QList<captk::CohortSubject*> mergedCohortSubjects;
+	QString mergedCohortName = QString();
 
-	for(QSharedPointer<QJsonDocument> json_p : jsons)
-	{
+	for(captk::Cohort* cohort : cohorts)
+	{cohort=cohort;
 		// TODO: Actual merging
-		std::cout << "\n!MERGING JSON DOCUMENTS NOT IMPLEMENTED YET!\n\n";
+		std::cout << "\n!MERGING COHORTS NOT IMPLEMENTED YET!\n\n";
 	}
 
-	return mergedJson;
+	mergedCohort->SetName(mergedCohortName);
+	mergedCohort->SetSubjects(mergedCohortSubjects);
+
+	return mergedCohort;
 }
 
 QSharedPointer<QJsonDocument> 
@@ -342,6 +345,13 @@ captk::CohortJsonLoad(
 
 	cohort->SetSubjects(subjects);
 	return cohort;
+}
+
+QSharedPointer<QJsonDocument>
+captk::CohortToJson(captk::Cohort* /*cohort*/)
+{
+	// TODO
+	return QSharedPointer<QJsonDocument>(new QJsonDocument());
 }
 
 QStringList captk::internal::GetSubdirectories(QString& directory)
