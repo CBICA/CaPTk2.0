@@ -32,9 +32,6 @@ captk::CohortMerge(QList<QSharedPointer<captk::Cohort>> cohorts)
 
 	QString mergedCohortName = QString();
 
-	QList<QSharedPointer<captk::CohortSubject>> mergedCohortSubjects;
-	QStringList mergedCohortSubjectNames;
-
 	for (QSharedPointer<captk::Cohort> cohort : cohorts)
 	{
 		if (mergedCohortName == "")
@@ -46,32 +43,12 @@ captk::CohortMerge(QList<QSharedPointer<captk::Cohort>> cohorts)
 			mergedCohortName += "_" + cohort->GetName();
 		}
 
-		for (auto subject : cohort->GetSubjects())
-		{
-			// Check if new subject
-			if (!mergedCohortSubjectNames.contains(subject->GetName()))
-			{
-				mergedCohortSubjectNames.append(subject->GetName());
-				mergedCohortSubjects.append(subject);
-				continue;
-			}
-			
-			// From now one assume it's a duplicate subject
-
-			// for (auto study : subject->GetStudies())
-			// {
-			// 	// Check if new study
-			// 	for (auto study_s : )
-			// 	if (!)
-			// }
-		}		
-		
-		// TODO: Actual merging
-		std::cout << "\n!MERGING COHORTS NOT IMPLEMENTED YET!\n\n";
+		mergedCohort = captk::internal::CohortMergeCohorts(
+			mergedCohort, cohort
+		);
 	}
 
 	mergedCohort->SetName(mergedCohortName);
-	mergedCohort->SetSubjects(mergedCohortSubjects);
 
 	return mergedCohort;
 }
@@ -375,6 +352,300 @@ captk::CohortToJson(QSharedPointer<captk::Cohort> /*cohort*/)
 {
 	// TODO
 	return QSharedPointer<QJsonDocument>(new QJsonDocument());
+}
+
+bool captk::internal::CohortIsImagePathInImageList(
+	QString imagePath,
+	QList<QSharedPointer<captk::CohortImage>> list)
+{
+	for (auto image : list)
+	{
+		if (image->GetPath() == imagePath)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+QList<QSharedPointer<captk::CohortImage>>
+captk::internal::CohortMergeImageLists(
+	QList<QSharedPointer<captk::CohortImage>> list1,
+	QList<QSharedPointer<captk::CohortImage>> list2)
+{
+	// Since this is called at the bottom of the stack
+	// We want every result to be a deep copy
+	// to avoid side-effects
+
+	QList<QSharedPointer<captk::CohortImage>> result;
+
+	// Iterate over the union list
+	for (auto image : list1 + list2)
+	{
+		if (CohortIsImagePathInImageList(image->GetPath(), result))
+		{
+			// The image is a duplicate
+			// We judge that based on image path
+			// If it is duplicate we want to preserve
+			// the image info path if it exists.
+			// If two different info paths exist, 
+			// which one is preserved is undefined
+
+			// find the former one
+			for (auto im_r : result)
+			{
+				if (im_r->GetPath() == image->GetPath())
+				{
+					// found which image this is a duplicate of
+
+					if (image->GetImageInfoPath() != "")
+					{
+						im_r->SetImageInfoPath(
+							image->GetImageInfoPath()
+						);
+					}
+					break;
+				}
+			}
+		}
+		else
+		{
+			// Deep copy
+			QSharedPointer<captk::CohortImage> imageCopy(
+				new captk::CohortImage(*image.get())
+			);
+			result.append(imageCopy);
+		}
+	}
+
+	return result;
+}
+
+QSharedPointer<captk::CohortSeries>
+captk::internal::CohortMergeSeries(
+	QSharedPointer<captk::CohortSeries> series1,
+	QSharedPointer<captk::CohortSeries> series2)
+{
+	// These two series are assumed have the same
+	// modality and series_description
+
+	// deep copy, but we will replace the images
+	QSharedPointer<captk::CohortSeries> result(
+		new captk::CohortSeries(*series1.get())
+	);
+	result->SetImages(
+		CohortMergeImageLists(
+			series1->GetImages(),
+			series2->GetImages()
+		)
+	);
+	return result;
+}
+
+bool
+captk::internal::CohortIsSeriesInSeriesList(
+	QString modality,
+	QString seriesDescription,
+	QList<QSharedPointer<captk::CohortSeries>> list)
+{
+	for (auto series : list)
+	{
+		if (series->GetModality() == modality && 
+		    series->GetSeriesDescription() == seriesDescription)
+		{
+			return true;
+		}
+	}
+	return false;	
+}
+
+QSharedPointer<captk::CohortStudy>
+captk::internal::CohortMergeStudies(
+	QSharedPointer<captk::CohortStudy> study1,
+	QSharedPointer<captk::CohortStudy> study2)
+{
+	// These two studies are assumed to have the same name
+
+	// deep copy, but we will replace the series
+	QSharedPointer<captk::CohortStudy> result(
+		new captk::CohortStudy(*study1.get())
+	);
+
+	QList<QSharedPointer<captk::CohortSeries>> resultSeries;
+
+	// Iterate over the union list
+	for (auto series : study1->GetSeries() + study2->GetSeries())
+	{
+		if (CohortIsSeriesInSeriesList(
+				series->GetModality(), 
+				series->GetSeriesDescription(), 
+				resultSeries)
+			)
+		{
+			// The series is a duplicate
+			// We judge that based on name
+			
+			// Find the former one
+			for (int i = 0; i < resultSeries.size(); i++)
+			{
+				auto series_r = resultSeries[i];
+
+				if (series_r->GetModality() == series->GetModality() &&
+				    series_r->GetSeriesDescription() == series->GetSeriesDescription())
+				{
+					// found which image this is a duplicate of
+
+					resultSeries.replace(i, 
+						CohortMergeSeries(series, series_r)
+					);
+					break;
+				}
+			}
+		}
+		else
+		{
+			// Deep copy
+			QSharedPointer<captk::CohortSeries> seriesCopy(
+				new captk::CohortSeries(*series.get())
+			);
+			resultSeries.append(seriesCopy);
+		}
+	}
+
+	result->SetSeries(resultSeries);
+	return result;
+}
+
+bool
+captk::internal::CohortIsStudyInStudyList(
+	QString name,
+	QList<QSharedPointer<captk::CohortStudy>> list)
+{
+	for (auto study : list)
+	{
+		if (study->GetName() == name)
+		{
+			return true;
+		}
+	}
+	return false;	
+}
+
+QSharedPointer<captk::CohortSubject>
+captk::internal::CohortMergeSubjects(
+	QSharedPointer<captk::CohortSubject> subject1,
+	QSharedPointer<captk::CohortSubject> subject2)
+{
+	// These two subjects are assumed to have the same name
+
+	// deep copy, but we will replace the studies
+	QSharedPointer<captk::CohortSubject> result(
+		new captk::CohortSubject(*subject1.get())
+	);
+
+	QList<QSharedPointer<captk::CohortStudy>> resultStudies;
+
+	// Iterate over the union list
+	for (auto study : subject1->GetStudies() + subject2->GetStudies())
+	{
+		if (CohortIsStudyInStudyList(study->GetName(), resultStudies))
+		{
+			// The study is a duplicate
+			// We judge that based on name
+			
+			// Find the former one
+			for (int i = 0; i < resultStudies.size(); i++)
+			{
+				auto study_r = resultStudies[i];
+
+				if (study_r->GetName() == study->GetName())
+				{
+					// found which study this is a duplicate of
+
+					resultStudies.replace(i, 
+						CohortMergeStudies(study, study_r)
+					);
+					break;
+				}
+			}
+		}
+		else
+		{
+			// Deep copy
+			QSharedPointer<captk::CohortStudy> studyCopy(
+				new captk::CohortStudy(*study.get())
+			);
+			resultStudies.append(studyCopy);
+		}
+	}
+
+	result->SetStudies(resultStudies);
+	return result;
+}
+
+bool
+captk::internal::CohortIsSubjectInSubjectList(
+	QString name,
+	QList<QSharedPointer<captk::CohortSubject>> list)
+{
+	for (auto subject : list)
+	{
+		if (subject->GetName() == name)
+		{
+			return true;
+		}
+	}
+	return false;	
+}
+
+QSharedPointer<captk::Cohort>
+captk::internal::CohortMergeCohorts(
+	QSharedPointer<captk::Cohort> cohort1,
+	QSharedPointer<captk::Cohort> cohort2)
+{
+	// deep copy, but we will replace the subjects
+	QSharedPointer<captk::Cohort> result(
+		new captk::Cohort(*cohort1.get())
+	);
+
+	QList<QSharedPointer<captk::CohortSubject>> resultSubjects;
+
+	// Iterate over the union list
+	for (auto subject : cohort1->GetSubjects() + cohort2->GetSubjects())
+	{
+		if (CohortIsSubjectInSubjectList(subject->GetName(), resultSubjects))
+		{
+			// The subject is a duplicate
+			// We judge that based on name
+			
+			// Find the former one
+			for (int i = 0; i < resultSubjects.size(); i++)
+			{
+				auto subject_r = resultSubjects[i];
+
+				if (subject_r->GetName() == subject->GetName())
+				{
+					// found which subject this is a duplicate of
+
+					resultSubjects.replace(i, 
+						CohortMergeSubjects(subject, subject_r)
+					);
+					break;
+				}
+			}
+		}
+		else
+		{
+			// Deep copy
+			QSharedPointer<captk::CohortSubject> subjectCopy(
+				new captk::CohortSubject(*subject.get())
+			);
+			resultSubjects.append(subjectCopy);
+		}
+	}
+
+	result->SetSubjects(resultSubjects);
+	return result;	
 }
 
 QStringList captk::internal::GetSubdirectories(QString& directory)

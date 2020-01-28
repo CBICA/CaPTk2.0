@@ -9,6 +9,10 @@
 namespace captk
 {
 class Cohort;
+class CohortSubject;
+class CohortStudy;
+class CohortSeries;
+class CohortImage;
 }
 
 #include <QObject>
@@ -51,11 +55,60 @@ namespace internal
 {
 	// ---- For cohort merging ----
 
-	// MITKCAPTKCOMMON_EXPORT bool 
-	// IsImageInList(
-	// 	captk::CohortImage* image,
-	// 	QList<captk::CohortImage*> list
-	// );
+	MITKCAPTKCOMMON_EXPORT bool
+	CohortIsImagePathInImageList(
+		QString imagePath,
+		QList<QSharedPointer<captk::CohortImage>> list
+	);
+
+	MITKCAPTKCOMMON_EXPORT QList<QSharedPointer<captk::CohortImage>>
+	CohortMergeImageLists(
+		QList<QSharedPointer<captk::CohortImage>> list1,
+		QList<QSharedPointer<captk::CohortImage>> list2
+	);
+
+	MITKCAPTKCOMMON_EXPORT QSharedPointer<captk::CohortSeries>
+	CohortMergeSeries(
+		QSharedPointer<captk::CohortSeries> series1,
+		QSharedPointer<captk::CohortSeries> series2
+	);
+
+	MITKCAPTKCOMMON_EXPORT bool
+	CohortIsSeriesInSeriesList(
+		QString modality,
+		QString seriesDescription,
+		QList<QSharedPointer<captk::CohortSeries>> list
+	);
+
+	MITKCAPTKCOMMON_EXPORT QSharedPointer<captk::CohortStudy>
+	CohortMergeStudies(
+		QSharedPointer<captk::CohortStudy> study1,
+		QSharedPointer<captk::CohortStudy> study2
+	);
+
+	MITKCAPTKCOMMON_EXPORT bool
+	CohortIsStudyInStudyList(
+		QString name,
+		QList<QSharedPointer<captk::CohortStudy>> list
+	);
+
+	MITKCAPTKCOMMON_EXPORT QSharedPointer<captk::CohortSubject>
+	CohortMergeSubjects(
+		QSharedPointer<captk::CohortSubject> subject1,
+		QSharedPointer<captk::CohortSubject> subject2
+	);
+
+	MITKCAPTKCOMMON_EXPORT bool
+	CohortIsSubjectInSubjectList(
+		QString name,
+		QList<QSharedPointer<captk::CohortSubject>> list
+	);
+
+	MITKCAPTKCOMMON_EXPORT QSharedPointer<captk::Cohort>
+	CohortMergeCohorts(
+		QSharedPointer<captk::Cohort> cohort1,
+		QSharedPointer<captk::Cohort> cohort2
+	);
 
 	// MITKCAPTKCOMMON_EXPORT captk::Series*
 
