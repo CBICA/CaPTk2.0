@@ -232,9 +232,8 @@ std::shared_ptr<SvmSuite::Manager::Result> SvmSuite::Manager::Test(cv::Mat &test
 		for (size_t iStart = 0; iStart < totalThreadsNumber; iStart++)
 		{
 			threads[counterForThreadsVec++] = std::thread(&SvmSuite::Manager::testingLabelsThreadJob, this,
-				std::ref(testingMat), iStart, totalThreadsNumber,
-				std::ref(res->labelsMat), skipZeros, std::ref(skipZerosMat), std::ref(importanceValues)
-			);
+				std::ref(testingMat), static_cast<int>(iStart), static_cast<int>(totalThreadsNumber),
+				std::ref(res->labelsMat), skipZeros, std::ref(skipZerosMat), std::ref(importanceValues));
 		}
 
 		for (size_t i = 0; i < totalThreadsNumber; i++) {
@@ -313,8 +312,8 @@ void SvmSuite::Manager::SetInputNormalization(bool normalize) {
 	m_normalize = normalize;
 }
 
-void SvmSuite::Manager::testingLabelsThreadJob(cv::Mat &testingMat, int iStart, int interval, cv::Mat &resultLabelsMat,
-	bool skipZeros, cv::Mat &skipZerosMat, std::vector< double > &importanceValues)
+void SvmSuite::Manager::testingLabelsThreadJob(cv::Mat& testingMat, int iStart, int interval, cv::Mat& resultLabelsMat,
+	bool skipZeros, cv::Mat& skipZerosMat, std::vector< double >& importanceValues)
 {
 	std::map< LabelsType, double > decisionImportanceValues;
 
@@ -343,7 +342,7 @@ void SvmSuite::Manager::testingLabelsThreadJob(cv::Mat &testingMat, int iStart, 
 				svm_desc.GetModel()->predict(testingMat.row(iTest), predicted, false);
 
 				// The value is the predicted label
-				outputLabels[isvm++] = std::lround(predicted.at<float>(0, 0));
+				outputLabels[isvm++] = static_cast<LabelsType>(std::lround(predicted.at<float>(0, 0)));
 				//outputLabels[isvm++] = std::round(predicted.at<float>(0, 0));
 			}
 		}
@@ -354,7 +353,7 @@ void SvmSuite::Manager::testingLabelsThreadJob(cv::Mat &testingMat, int iStart, 
 		// In case of a draw the decision from the first in order svm is used (draws should be avoided in the configuration)
 		for (LabelsType label : m_different_labels) {
 			// This is done for time optimization (not creating a new object each time)
-			decisionImportanceValues[label] = 0;
+			decisionImportanceValues[label] = 0.0;
 		}
 
 		// For each different label in the predictions, find the sum of the importance values of the svms that predicted it
@@ -371,7 +370,7 @@ void SvmSuite::Manager::testingLabelsThreadJob(cv::Mat &testingMat, int iStart, 
 		// Find the label with the most importance value
 		//std::vector< int > keys = getMapKeyset(decisionImportanceValues);
 		int    decision = 0;
-		double bestDecisionImportance = 0;
+		double bestDecisionImportance = 0.0;
 
 		for (size_t decisionCandidate : m_different_labels)
 		{
@@ -383,7 +382,7 @@ void SvmSuite::Manager::testingLabelsThreadJob(cv::Mat &testingMat, int iStart, 
 		}
 
 		// Set value to output
-		resultLabelsMat.ptr<LabelsType>(iTest)[0] = decision;
+		resultLabelsMat.ptr<LabelsType>(iTest)[0] = static_cast<LabelsType>(decision);
 	}
 }
 
