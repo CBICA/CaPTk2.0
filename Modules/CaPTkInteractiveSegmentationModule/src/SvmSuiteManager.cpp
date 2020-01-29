@@ -375,10 +375,10 @@ void SvmSuite::Manager::testingLabelsThreadJob(cv::Mat &testingMat, int iStart, 
 
 		for (size_t decisionCandidate : m_different_labels)
 		{
-			if (decisionImportanceValues[decisionCandidate] > bestDecisionImportance)
+			if (decisionImportanceValues[static_cast<LabelsType>(decisionCandidate)] > bestDecisionImportance)
 			{
-				decision = decisionCandidate;
-				bestDecisionImportance = decisionImportanceValues[decisionCandidate];
+				decision = static_cast<int>(decisionCandidate);
+				bestDecisionImportance = static_cast<double>(decisionImportanceValues[static_cast<LabelsType>(decisionCandidate)]);
 			}
 		}
 
