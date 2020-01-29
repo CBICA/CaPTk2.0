@@ -383,7 +383,7 @@ void SvmSuite::Manager::testingLabelsThreadJob(cv::Mat &testingMat, int iStart, 
 		}
 
 		// Set value to output
-		resultLabelsMat.ptr<LabelsType>(iTest)[0] = decision;
+		resultLabelsMat.ptr<LabelsType>(iTest)[0] = static_cast<LabelsType>(decision);
 	}
 }
 
