@@ -19,7 +19,7 @@ if(CPACK_GENERATOR MATCHES "NSIS")
 
   # tell cpack to create a desktop link to mitkDiffusion
   SET(CPACK_CREATE_DESKTOP_LINKS "MitkCaPTkApp")
-  SET(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\mitk.ico")
+  SET(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\icon.ico")
   SET(CPACK_NSIS_HELP_LINK "https:\\\\www.med.upenn.edu\\cbica\\captk")
   SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\www.mitk.org")
   SET(CPACK_NSIS_CONTACT software@cbica.upenn.edu)
