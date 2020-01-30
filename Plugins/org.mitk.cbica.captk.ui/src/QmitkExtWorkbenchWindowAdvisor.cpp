@@ -824,6 +824,12 @@ void QmitkExtWorkbenchWindowAdvisor::PostWindowCreate()
     berry::IPreferences::Pointer stylePrefs = prefService->GetSystemPreferences()->Node(berry::QtPreferences::QT_STYLES_NODE);
     bool showCategoryNames = stylePrefs->GetBool(berry::QtPreferences::QT_SHOW_TOOLBAR_CATEGORY_NAMES, true);
 
+    // CaPTk logo
+    prefService->GetSystemPreferences()->Node("org.mitk.editors.stdmultiwidget")->Put(
+      "DepartmentLogo", 
+      ":/org.mitk.cbica.captk.application/cbica-logo.jpg"
+    );
+
     // Order view descriptors by category
 
     QMultiMap<QString, berry::IViewDescriptor::Pointer> categoryViewDescriptorMap;

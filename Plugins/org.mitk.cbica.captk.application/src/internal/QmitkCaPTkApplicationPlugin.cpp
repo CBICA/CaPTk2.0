@@ -80,9 +80,6 @@ void QmitkCaPTkApplicationPlugin::start(ctkPluginContext* context)
   {
     MITK_WARN << "Configuration Admin service unavailable, cannot set home page url.";
   }
-
-  // Set CBICA logo
-  mitk::WorkbenchUtil::SetDepartmentLogoPreference(":/org.mitk.cbica.captk.application/cbica-logo.jpg", context);
 }
 
 ctkPluginContext* QmitkCaPTkApplicationPlugin::GetPluginContext() const
