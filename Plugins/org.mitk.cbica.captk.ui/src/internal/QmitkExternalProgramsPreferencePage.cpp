@@ -32,7 +32,7 @@ static berry::IPreferences::Pointer GetPreferences()
     berry::IPreferences::Pointer systemPreferences = preferencesService->GetSystemPreferences();
 
     if (systemPreferences.IsNotNull())
-      return systemPreferences->Node("/org.mitk.gui.qt.ext.externalprograms");
+      return systemPreferences->Node("/org.mitk.cbica.captk.ui.externalprograms");
   }
 
   mitkThrow();

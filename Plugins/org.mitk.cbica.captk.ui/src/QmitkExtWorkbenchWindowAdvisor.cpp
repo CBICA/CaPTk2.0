@@ -765,7 +765,7 @@ void QmitkExtWorkbenchWindowAdvisor::PostWindowCreate()
     imageNavigatorAction->setToolTip("Toggle image navigator for navigating through image");
   }
 
-  viewNavigatorAction = new QAction(berry::QtStyleManager::ThemeIcon(QStringLiteral(":/org.mitk.gui.qt.ext/view-manager.svg")),"&View Navigator", nullptr);
+  viewNavigatorAction = new QAction(berry::QtStyleManager::ThemeIcon(QStringLiteral(":/org.mitk.cbica.captk.ui/view-manager.svg")),"&View Navigator", nullptr);
   viewNavigatorFound = window->GetWorkbench()->GetViewRegistry()->Find("org.mitk.views.viewnavigatorview");
   if (viewNavigatorFound)
   {
@@ -1114,7 +1114,7 @@ void QmitkExtWorkbenchWindowAdvisorHack::onIntro()
   {
     QRegExp reg("(.*)<title>(\\n)*");
     QRegExp reg2("(\\n)*</title>(.*)");
-    QFile file(":/org.mitk.gui.qt.ext/index.html");
+    QFile file(":/org.mitk.cbica.captk.ui/index.html");
     file.open(QIODevice::ReadOnly | QIODevice::Text); //text file only for reading
 
     QString text = QString(file.readAll());
@@ -1212,7 +1212,7 @@ LICENSE: <a href=\"https://www.med.upenn.edu/sbia/software-agreement.html\">http
                 QMessageBox::NoButton,
                 QMessageBox::NoButton);
   mb.setTextFormat(Qt::RichText);
-  QPixmap upennIcon(":/org.mitk.gui.qt.ext/upenn.svg");
+  QPixmap upennIcon(":/org.mitk.cbica.captk.ui/upenn.svg");
   upennIcon = upennIcon.scaled(125, 108);
   mb.setIconPixmap(upennIcon);
   mb.exec();
