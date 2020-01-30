@@ -33,7 +33,7 @@ set(CACHED_RESOURCE_FILES
   resources/icon_research.xpm
   resources/perspectives/eye.png
   resources/perspectives/viewer_icon.png
-  resources/cbica-logo.png
+  resources/cbica-logo.jpg
 )
 
 set(QRC_FILES
