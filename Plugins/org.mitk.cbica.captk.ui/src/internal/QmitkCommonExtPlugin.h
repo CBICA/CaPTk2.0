@@ -23,7 +23,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 class QmitkCommonExtPlugin : public QObject, public ctkPluginActivator
 {
   Q_OBJECT
-  Q_PLUGIN_METADATA(IID "org_mitk_gui_qt_ext")
+  Q_PLUGIN_METADATA(IID "org_mitk_cbica_captk_ui")
   Q_INTERFACES(ctkPluginActivator)
 
 public:

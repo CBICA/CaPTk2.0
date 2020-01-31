@@ -55,7 +55,7 @@ void QmitkExtActionBarAdvisor::MakeActions(berry::IWorkbenchWindow* window)
   this->Register(fileOpenAction, berry::IWorkbenchCommandConstants::FILE_OPEN);
 
   QAction* fileSaveAction = new QmitkFileSaveAction(
-                              QIcon(":/org.mitk.gui.qt.ext/Save_48.png"),
+                              QIcon(":/org.mitk.cbica.captk.ui/Save_48.png"),
                               window);
   fileSaveAction->setShortcut(QKeySequence::Save);
   this->Register(fileSaveAction, berry::IWorkbenchCommandConstants::FILE_SAVE);
