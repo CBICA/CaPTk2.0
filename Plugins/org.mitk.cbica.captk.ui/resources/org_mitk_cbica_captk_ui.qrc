@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/org.mitk.gui.qt.ext">
+    <qresource prefix="/org.mitk.cbica.captk.ui">
         <file>dicom.svg</file>
         <file>image_navigator.svg</file>
         <file>index.html</file>
