@@ -9,6 +9,7 @@
 # allow early dependency checking
 
 option(MITK_BUILD_APP_CaPTkApp "Build the MITK CaPTkApp" ON)
+option(MITK_BUILD_APP_CaPTkInciSe "Build the CaPTkInciSe application" ON)
 
 # This variable is fed to ctkFunctionSetupPlugins() macro in the
 # top-level MITK CMakeLists.txt file. This allows to automatically
@@ -21,7 +22,7 @@ option(MITK_BUILD_APP_CaPTkApp "Build the MITK CaPTkApp" ON)
 
 # Format is "Directory Name^^CMake Option Name^^Executable Name (without file suffix)"
 set(MITK_APPS
-  CaPTkApp^^MITK_BUILD_APP_CaPTkApp^^MitkCaPTkApp
-  #Workbench^^MITK_BUILD_APP_Workbench^^MitkWorkbench
+  CaPTkApp^^MITK_BUILD_APP_CaPTkApp^^CaPTk
+  CaPTkInciSe^^MITK_BUILD_APP_CaPTkInciSe^^CaPTkInciSe
 )
 

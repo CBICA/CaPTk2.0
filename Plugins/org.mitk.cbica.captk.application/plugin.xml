@@ -11,6 +11,10 @@
     <product name="CaPTk 2" application="org.mitk.qt.captkapplication" />
   </extension>
 
+  <extension id="incise" point="org.blueberry.core.runtime.products">
+    <product name="CaPTk InciSe" application="org.mitk.qt.captkapplication" />
+  </extension>
+
   <!-- <extension id="fiberfox" point="org.blueberry.core.runtime.products">
     <product name="MITK Fiberfox" application="org.mitk.qt.captkapplication" />
   </extension> -->
