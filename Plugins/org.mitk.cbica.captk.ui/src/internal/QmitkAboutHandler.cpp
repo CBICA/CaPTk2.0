@@ -30,7 +30,7 @@ berry::Object::Pointer QmitkAboutHandler::Execute(const berry::SmartPointer<cons
   //               QMessageBox::Yes | QMessageBox::Default,
   //               QMessageBox::NoButton,
   //               QMessageBox::NoButton);
-  // QPixmap upennIcon(":/org.mitk.gui.qt.ext/upenn.png");
+  // QPixmap upennIcon(":/org.mitk.cbica.captk.ui/upenn.png");
   // mb.setIconPixmap(upennIcon);
 
   // Is this function useless?
