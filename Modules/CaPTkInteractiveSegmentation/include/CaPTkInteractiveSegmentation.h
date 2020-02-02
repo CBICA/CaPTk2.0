@@ -22,7 +22,7 @@
  *  \brief Singleton class that runs the interactive segmentation 
  * algorithm and adds the result to the data storage
  */
-class MITKCAPTKINTERACTIVESEGMENTATIONMODULE_EXPORT CaPTkInteractiveSegmentation /*final*/ : 
+class MITKCAPTKINTERACTIVESEGMENTATION_EXPORT CaPTkInteractiveSegmentation /*final*/ : 
                                                     public QObject
 {
     Q_OBJECT

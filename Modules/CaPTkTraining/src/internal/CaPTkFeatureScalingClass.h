@@ -27,7 +27,7 @@ See COPYING file or https://www.med.upenn.edu/sbia/software-agreement.html
 
 namespace captk
 {
-class MITKCAPTKTRAININGMODULE_EXPORT FeatureScalingClass
+class MITKCAPTKTRAINING_EXPORT FeatureScalingClass
 {
 public:
   using VariableLengthVectorType = itk::VariableLengthVector< double >;

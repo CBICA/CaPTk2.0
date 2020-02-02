@@ -14,7 +14,7 @@
 /** \class CaPTkTraining
  *  \brief Training Module API
  */
-class MITKCAPTKTRAININGMODULE_EXPORT CaPTkTraining : public QObject
+class MITKCAPTKTRAINING_EXPORT CaPTkTraining : public QObject
 {
     Q_OBJECT
 

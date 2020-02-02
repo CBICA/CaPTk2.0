@@ -31,7 +31,7 @@ See COPYING file or https://www.med.upenn.edu/sbia/software-agreement.html
 
 namespace captk
 {
-class MITKCAPTKTRAININGMODULE_EXPORT TrainingModuleAlgorithm
+class MITKCAPTKTRAINING_EXPORT TrainingModuleAlgorithm
 {
 public:
   /**** Types ****/
