@@ -1,11 +1,11 @@
-#ifndef QmitkCaPTkTrainingPluginView_h
-#define QmitkCaPTkTrainingPluginView_h
+#ifndef QmitkCaPTkTrainingView_h
+#define QmitkCaPTkTrainingView_h
 
 #include <QmitkAbstractView.h>
 
 #include <mitkILifecycleAwarePart.h>
 
-#include "ui_QmitkCaPTkTrainingPluginControls.h"
+#include "ui_QmitkCaPTkTrainingControls.h"
 
 class CaPTkTraining;
 
@@ -16,17 +16,17 @@ class QmitkRenderWindow;
 
 /**
  * \ingroup ToolManagerEtAl
- * \ingroup org_mitk_cbica_captk_trainingplugin_internal
+ * \ingroup org_mitk_cbica_captk_training_internal
  */
-class QmitkCaPTkTrainingPluginView : public QmitkAbstractView, public mitk::ILifecycleAwarePart
+class QmitkCaPTkTrainingView : public QmitkAbstractView, public mitk::ILifecycleAwarePart
 {
   Q_OBJECT
 
 public:
   static const std::string VIEW_ID;
 
-  QmitkCaPTkTrainingPluginView();
-  virtual ~QmitkCaPTkTrainingPluginView();
+  QmitkCaPTkTrainingView();
+  virtual ~QmitkCaPTkTrainingView();
 
   // GUI setup
   void CreateQtPartControl(QWidget *parent);
@@ -90,9 +90,9 @@ protected:
   QWidget *m_Parent;
 
   /// \brief Qt GUI file
-  Ui::QmitkCaPTkTrainingPluginControls m_Controls;
+  Ui::QmitkCaPTkTrainingControls m_Controls;
 
   CaPTkTraining* m_CaPTkTraining;
 };
 
-#endif // QmitkCaPTkTrainingPluginView_h
+#endif // QmitkCaPTkTrainingView_h

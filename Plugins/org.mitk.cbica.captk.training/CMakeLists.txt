@@ -1,4 +1,4 @@
-project(org_mitk_cbica_captk_trainingplugin)
+project(org_mitk_cbica_captk_training)
 
 include_directories(${CTK_INCLUDE_DIRS})
 
