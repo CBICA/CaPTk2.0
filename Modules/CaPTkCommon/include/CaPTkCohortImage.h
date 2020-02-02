@@ -10,6 +10,9 @@
 
 namespace captk
 {
+/** \class CohortImage
+ * \brief Defines information about an image
+ */
 class MITKCAPTKCOMMON_EXPORT CohortImage
 {
 public:
@@ -21,12 +24,21 @@ public:
 
     QString GetPath();
 
+    /** \brief Get the path to the (optional) image information file
+     * 
+     * Image info is reserved for a file that holds meta-data about an image
+     * \return the image info path. Empty QString if there is no such file
+     */
     QString GetImageInfoPath();
 
     /* Setters */
 
     void SetPath(QString path);
 
+    /** \brief Set the path to the (optional) image information file
+     * 
+     * Image info is reserved for a file that holds meta-data about an image
+     */
     void SetImageInfoPath(QString imageInfoPath);
 
 private:

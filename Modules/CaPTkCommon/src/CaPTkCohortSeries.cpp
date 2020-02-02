@@ -44,6 +44,9 @@ mitk::Image::Pointer captk::CohortSeries::LoadImagesAsOne()
     {
         try
         {
+            // Load the first one and the others will follow
+            // automatically
+            // TODO: what happens when they are not in the same dir?
             auto path = this->GetImages()[0]->GetPath();
             image = mitk::IOUtil::Load<mitk::Image>(path.toStdString());
         }
@@ -64,6 +67,9 @@ mitk::LabelSetImage::Pointer captk::CohortSeries::LoadSegmentationImagesAsOne()
     {
         try
         {
+            // Load the first one and the others will follow
+            // automatically
+            // TODO: what happens when they are not in the same dir?
             auto path = this->GetImages()[0]->GetPath();
             image = mitk::IOUtil::Load<mitk::LabelSetImage>(path.toStdString());
         }

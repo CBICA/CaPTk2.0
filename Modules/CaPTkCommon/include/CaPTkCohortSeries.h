@@ -20,6 +20,14 @@ class CohortImage;
 
 namespace captk
 {
+/** \class CohortSeries
+ * \brief Defines information about a series
+ * and holds the series's various images
+ * 
+ * Note: series is a combination of modality and 
+ * acquisition protocol. Multiple series can happen
+ * in a study.
+ */
 class MITKCAPTKCOMMON_EXPORT CohortSeries
 {
 public:

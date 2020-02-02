@@ -17,6 +17,10 @@ class CohortStudy;
 
 namespace captk
 {
+/** \class CohortSubject
+ * \brief Defines information about a subject
+ * and holds the subject's various studies
+ */
 class MITKCAPTKCOMMON_EXPORT CohortSubject
 {
 public:

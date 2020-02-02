@@ -19,6 +19,14 @@ namespace captk
 {
 class MITKCAPTKCOMMON_EXPORT CohortStudy
 {
+/** \class CohortStudy
+ * \brief Defines information about a study
+ * and holds the study various list of "series".
+ * 
+ * Note: series is a combination of modality and 
+ * acquisition protocol. Multiple series can happen
+ * in a study.
+ */
 public:
     CohortStudy();
 
