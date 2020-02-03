@@ -118,7 +118,7 @@ protected:
   us::ServiceRegistration<mitk::InteractionEventObserver> m_ServiceRegistration;
 
   /** The algorithm */
-  CaPTkInteractiveSegmentation* m_CaPTkInteractiveSegmentationModule;
+  CaPTkInteractiveSegmentation* m_CaPTkInteractiveSegmentation;
 };
 
 #endif // QmitkCaPTkInteractiveSegmentationView_h

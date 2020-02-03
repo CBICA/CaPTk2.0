@@ -48,7 +48,7 @@ QmitkCaPTkInteractiveSegmentationView::QmitkCaPTkInteractiveSegmentationView()
     m_AutoSelectionEnabled(false),
     m_MouseCursorSet(false)
 {
-  m_CaPTkInteractiveSegmentationModule = 
+  m_CaPTkInteractiveSegmentation = 
       new CaPTkInteractiveSegmentation(GetDataStorage(), this);
 
   m_SegmentationPredicate = mitk::NodePredicateAnd::New();
@@ -100,7 +100,7 @@ void QmitkCaPTkInteractiveSegmentationView::CreateQtPartControl(QWidget *parent)
   m_Parent = parent;
   m_Controls.setupUi(parent);
 
-  m_CaPTkInteractiveSegmentationModule->SetProgressBar(m_Controls.progressBar);
+  m_CaPTkInteractiveSegmentation->SetProgressBar(m_Controls.progressBar);
 
   // *------------------------
   // * DATA SELECTION WIDGETS
@@ -242,7 +242,7 @@ void QmitkCaPTkInteractiveSegmentationView::OnRunButtonPressed()
 	}
 
   // ---- Call module ----
-  m_CaPTkInteractiveSegmentationModule->Run(images, seeds);
+  m_CaPTkInteractiveSegmentation->Run(images, seeds);
 }
 
 void QmitkCaPTkInteractiveSegmentationView::OnNewSegmentationSession()
