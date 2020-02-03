@@ -32,6 +32,7 @@ captk::CohortMerge(QList<QSharedPointer<captk::Cohort>> cohorts)
 
 	QString mergedCohortName = QString();
 
+	// Iterate through the cohorts
 	for (QSharedPointer<captk::Cohort> cohort : cohorts)
 	{
 		if (mergedCohortName == "")
@@ -43,6 +44,9 @@ captk::CohortMerge(QList<QSharedPointer<captk::Cohort>> cohorts)
 			mergedCohortName += "_" + cohort->GetName();
 		}
 
+		// Call the helper functions to do the actual merging
+		// each time we merge the accumulator cohort with the
+		// cohort of the iteration
 		mergedCohort = captk::internal::CohortMergeCohorts(
 			mergedCohort, cohort
 		);
@@ -58,7 +62,7 @@ captk::CohortJsonFromDirectoryStructure(QString& directory)
 {
 	QJsonObject root;
 
-	// ---- Cohort name ----
+	// ---- Cohort name and directory check ----
 
 	if (!captk::internal::IsDir(directory))
 	{
@@ -103,6 +107,10 @@ captk::CohortJsonFromDirectoryStructure(QString& directory)
 			studyjson["name"] = study;
 			auto series_of_study = QJsonArray();
 
+			// Iterate through modality + series description
+			// and add all the series
+			// (series == combination of modality + ser desc)
+
 			auto modalitiesPaths = captk::internal::GetSubdirectories(studyPath);
 			for (auto& modalityPath : modalitiesPaths)
 			{
@@ -132,6 +140,8 @@ captk::CohortJsonFromDirectoryStructure(QString& directory)
 
 					auto filesPaths = captk::internal::GetFilesInDir(serDescPath);
 					
+					// Add images (files)
+
 					for (auto& filePath : filesPaths)
 					{
 						if (captk::internal::IsDir(filePath)) { continue; /*Discard dirs*/}
@@ -260,6 +270,9 @@ captk::CohortJsonLoad(QSharedPointer<QJsonDocument> json)
 					auto modality = seriesObj["modality"].toString();
 					series->SetModality(modality);
 
+					// "seg" modality has segment_label
+					// other modalities have series_description
+
 					if (modality != "seg")
 					{
 						if (seriesObj.contains("series_description"))
@@ -301,6 +314,8 @@ captk::CohortJsonLoad(QSharedPointer<QJsonDocument> json)
 
 					image->SetPath(imageObj["path"].toString());
 
+					// Image info is reserved for files that hold meta-data
+					// of an image (like external dicom tags)
 					if (imageObj.contains("image_info"))
 					{
 						image->SetImageInfoPath(imageObj["image_info"].toString());

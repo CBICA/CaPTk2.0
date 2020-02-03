@@ -1,3 +1,11 @@
+/** \file CaPTkCohortJsonOperationsCmdApp.cpp
+ * \brief CLI program for operations related to cohorts
+ * 
+ * Such operations are related with interacting with
+ * cohort representations on the file system,
+ * either via json files or directory structures
+ */
+
 #include <mitkCommandLineParser.h>
 
 #include "CaPTkCohortOperations.h"
@@ -17,13 +25,12 @@
 #include <iostream>
 #include <memory>
 
-// MODE_DIR_TO_JSON:  input directory structure -> json
-// MODE_MERGE_JSONS: input json files -> one merged json file
-
+/** \brief input directory structure -> json */
 const QString MODE_DIR_TO_JSON = "dirtojson";
+/** \brief input json files -> one merged json file */
 const QString MODE_MERGE_JSONS = "mergejsons";
 
-/** list of all the modes (operations) */
+/** \brief list of all the modes (operations) */
 const QStringList MODES = QStringList() 
   << MODE_DIR_TO_JSON
   << MODE_MERGE_JSONS;
@@ -130,6 +137,8 @@ int main(int argc, char* argv[])
 
   if (mode == MODE_DIR_TO_JSON)
   {
+    // This mode needs the following arguments
+
     if (parsedArgs["directories"].Empty())
     {
       std::cerr << parser.helpText();
@@ -143,6 +152,8 @@ int main(int argc, char* argv[])
   }
   else if (mode == MODE_MERGE_JSONS)
   {
+    // This mode needs the following arguments
+
     if (parsedArgs["jsons"].Empty())
     {
       std::cerr << parser.helpText();

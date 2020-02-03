@@ -1,3 +1,10 @@
+/** \file CaPTkCohortOperations.h
+ * \brief Defines functions that operate on cohorts
+ * 
+ * Operations either via the captk::Cohort class and similar 
+ * or via the file system with either json files or directory structures
+ */
+
 #ifndef CaPTkCohortOperations_h
 #define CaPTkCohortOperations_h
 
@@ -37,7 +44,11 @@ namespace captk
 MITKCAPTKCOMMON_EXPORT QSharedPointer<captk::Cohort> 
 CohortMerge(QList<QSharedPointer<captk::Cohort>> cohorts);
 
-/** \brief Get a QJsonDocument containing the information of a cohort from file */
+/** \brief Get a QJsonDocument containing the 
+ * information of a cohort from a directory structure that
+ * follows the convention: 
+ * COHORT_ROOT/SUBJ_NAME/STUDY_NAME/MODALITY_NAME/SERIES_DESC_NAME/image.nii.gz 
+ */
 MITKCAPTKCOMMON_EXPORT QSharedPointer<QJsonDocument> 
 CohortJsonFromDirectoryStructure(QString& directory);
 
@@ -45,6 +56,7 @@ CohortJsonFromDirectoryStructure(QString& directory);
 MITKCAPTKCOMMON_EXPORT QSharedPointer<captk::Cohort> 
 CohortJsonLoad(QSharedPointer<QJsonDocument> json);
 
+/** \brief Create a QJsonDocument from a captk::Cohort instance */
 MITKCAPTKCOMMON_EXPORT QSharedPointer<QJsonDocument>
 CohortToJson(QSharedPointer<captk::Cohort> cohort);
 
@@ -53,7 +65,7 @@ CohortToJson(QSharedPointer<captk::Cohort> cohort);
  */
 namespace internal
 {
-	// ---- For cohort merging ----
+	// ---- Helpers for cohort merging ----
 
 	MITKCAPTKCOMMON_EXPORT bool
 	CohortIsImagePathInImageList(
@@ -110,14 +122,12 @@ namespace internal
 		QSharedPointer<captk::Cohort> cohort2
 	);
 
-	// MITKCAPTKCOMMON_EXPORT captk::Series*
-
 	// ---- Basic operations ----
 
 	MITKCAPTKCOMMON_EXPORT QStringList GetSubdirectories(QString& directory);
 	MITKCAPTKCOMMON_EXPORT QStringList GetFilesInDir(QString& directory);
-	MITKCAPTKCOMMON_EXPORT QString GetFileNameFromPath(QString& path);
-	MITKCAPTKCOMMON_EXPORT bool IsDir(QString& path);
+	MITKCAPTKCOMMON_EXPORT QString     GetFileNameFromPath(QString& path);
+	MITKCAPTKCOMMON_EXPORT bool        IsDir(QString& path);
 }
 
 }
