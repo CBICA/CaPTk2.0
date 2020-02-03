@@ -2,6 +2,7 @@
     <qresource prefix="/org.mitk.cbica.captk.application">
         <file>icon.png</file>
         <file>cbica-logo.jpg</file>
+        <file>cbica-logo.png</file>
         <file>perspectives/eye.png</file>
         <file>perspectives/viewer_icon.png</file>
     </qresource>
