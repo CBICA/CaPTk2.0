@@ -12,7 +12,7 @@ Copyright (c) 2016 University of Pennsylvania. All rights reserved. <br>
 See COPYING file or https://www.med.upenn.edu/sbia/software/license.html
 
 */
-#include "CaPTkTrainingModuleAlgorithm.h"
+#include "CaPTkTrainingAlgorithm.h"
 
 #include "CaPTkFeatureScalingClass.h"
 

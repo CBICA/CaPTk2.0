@@ -1,4 +1,4 @@
-#include "CaPTkTrainingModule.h"
+#include "CaPTkTraining.h"
 
 #include <QtConcurrent/QtConcurrent>
 #include <QMessageBox>
@@ -6,16 +6,16 @@
 #include <iostream>
 #include <fstream>
 
-#include "CaPTkTrainingModuleAlgorithm.h"
+#include "CaPTkTrainingAlgorithm.h"
 
-CaPTkTrainingModule::CaPTkTrainingModule(
+CaPTkTraining::CaPTkTraining(
 	QObject *parent)
 	: QObject(parent)
 {
 	connect(&m_Watcher, SIGNAL(finished()), this, SLOT(OnAlgorithmFinished()));
 }
 
-void CaPTkTrainingModule::Run(
+void CaPTkTraining::Run(
 	QString featuresCsvPath,
 	QString responsesCsvPath,
 	QString classificationKernelStr,
@@ -25,7 +25,7 @@ void CaPTkTrainingModule::Run(
 	QString modelDirPath,
 	QString outputDirPath)
 {
-	std::cout << "[CaPTkTrainingModule::Run]\n";
+	std::cout << "[CaPTkTraining::Run]\n";
 
 	/* ---- Check if it's already running ---- */
 
@@ -66,7 +66,7 @@ void CaPTkTrainingModule::Run(
 	// std::bind is used because normally
 	// QtConcurrent::run accepts max=5 function arguments
 	m_FutureResult = QtConcurrent::run(std::bind(
-		&CaPTkTrainingModule::RunThread, this,
+		&CaPTkTraining::RunThread, this,
 		featuresCsvPath,
 		responsesCsvPath,
 		classificationKernelStr,
@@ -79,14 +79,14 @@ void CaPTkTrainingModule::Run(
 	m_Watcher.setFuture(m_FutureResult);
 }
 
-void CaPTkTrainingModule::SetProgressBar(QProgressBar* progressBar)
+void CaPTkTraining::SetProgressBar(QProgressBar* progressBar)
 {
 	m_ProgressBar = progressBar;
 }
 
-void CaPTkTrainingModule::OnAlgorithmFinished()
+void CaPTkTraining::OnAlgorithmFinished()
 {
-	std::cout << "[CaPTkTrainingModule::OnAlgorithmFinished]\n";
+	std::cout << "[CaPTkTraining::OnAlgorithmFinished]\n";
 
 	if (m_FutureResult.result().ok)
 	{
@@ -105,8 +105,8 @@ void CaPTkTrainingModule::OnAlgorithmFinished()
 	m_IsRunning = false;
 }
 
-CaPTkTrainingModule::Result
-CaPTkTrainingModule::RunThread(
+CaPTkTraining::Result
+CaPTkTraining::RunThread(
 	QString& featuresCsvPath,
 	QString& responsesCsvPath,
 	QString& classificationKernelStr,
@@ -116,9 +116,9 @@ CaPTkTrainingModule::RunThread(
 	QString& modelDirPath,
 	QString& outputDirPath)
 {
-	std::cout << "[CaPTkTrainingModule::RunThread]\n";
+	std::cout << "[CaPTkTraining::RunThread]\n";
 
-	CaPTkTrainingModule::Result runResult;
+	CaPTkTraining::Result runResult;
 
 	int classificationKernel = (classificationKernelStr.contains("Linear", Qt::CaseInsensitive)) ?
 		1 : 2;

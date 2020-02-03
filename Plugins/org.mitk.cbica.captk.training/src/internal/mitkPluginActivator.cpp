@@ -16,18 +16,18 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 #include "mitkPluginActivator.h"
 
-#include "QmitkCaPTkTrainingPluginView.h"
+#include "QmitkCaPTkTrainingView.h"
 
 #include <usModuleInitialization.h>
 
 ctkPluginContext* mitk::PluginActivator::m_Context = nullptr;
 
 //MLI TODO
-US_INITIALIZE_MODULE //("TrainingPlugin", "liborg_mitk_cbica_captk_trainingplugin")
+US_INITIALIZE_MODULE //("Training", "liborg_mitk_cbica_captk_training")
 
 void mitk::PluginActivator::start(ctkPluginContext *context)
 {
-  BERRY_REGISTER_EXTENSION_CLASS(QmitkCaPTkTrainingPluginView, context)
+  BERRY_REGISTER_EXTENSION_CLASS(QmitkCaPTkTrainingView, context)
 
   m_Context = context;
 }

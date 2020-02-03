@@ -14,7 +14,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 ===================================================================*/
 
-#include "QmitkCaPTkTrainingPluginView.h"
+#include "QmitkCaPTkTrainingView.h"
 
 // blueberry
 #include <berryConstants.h>
@@ -44,7 +44,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <QFileDialog>
 
 // CaPTk
-#include "CaPTkTrainingModule.h"
+#include "CaPTkTraining.h"
 
 #include "tinyxml.h"
 
@@ -52,27 +52,27 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 #include <regex>
 
-const std::string QmitkCaPTkTrainingPluginView::VIEW_ID = "org.mitk.views.captk.trainingplugin";
+const std::string QmitkCaPTkTrainingView::VIEW_ID = "org.mitk.views.captk.training";
 
-QmitkCaPTkTrainingPluginView::QmitkCaPTkTrainingPluginView()
+QmitkCaPTkTrainingView::QmitkCaPTkTrainingView()
   : m_Parent(nullptr)
 {
-  m_CaPTkTrainingModule = new CaPTkTrainingModule(this);
+  m_CaPTkTraining = new CaPTkTraining(this);
 }
 
-QmitkCaPTkTrainingPluginView::~QmitkCaPTkTrainingPluginView()
+QmitkCaPTkTrainingView::~QmitkCaPTkTrainingView()
 {
 
 }
 
-void QmitkCaPTkTrainingPluginView::CreateQtPartControl(QWidget *parent)
+void QmitkCaPTkTrainingView::CreateQtPartControl(QWidget *parent)
 {
   // setup the basic GUI of this view
   m_Parent = parent;
 
   m_Controls.setupUi(parent);
 
-  m_CaPTkTrainingModule->SetProgressBar(m_Controls.progressBar);
+  m_CaPTkTraining->SetProgressBar(m_Controls.progressBar);
 
   /**** Initialize widgets ****/
 
@@ -80,7 +80,7 @@ void QmitkCaPTkTrainingPluginView::CreateQtPartControl(QWidget *parent)
   m_Controls.comboBox_kernel->addItems(QStringList() << "SVM: Linear" << "SVM: RBF");
   // Set combo box to the last user selected value
   m_Controls.comboBox_kernel->setCurrentText(
-    this->GetPreferences()->Get("TrainingPluginKernelComboBox", "SVM: Linear")
+    this->GetPreferences()->Get("TrainingKernelComboBox", "SVM: Linear")
   );
 
   // Initialize kernel combo box
@@ -90,7 +90,7 @@ void QmitkCaPTkTrainingPluginView::CreateQtPartControl(QWidget *parent)
   );
   // Set combo box to the last user selected value
   auto prefConfigurationText = this->GetPreferences()->Get(
-    "TrainingPluginConfigurationComboBox", "Cross-validation"
+    "TrainingConfigurationComboBox", "Cross-validation"
   );
   m_Controls.comboBox_configuration->setCurrentText(prefConfigurationText);
   this->OnConfigurationComboBoxCurrentTextChanged(prefConfigurationText);
@@ -129,27 +129,27 @@ void QmitkCaPTkTrainingPluginView::CreateQtPartControl(QWidget *parent)
   );
 }
 
-void QmitkCaPTkTrainingPluginView::Activated()
+void QmitkCaPTkTrainingView::Activated()
 {
 
 }
 
-void QmitkCaPTkTrainingPluginView::Deactivated()
-{
-  // Not yet implemented
-}
-
-void QmitkCaPTkTrainingPluginView::Visible()
+void QmitkCaPTkTrainingView::Deactivated()
 {
   // Not yet implemented
 }
 
-void QmitkCaPTkTrainingPluginView::Hidden()
+void QmitkCaPTkTrainingView::Visible()
 {
   // Not yet implemented
 }
 
-int QmitkCaPTkTrainingPluginView::GetSizeFlags(bool width)
+void QmitkCaPTkTrainingView::Hidden()
+{
+  // Not yet implemented
+}
+
+int QmitkCaPTkTrainingView::GetSizeFlags(bool width)
 {
   if (!width)
   {
@@ -161,7 +161,7 @@ int QmitkCaPTkTrainingPluginView::GetSizeFlags(bool width)
   }
 }
 
-int QmitkCaPTkTrainingPluginView::ComputePreferredSize(bool width,
+int QmitkCaPTkTrainingView::ComputePreferredSize(bool width,
                                                           int /*availableParallel*/,
                                                           int /*availablePerpendicular*/,
                                                           int preferredResult)
@@ -179,17 +179,17 @@ int QmitkCaPTkTrainingPluginView::ComputePreferredSize(bool width,
 /************************************************************************/
 /* protected slots                                                      */
 /************************************************************************/
-void QmitkCaPTkTrainingPluginView::OnKernelComboBoxCurrentTextChanged(const QString& text)
+void QmitkCaPTkTrainingView::OnKernelComboBoxCurrentTextChanged(const QString& text)
 {
   // Remember it
-  this->GetPreferences()->Put("TrainingPluginKernelComboBox", text);
+  this->GetPreferences()->Put("TrainingKernelComboBox", text);
   this->GetPreferences()->Flush();
 }
 
-void QmitkCaPTkTrainingPluginView::OnConfigurationComboBoxCurrentTextChanged(const QString& text)
+void QmitkCaPTkTrainingView::OnConfigurationComboBoxCurrentTextChanged(const QString& text)
 {
   // Remember it
-  this->GetPreferences()->Put("TrainingPluginConfigurationComboBox", text);
+  this->GetPreferences()->Put("TrainingConfigurationComboBox", text);
   this->GetPreferences()->Flush();
 
   // Show/Hide views below it
@@ -231,7 +231,7 @@ void QmitkCaPTkTrainingPluginView::OnConfigurationComboBoxCurrentTextChanged(con
   }
 }
 
-void QmitkCaPTkTrainingPluginView::OnFeaturesCsvButtonClicked()
+void QmitkCaPTkTrainingView::OnFeaturesCsvButtonClicked()
 {
   auto fileName = QFileDialog::getOpenFileName(m_Parent,
     tr("Select CSV file"), this->GetLastFileOpenPath(), tr("CSV Files (*.csv)"));
@@ -248,7 +248,7 @@ void QmitkCaPTkTrainingPluginView::OnFeaturesCsvButtonClicked()
   m_Controls.lineEdit_features->setText(fileName);
 }
 
-void QmitkCaPTkTrainingPluginView::OnResponsesCsvButtonClicked()
+void QmitkCaPTkTrainingView::OnResponsesCsvButtonClicked()
 {
   auto fileName = QFileDialog::getOpenFileName(m_Parent,
     tr("Select CSV file"), this->GetLastFileOpenPath(), tr("CSV Files (*.csv)"));
@@ -265,7 +265,7 @@ void QmitkCaPTkTrainingPluginView::OnResponsesCsvButtonClicked()
   m_Controls.lineEdit_responses->setText(fileName);
 }
 
-void QmitkCaPTkTrainingPluginView::OnModelDirectoryButtonClicked()
+void QmitkCaPTkTrainingView::OnModelDirectoryButtonClicked()
 {
   auto dirName = QFileDialog::getExistingDirectory(m_Parent, 
     tr("Select directory"), this->GetLastFileOpenPath());
@@ -281,7 +281,7 @@ void QmitkCaPTkTrainingPluginView::OnModelDirectoryButtonClicked()
   m_Controls.lineEdit_modeldir->setText(dirName);
 }
 
-void QmitkCaPTkTrainingPluginView::OnOutputDirectoryButtonClicked()
+void QmitkCaPTkTrainingView::OnOutputDirectoryButtonClicked()
 {
   auto dirName = QFileDialog::getExistingDirectory(m_Parent, 
     tr("Select directory"), this->GetLastFileOpenPath());
@@ -297,7 +297,7 @@ void QmitkCaPTkTrainingPluginView::OnOutputDirectoryButtonClicked()
   m_Controls.lineEdit_outputdir->setText(dirName);
 }
 
-void QmitkCaPTkTrainingPluginView::OnRunButtonPressed()
+void QmitkCaPTkTrainingView::OnRunButtonPressed()
 {
   QString featuresCsvPath = m_Controls.lineEdit_features->text();
   QString responsesCsvPath = m_Controls.lineEdit_responses->text();
@@ -308,7 +308,7 @@ void QmitkCaPTkTrainingPluginView::OnRunButtonPressed()
   QString modelDirPath = m_Controls.lineEdit_modeldir->text();
   QString outputDirPath = m_Controls.lineEdit_outputdir->text();
 
-  m_CaPTkTrainingModule->Run(
+  m_CaPTkTraining->Run(
     featuresCsvPath,
     responsesCsvPath,
     classificationKernelStr,
@@ -323,31 +323,31 @@ void QmitkCaPTkTrainingPluginView::OnRunButtonPressed()
 /************************************************************************/
 /* protected                                                            */
 /************************************************************************/
-void QmitkCaPTkTrainingPluginView::OnSelectionChanged(berry::IWorkbenchPart::Pointer, const QList<mitk::DataNode::Pointer> &)
+void QmitkCaPTkTrainingView::OnSelectionChanged(berry::IWorkbenchPart::Pointer, const QList<mitk::DataNode::Pointer> &)
 {
 
 }
 
-void QmitkCaPTkTrainingPluginView::OnPreferencesChanged(const berry::IBerryPreferences*)
+void QmitkCaPTkTrainingView::OnPreferencesChanged(const berry::IBerryPreferences*)
 {
 
 }
 
-void QmitkCaPTkTrainingPluginView::NodeAdded(const mitk::DataNode *)
+void QmitkCaPTkTrainingView::NodeAdded(const mitk::DataNode *)
 {
 
 }
 
-void QmitkCaPTkTrainingPluginView::NodeRemoved(const mitk::DataNode *)
+void QmitkCaPTkTrainingView::NodeRemoved(const mitk::DataNode *)
 {
 
 }
 
-void QmitkCaPTkTrainingPluginView::SetFocus()
+void QmitkCaPTkTrainingView::SetFocus()
 {
 }
 
-void QmitkCaPTkTrainingPluginView::UpdateControls()
+void QmitkCaPTkTrainingView::UpdateControls()
 {
   // Hide views that are not useful
   // m_Controls.label_PatientImage->setVisible(false);
@@ -355,17 +355,17 @@ void QmitkCaPTkTrainingPluginView::UpdateControls()
   this->RequestRenderWindowUpdate(mitk::RenderingManager::REQUEST_UPDATE_ALL);
 }
 
-void QmitkCaPTkTrainingPluginView::InitializeListeners()
+void QmitkCaPTkTrainingView::InitializeListeners()
 {
 
 }
 
-QString QmitkCaPTkTrainingPluginView::GetLastFileOpenPath()
+QString QmitkCaPTkTrainingView::GetLastFileOpenPath()
 {
   return this->GetPreferences()->Get("LastFileOpenPath", "");
 }
 
-void QmitkCaPTkTrainingPluginView::SetLastFileOpenPath(const QString &path)
+void QmitkCaPTkTrainingView::SetLastFileOpenPath(const QString &path)
 {
   this->GetPreferences()->Put("LastFileOpenPath", path);
   this->GetPreferences()->Flush();

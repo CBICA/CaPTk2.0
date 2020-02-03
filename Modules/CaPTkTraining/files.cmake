@@ -1,6 +1,6 @@
 set(CPP_FILES
-  CaPTkTrainingModule.cpp
-  internal/CaPTkTrainingModuleAlgorithm.cpp
+  CaPTkTraining.cpp
+  internal/CaPTkTrainingAlgorithm.cpp
   internal/CaPTkFeatureScalingClass.cpp
 )
 
@@ -9,7 +9,7 @@ set(UI_FILES
 )
 
 set(MOC_H_FILES
-  include/CaPTkTrainingModule.h
+  include/CaPTkTraining.h
 )
 
 set(RESOURCE_FILES

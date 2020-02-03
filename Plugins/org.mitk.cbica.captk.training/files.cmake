@@ -4,16 +4,16 @@ set(SRC_CPP_FILES
 
 set(INTERNAL_CPP_FILES
   mitkPluginActivator.cpp
-  QmitkCaPTkTrainingPluginView.cpp
+  QmitkCaPTkTrainingView.cpp
 )
 
 set(UI_FILES
-  src/internal/QmitkCaPTkTrainingPluginControls.ui
+  src/internal/QmitkCaPTkTrainingControls.ui
 )
 
 set(MOC_H_FILES
   src/internal/mitkPluginActivator.h
-  src/internal/QmitkCaPTkTrainingPluginView.h
+  src/internal/QmitkCaPTkTrainingView.h
 )
 
 set(CACHED_RESOURCE_FILES

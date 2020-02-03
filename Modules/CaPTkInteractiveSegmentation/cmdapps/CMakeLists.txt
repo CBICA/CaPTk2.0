@@ -5,6 +5,6 @@ if(BUILD_CaPTkInteractiveSegmentationCmdApp)
     NAME CaPTkInteractiveSegmentation
     CPP_FILES "${SRC_FILES}" CaPTkInteractiveSegmentation.cpp
     PACKAGE_DEPENDS ITK OpenCV Qt5|Core+WebEngineWidgets
-    DEPENDS MitkCaPTkInteractiveSegmentationModule
+    DEPENDS MitkCaPTkInteractiveSegmentation
   )
 endif()

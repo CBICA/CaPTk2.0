@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QmitkCaPTkTrainingPluginControls</class>
- <widget class="QWidget" name="QmitkCaPTkTrainingPluginControls">
+ <class>QmitkCaPTkTrainingControls</class>
+ <widget class="QWidget" name="QmitkCaPTkTrainingControls">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -34,7 +34,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>QmitkCaPTkTrainingPlugin</string>
+   <string>QmitkCaPTkTraining</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_5">
    <item>
