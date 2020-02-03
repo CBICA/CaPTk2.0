@@ -17,7 +17,7 @@ class CohortSubject;
 
 namespace captk
 {
-/** \class CohortS
+/** \class Cohort
  * \brief Defines information about a cohort
  * and holds the list of cohort's various subjects.
  */
