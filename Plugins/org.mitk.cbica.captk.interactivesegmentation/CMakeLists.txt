@@ -6,5 +6,5 @@ mitk_create_plugin(
   EXPORT_DIRECTIVE MITK_CAPTK_INTERACTIVE_SEGMENTATION
   EXPORTED_INCLUDE_SUFFIXES src
   PACKAGE_DEPENDS ITK OpenCV
-  MODULE_DEPENDS MitkSegmentation MitkSegmentationUI MitkCaPTkInteractiveSegmentationModule
+  MODULE_DEPENDS MitkSegmentation MitkSegmentationUI MitkCaPTkInteractiveSegmentation
 )

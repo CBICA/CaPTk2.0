@@ -82,7 +82,7 @@ void QmitkCaPTkApplicationPlugin::start(ctkPluginContext* context)
   }
 
   // Set CBICA logo
-  mitk::WorkbenchUtil::SetDepartmentLogoPreference(":/org.mitk.cbica.captk.application/cbica-logo.jpg", context);
+  mitk::WorkbenchUtil::SetDepartmentLogoPreference(":/org.mitk.cbica.captk.application/cbica-logo.png", context);
 }
 
 ctkPluginContext* QmitkCaPTkApplicationPlugin::GetPluginContext() const

@@ -3,6 +3,6 @@
 set(MITK_MODULES
   CaPTkCommon
   PHIEstimatorModule
-  CaPTkTrainingModule
-  CaPTkInteractiveSegmentationModule
+  CaPTkTraining
+  CaPTkInteractiveSegmentation
 )
