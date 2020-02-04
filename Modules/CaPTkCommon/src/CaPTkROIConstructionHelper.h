@@ -15,6 +15,7 @@
 #include <vector>
 
 #include "CaPTkROIConstructionHelperBase.h"
+#include "CaPTkROIConstructionCreateLatticePoints.h"
 
 namespace captk
 {
@@ -26,9 +27,10 @@ class MITKCAPTKCOMMON_EXPORT ROIConstructionHelper : public ROIConstructionHelpe
 {
 public:
 
-    using TImageType = itk::Image<TPixel, VImageDimension>;
+    using TImageType        = itk::Image<TPixel, VImageDimension>;
     using TImageTypePointer = typename TImageType::Pointer;
-    using TIndexType = typename TImageType::IndexType;
+    using TIndexType        = typename TImageType::IndexType;
+    using TSizeType         = typename TImageType::SizeType;
 
     ROIConstructionHelper(TImageTypePointer mask)
     {
@@ -44,13 +46,14 @@ public:
         float radius,
         float step) override
     {
-
+        m_Radius = radius;
+        m_Indeces = captk::ROIConstructionCreateLatticePoints(m_Mask, step);
+        m_CurrentIndex = 0;
     }
 
     bool HasNext() override
     {
-        // TODO
-        // Call lattice generator HasNext()
+        return ( m_CurrentIndex + 1 < m_Indeces.size() );
     }
 
     // void SetValuesAndNames(mitk::LabelSet::Pointer labelSet) override
@@ -84,7 +87,7 @@ public:
         for (int i = 0; i < ImageType::ImageDimension; i++)
         {
             if (i + 1 > 3) { radiusSizeType[i] = 1; }
-            else           { radiusSizeType[i] = m_Radius; }
+            else           { radiusSizeType[i] = m_Radius; } // TODO: m_Radius IN MILLIMETERS
         }
 
         // Iterate through the neighborhood until you find the current lattice index
@@ -111,10 +114,12 @@ protected:
     }
 
 private:
-    std::vector<int>         m_Values;
-    std::vector<std::string> m_Names;
+    // std::vector<int>         m_Values;
+    // std::vector<std::string> m_Names;
     size_t                   m_CurrentIndex;
     TImageTypePointer        m_Mask;
+    std::vector<TIndexType>  m_Indeces;
+    float                    m_Radius;
 
 };
 } // namespace captk
