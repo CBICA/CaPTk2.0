@@ -12,7 +12,7 @@ See COPYING file or https://www.med.upenn.edu/sbia/software-agreement.html
 */
 
 #pragma once
-#include <MitkPHIEstimatorModuleExports.h>
+#include <MitkCaPTkPHIEstimatorExports.h>
 #include "iostream"
 #include "vtkSmartPointer.h"
 #include "vnl/vnl_matrix.h"
@@ -29,7 +29,7 @@ class vtkTable;
 
 #define NO_OF_PCA_FEATURES 45 // TODO: this selects the number of PCA features that are generated - this needs to be dynamic and picked up from the size[3] of the loaded perfusion image; search for this variable and "45" everywhere and replace with perfusionImage_size[3]
 
-class MITKPHIESTIMATORMODULE_EXPORT FeatureReductionClass
+class MITKCAPTKPHIESTIMATOR_EXPORT FeatureReductionClass
 {
 public:
   //!Constructor

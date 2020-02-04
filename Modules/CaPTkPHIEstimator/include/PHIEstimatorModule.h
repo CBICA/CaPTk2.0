@@ -17,11 +17,11 @@ See LICENSE.txt or http://www.mitk.org for details.
 #ifndef ExampleModule_h
 #define ExampleModule_h
 
-#include <MitkPHIEstimatorModuleExports.h>
+#include <MitkCaPTkPHIEstimatorExports.h>
 
 namespace PHIEstimatorModule
 {
-	MITKPHIESTIMATORMODULE_EXPORT void ForceLinkage();
+	MITKCAPTKPHIESTIMATOR_EXPORT void ForceLinkage();
 }
 
 #endif

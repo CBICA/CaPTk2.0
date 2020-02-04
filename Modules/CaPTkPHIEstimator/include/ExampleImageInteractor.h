@@ -20,13 +20,13 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <mitkDataInteractor.h>
 #include <itkIndex.h>
 
-#include <MitkPHIEstimatorModuleExports.h>
+#include <MitkCaPTkPHIEstimatorExports.h>
 
 // See ExampleImageFilter.h for details on typical class declarations
 // in MITK. The actual functionality of this class is commented in its
 // implementation file.
 
-class MITKPHIESTIMATORMODULE_EXPORT ExampleImageInteractor final : public mitk::DataInteractor
+class MITKCAPTKPHIESTIMATOR_EXPORT ExampleImageInteractor final : public mitk::DataInteractor
 {
 public:
   mitkClassMacro(ExampleImageInteractor, DataInteractor)

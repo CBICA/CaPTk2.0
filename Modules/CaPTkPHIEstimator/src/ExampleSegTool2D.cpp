@@ -19,7 +19,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <usGetModuleContext.h>
 #include <usModuleResource.h>
 
-MITK_TOOL_MACRO(MITKPHIESTIMATORMODULE_EXPORT, ExampleSegTool2D, "Example tool");
+MITK_TOOL_MACRO(MITKCAPTKPHIESTIMATOR_EXPORT, ExampleSegTool2D, "Example tool");
 
 ExampleSegTool2D::ExampleSegTool2D()
   : SegTool2D("Paint", us::GetModuleContext()->GetModule())
