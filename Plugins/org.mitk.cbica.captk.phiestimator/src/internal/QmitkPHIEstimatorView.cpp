@@ -50,7 +50,7 @@ namespace
   // into ExtPHIEstimatorModule as resources.
   static ExampleImageInteractor::Pointer CreateExampleImageInteractor()
   {
-    auto PHIEstimatorModule = us::ModuleRegistry::GetModule("MitkPHIEstimatorModule");
+    auto PHIEstimatorModule = us::ModuleRegistry::GetModule("MitkCaPTkPHIEstimator");
 
     if (nullptr != PHIEstimatorModule)
     {
@@ -65,7 +65,7 @@ namespace
 }
 
 // Don't forget to initialize the VIEW_ID.
-const std::string QmitkPHIEstimatorView::VIEW_ID = "org.mitk.views.PHIEstimatorview";
+const std::string QmitkPHIEstimatorView::VIEW_ID = "org.mitk.views.captk.phiestimator";
 
 void QmitkPHIEstimatorView::CreateQtPartControl(QWidget* parent)
 {

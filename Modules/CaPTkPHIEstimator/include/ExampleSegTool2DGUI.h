@@ -19,7 +19,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 #include <QmitkToolGUI.h>
 #include <QScopedPointer>
-#include <MitkPHIEstimatorModuleExports.h>
+#include <MitkCaPTkPHIEstimatorExports.h>
 
 namespace Ui
 {
@@ -28,7 +28,7 @@ namespace Ui
 
 // Look into ExampleSegTool2D.h for more information.
 
-class MITKPHIESTIMATORMODULE_EXPORT ExampleSegTool2DGUI : public QmitkToolGUI
+class MITKCAPTKPHIESTIMATOR_EXPORT ExampleSegTool2DGUI : public QmitkToolGUI
 {
   Q_OBJECT
 
