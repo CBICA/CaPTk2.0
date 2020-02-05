@@ -6,8 +6,10 @@
 // that you want to be part of the public interface of your module.
 #include <MitkCaPTkCommonExports.h>
 
-#include <vector>
 #include <itkImage.h>
+#include <itkImageRegionIteratorWithIndex.h>
+
+#include <vector>
 
 namespace captk
 {
@@ -78,11 +80,14 @@ ROIConstructionCreateLatticePoints(
     {
         total_points *= all_valid_index_sets[current_dim].size();
     }
+
+    // Iterator to check it the proposed point is part of the ROI of the mask
+    itk::ImageRegionIteratorWithIndex<ImageType> iter(mask, mask->GetRequestedRegion());
+
     for (int i = 0; i < total_points; i++)
     {
         IndexType this_point;
-        /* Explanation for why/how this works >>
-         * The below works by using the numerical indices as divisors. if X axis has 5 valid spaced positions,
+        /* The below code works by using the numerical indices as divisors. if X axis has 5 valid spaced positions,
          * and Y has 3, and Z has 6, the total number of valid point indices is 5*3*6 = 90 total valid, unique points (which we calculated above).
          * "Selecting" any valid position along X means there are 90/5 = 18 = 3*6 valid points with that specific X-position.
          * Using modulus "selects" a position in the current range based on the unique point's corresponding number. 90%5 = 0, 89%5 = 1, 88%5 = 3...
@@ -102,7 +107,13 @@ ROIConstructionCreateLatticePoints(
             factor /= positions.size();
             this_point[dim] = positions[n_index];
         }
-        result_vector.push_back(this_point);
+
+        // If it is part of the ROI, add it to the result
+        iter.SetIndex(this_point);
+        if (iter.Get() > 0)
+        {
+            result_vector.push_back(this_point);
+        }
     }
 
     return result_vector;
