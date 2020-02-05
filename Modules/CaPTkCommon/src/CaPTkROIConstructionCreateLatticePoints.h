@@ -17,13 +17,15 @@ namespace captk
 /** \brief Get a list of all lattice indices 
  * \param mask the input mask
  * \param stepInMillimeters desired distance between the points
+ * \param pointsOnlyOnMask will return points only at non-zero pixels/voxels of the ROI
  * \return std::vector of all the indeces
 */
 template <class TPixel, unsigned int VImageDimension>
 MITKCAPTKCOMMON_EXPORT std::vector<typename itk::Image<TPixel, VImageDimension>::IndexType>
 ROIConstructionCreateLatticePoints(
     typename itk::Image<TPixel, VImageDimension>::Pointer mask,
-    const double stepInMillimeters)
+    const double stepInMillimeters,
+    bool pointsOnlyOnMask=true)
 {
     using ImageType    = itk::Image<TPixel, VImageDimension>;
     using IndexType    = typename ImageType::IndexType;
@@ -108,9 +110,9 @@ ROIConstructionCreateLatticePoints(
             this_point[dim] = positions[n_index];
         }
 
-        // If it is part of the ROI, add it to the result
+        // If it is part of the ROI, add it to the result (or if we include everything anyway)
         iter.SetIndex(this_point);
-        if (iter.Get() > 0)
+        if ((!pointsOnlyOnMask) || (iter.Get() > 0))
         {
             result_vector.push_back(this_point);
         }

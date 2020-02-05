@@ -23,6 +23,12 @@ public:
 
     virtual ~ROIConstructionHelperBase() {}
 
+    enum MODE
+    {
+        ROI_BASED,
+        FULL
+    }
+
     virtual void Update(
         float radius,
         float step
@@ -47,11 +53,17 @@ public:
         return tmp;
     }
 
+    void SetMode(MODE mode)
+    {
+        m_Mode = mode;
+    }
+
     virtual void PopulateMask(mitk::LabelSetImage::Pointer rMask) = 0;
 
 protected:
     virtual void OnIncrement() = 0;
 
+    MODE m_Mode = MODE::ROI_BASED;
 };
 } // namespace captk
 

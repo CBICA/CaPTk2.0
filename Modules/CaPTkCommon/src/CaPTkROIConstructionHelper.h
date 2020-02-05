@@ -27,12 +27,12 @@ class MITKCAPTKCOMMON_EXPORT ROIConstructionHelper : public ROIConstructionHelpe
 {
 public:
 
-    using TImageType        = itk::Image<TPixel, VImageDimension>;
-    using TImageTypePointer = typename TImageType::Pointer;
-    using TIndexType        = typename TImageType::IndexType;
-    using TSizeType         = typename TImageType::SizeType;
+    using ImageType        = itk::Image<TPixel, VImageDimension>;
+    using ImageTypePointer = typename ImageType::Pointer;
+    using IndexType        = typename ImageType::IndexType;
+    using SizeType         = typename ImageType::SizeType;
 
-    ROIConstructionHelper(TImageTypePointer mask)
+    ROIConstructionHelper(ImageTypePointer mask)
     {
         m_Mask = mask;
     }
@@ -46,9 +46,24 @@ public:
         float radius,
         float step) override
     {
-        m_Radius = radius;
         m_Indeces = captk::ROIConstructionCreateLatticePoints(m_Mask, step);
         m_CurrentIndex = 0;
+
+        // Radius for the neighborhood iterator
+        for (int i = 0; i < ImageType::ImageDimension; i++)
+        {
+            if (i + 1 > 3)
+            {
+                m_RadiusSize[i] = 1;
+            }
+            else
+            {
+                m_RadiusSize[i] = radius; // TODO: radius IN MILLIMETERS (Spacing?)
+            }
+        }
+
+        // Initialize the iterator once so it doesn't get recreated all the time
+        m_Iter  = itk::ImageRegionIteratorWithIndex<ImageType>(mask, mask->GetRequestedRegion());
     }
 
     bool HasNext() override
@@ -73,35 +88,35 @@ public:
     //     }
     // }
 
-    void PopulateMask(mitk::LabelSetImage::Pointer rMask) override
+    /** \brief Populate empty mask with the next lattice ROI patch
+     * \param rMask an empty but initialized LabelSetImage
+     * 
+     * \return weight (what percentage of voxels of the patch were used)
+     */
+    float PopulateMask(mitk::LabelSetImage::Pointer rMask) override
     {
-        // Convert mitk::LabelSetImage::Pointer to TImageType
-        using ImageToItkType = mitk::ImageToItk<TImageType>;
-        typename ImageToItkType::Pointer imagetoitk = ImageToItkType::New();
-        imagetoitk->SetInput(rMask);
-        imagetoitk->Update();
-        TImageTypePointer rMaskItk = imagetoitk->GetOutput();
-
-        // Radius for the neighborhood iterator
-        typename ImageType::SizeType radiusSizeType;
-        for (int i = 0; i < ImageType::ImageDimension; i++)
-        {
-            if (i + 1 > 3) { radiusSizeType[i] = 1; }
-            else           { radiusSizeType[i] = m_Radius; } // TODO: m_Radius IN MILLIMETERS
-        }
+        // Convert mitk::LabelSetImage::Pointer to ImageType
+        using MitkToItkImageConverterType = mitk::ImageToItk<ImageType>;
+        typename MitkToItkImageConverterType::Pointer mitktoitk = MitkToItkImageConverterType::New();
+        mitktoitk->SetInput(rMask);
+        mitktoitk->Update();
+        ImageTypePointer rMaskItk = mitktoitk->GetOutput();
 
         // Iterate through the neighborhood until you find the current lattice index
-        itk::NeighborhoodIterator<ImageType> iter_nm(radiusSizeType, mask,
-                                                     mask->GetRequestedRegion());
-        for (iter_nm.GoToBegin(); !iter_nm.IsAtEnd(); ++iter_nm)
+        auto ind = m_Indeces[m_CurrentIndex];
+        itk::NeighborhoodIterator<ImageType> niter(m_RadiusSize, rMaskItk,
+                                                   rMaskItk->GetRequestedRegion());
+        for (niter.GoToBegin(); !niter.IsAtEnd(); ++niter)
         {
             // Check if the index is the same as the one we want
-            if (iter_nm.GetIndex() == ind1)
+            if (niter.GetIndex() == ind)
             {
                 // Iterate through the neighborhood
-                for (unsigned int i = 0; i < iter_nm.Size(); ++i)
+                for (unsigned int i = 0; i < niter.Size(); ++i)
                 {
-                    iter_nm.SetPixel(i, 1);
+                    // Check if that pixel is enabled
+                    m_Iter.SetIndex(niter.GetIndex(i));
+                    niter.SetPixel(i, 1);
                 }
             }
         }
@@ -110,17 +125,17 @@ public:
 protected:
     void OnIncrement() override
     {
-
+        m_CurrentIndex++;
     }
 
 private:
     // std::vector<int>         m_Values;
     // std::vector<std::string> m_Names;
     size_t                   m_CurrentIndex;
-    TImageTypePointer        m_Mask;
-    std::vector<TIndexType>  m_Indeces;
-    float                    m_Radius;
-
+    ImageTypePointer        m_Mask;
+    std::vector<IndexType>  m_Indeces;
+    typename ImageType::SizeType m_RadiusSize;
+    itk::ImageRegionIteratorWithIndex <ImageType> m_Iter;
 };
 } // namespace captk
 
