@@ -31,6 +31,7 @@ public:
     using ImageTypePointer = typename ImageType::Pointer;
     using IndexType        = typename ImageType::IndexType;
     using SizeType         = typename ImageType::SizeType;
+    using Spacing          = typename ImageType::Spacing;
 
     ROIConstructionHelper(ImageTypePointer mask)
     {
@@ -49,16 +50,18 @@ public:
         m_Indeces = captk::ROIConstructionCreateLatticePoints(m_Mask, step);
         m_CurrentIndex = 0;
 
+        Spacing spacing = m_Mask->GetSpacing();
+
         // Radius for the neighborhood iterator
         for (int i = 0; i < ImageType::ImageDimension; i++)
         {
             if (i + 1 > 3)
             {
-                m_RadiusSize[i] = 1;
+                m_RadiusSize[i] = 1;                   // non-spatial dimensions
             }
             else
             {
-                m_RadiusSize[i] = radius; // TODO: radius IN MILLIMETERS (Spacing?)
+                m_RadiusSize[i] = radius / spacing[i]; // radius (voxels) = radius (mm) / spacing (mm)
             }
         }
 
@@ -71,29 +74,12 @@ public:
         return ( m_CurrentIndex + 1 < m_Indeces.size() );
     }
 
-    // void SetValuesAndNames(mitk::LabelSet::Pointer labelSet) override
-    // {
-    //     mitk::LabelSet::LabelContainerConstIteratorType it;
-    //     for (it = labelSet->IteratorConstBegin();
-    //          it != labelSet->IteratorConstEnd();
-    //          ++it)
-    //     {
-    //         if (it->second->GetValue() != 0)
-    //         {
-    //             // std::cout << "Found label set name: "
-    //             //           << it->second->GetName() << "\n";
-    //             m_Values.push_back(it->second->GetValue());
-    //             m_Names.push_back(it->second->GetName());
-    //         }
-    //     }
-    // }
-
     /** \brief Populate empty mask with the next lattice ROI patch
      * \param rMask an empty but initialized LabelSetImage. It should contain an empty Label 1 (setting label name is the responsibility of the caller).
      * 
      * \return weight (what percentage of voxels of the patch were used)
      */
-    float PopulateMask(mitk::LabelSetImage::Pointer rMask) override
+    float PopulateMask(mitk::LabelSetImage::Pointer& rMask) override
     {
         // Convert mitk::LabelSetImage::Pointer to ImageType
         using MitkToItkImageConverterType = mitk::ImageToItk<ImageType>;
@@ -101,6 +87,8 @@ public:
         mitktoitk->SetInput(rMask);
         mitktoitk->Update();
         ImageTypePointer rMaskItk = mitktoitk->GetOutput();
+
+        int usedPoints = 0, totalPoints;
 
         // Iterate through the neighborhood until you find the current lattice index
         auto ind = m_Indeces[m_CurrentIndex];
@@ -111,6 +99,8 @@ public:
             // Check if the index is the same as the one we want
             if (niter.GetIndex() == ind)
             {
+                totalPoints = niter.Size();
+
                 // Iterate through the neighborhood
                 for (unsigned int i = 0; i < niter.Size(); ++i)
                 {
@@ -122,10 +112,13 @@ public:
                         (this->m_Mode == MODE::ROI_BASED && m_Iter.Get() > 0))
                     {
                         niter.SetPixel(i, 1);
+                        usedPoints++;
                     }
                 }
             }
         }
+
+        return 1.0 * usedPoints / totalPoints;
     }
 
 protected:

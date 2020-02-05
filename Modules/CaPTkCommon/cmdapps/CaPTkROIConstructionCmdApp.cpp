@@ -24,6 +24,7 @@ int main(int argc, char* argv[])
 {
   mitkCommandLineParser parser;
 
+
   /*---- Set general information about the command-line app ----*/
 
   parser.setCategory("CaPTk Cmd App Category");
@@ -35,6 +36,7 @@ int main(int argc, char* argv[])
 
   // How should arguments be prefixed
   parser.setArgumentPrefix("--", "-");
+
 
   /*---- Add arguments. Unless specified otherwise, each argument is optional.
             See mitkCommandLineParser::addArgument() for more information. ----*/
@@ -49,49 +51,13 @@ int main(int argc, char* argv[])
     false); // false -> required parameter
 
   parser.addArgument(
-    "lattice",
-    "l",
-    mitkCommandLineParser::Bool,
-    "Lattice",
-    "Enables lattice calculation",
-    us::Any(),
-    true); // false -> required parameter
-
-  parser.addArgument(
-    "window",
-    "w",
+    "radius",
+    "r",
     mitkCommandLineParser::Float,
-    "Window",
-    "Lattice window",
+    "Radius",
+    "Lattice window radius",
     us::Any(),
     false); // false -> required parameter
-
-  parser.addArgument(
-    "flux-neumann-condition",
-    "f",
-    mitkCommandLineParser::Bool,
-    "flux-neumann-condition",
-    "Enables flux-neumann-condition",
-    us::Any(),
-    true); // false -> required parameter
-
-  parser.addArgument(
-    "patch-construction-roi",
-    "pr",
-    mitkCommandLineParser::Bool,
-    "patch-construction-roi",
-    "Enables patch-construction-roi",
-    us::Any(),
-    true); // false -> required parameter
-
-  parser.addArgument(
-    "patch-construction-none",
-    "pn",
-    mitkCommandLineParser::Bool,
-    "patch-construction-none",
-    "Enables patch-construction-none",
-    us::Any(),
-    true); // false -> required parameter
 
   parser.addArgument(
     "step",
@@ -99,6 +65,15 @@ int main(int argc, char* argv[])
     mitkCommandLineParser::Float,
     "step",
     "Lattice step",
+    us::Any(),
+    false); // false -> required parameter
+
+  parser.addArgument(
+    "mode",
+    "m",
+    mitkCommandLineParser::Bool,
+    "mode",
+    "Set mode (roi_based or full)",
     us::Any(),
     false); // false -> required parameter
 
@@ -129,7 +104,7 @@ int main(int argc, char* argv[])
     return EXIT_FAILURE;
   }
 
-  if (parsedArgs["window"].Empty())
+  if (parsedArgs["radius"].Empty())
   {
     std::cerr << parser.helpText();
     return EXIT_FAILURE;
@@ -141,38 +116,25 @@ int main(int argc, char* argv[])
     return EXIT_FAILURE;
   }
 
+  if (parsedArgs["mode"].Empty())
+  {
+    std::cerr << parser.helpText();
+    return EXIT_FAILURE;
+  }
+
   if (parsedArgs["output-dir"].Empty())
   {
     std::cerr << parser.helpText();
     return EXIT_FAILURE;
   }
 
-  auto maskPath = QString(us::any_cast<std::string>(parsedArgs["mask"]).c_str());
+  /*---- Actual parsing ----*/
+
+  auto maskPath  = QString(us::any_cast<std::string>(parsedArgs["mask"]).c_str());
   auto outputDir = QString(us::any_cast<std::string>(parsedArgs["output-dir"]).c_str());
-  float window = us::any_cast<float>(parsedArgs["window"]);
-  float step = us::any_cast<float>(parsedArgs["step"]);
-
-  bool  lattice(false);
-  bool  fluxNeumannCondition(false);
-  bool  patchConstructionROI(false);
-  bool  patchConstructionNone(false);
-
-  if (parsedArgs.count("lattice"))
-  {
-      lattice = us::any_cast<bool>(parsedArgs["lattice"]);
-  }
-  if (parsedArgs.count("flux-neumann-condition"))
-  {
-      fluxNeumannCondition = us::any_cast<bool>(parsedArgs["flux-neumann-condition"]);
-  }
-  if (parsedArgs.count("patch-construction-roi"))
-  {
-      patchConstructionROI = us::any_cast<bool>(parsedArgs["patch-construction-roi"]);
-  }
-  if (parsedArgs.count("patch-construction-none"))
-  {
-      patchConstructionNone = us::any_cast<bool>(parsedArgs["patch-construction-none"]);
-  }
+  auto modeStr   = QString(us::any_cast<std::string>(parsedArgs["mode"]).c_str());
+  float radius   = us::any_cast<float>(parsedArgs["radius"]);
+  float step     = us::any_cast<float>(parsedArgs["step"]);
 
   /*---- Run ----*/
 
@@ -180,39 +142,59 @@ int main(int argc, char* argv[])
 
   try
   {
-      captk::ROIConstruction constructor;
-      constructor.Update(
-        mitk::IOUtil::Load<mitk::LabelSetImage>(maskPath.toStdString()),
-        lattice,
-        window,
-        fluxNeumannCondition,
-        patchConstructionROI,
-        patchConstructionNone,
-        step
-      );
+    auto mask = mitk::IOUtil::Load<mitk::LabelSetImage>(maskPath.toStdString());
 
-      int counter = 1;
-      while(constructor.HasNext())
+    auto mode = (modeStr == "FULL") ? 
+        captk::ROIConstructionHelperBase::MODE::FULL : 
+        captk::ROIConstructionHelperBase::MODE::ROI_BASED;
+
+    // Iterate through the labels
+    mitk::LabelSet::Pointer labelSet = mask->GetActiveLabelSet();
+    mitk::LabelSet::LabelContainerConstIteratorType it;
+    for (it = labelSet->IteratorConstBegin();
+         it != labelSet->IteratorConstEnd();
+         ++it)
+    {
+      if (it->second->GetValue() != 0) // Ignore zero
       {
-          auto miniMask = constructor.GetNext();
+        // ---- For each label in the mask ----
 
-          auto name = constructor.GetCurrentName().c_str();
-          auto value = QString::number(constructor.GetCurrentValue());
+        auto value = it->second->GetValue();
+        auto name  = it->second->GetName();
 
-          auto outputPath = outputDir + QDir::separator() 
-            + QString::number(counter)
-            + name + "_" + value + "_" + 
-            maskFileName;
+        // TODO: Delete all the other labels
 
-          std::cout << ">Will save ROI to file "
+        std::cout << "Found label set name: "
+                  << it->second->GetName() << "\n";
+
+        captk::ROIConstruction constructor;
+        constructor.Update(
+            mask,
+            mode,
+            radius,
+            step);
+
+        int counter = 1;
+        while (!constructor.IsAtEnd())
+        {
+          mitk::LabelSetImage::Pointer rMask;
+          float weight = constructor.Get(rMask);
+
+          auto outputPath = outputDir + QDir::separator() +
+                            QString::number(counter++) + QString("_") +
+                            QString::number(value)     + QString("_") +
+                            QString(name.c_str())      + QString("_") +
+                            maskFileName;
+
+          std::cout << ">Saving ROI to: "
                     << outputPath.toStdString() << "\n";
 
-          mitk::IOUtil::Save(
-		        miniMask, 
-		        outputPath.toStdString()
-	        );
-          counter++;
+          mitk::IOUtil::Save(rMask, outputPath.toStdString());
+
+          constructor++;
+        }
       }
+    }
   }
   catch (const mitk::Exception& e)
   {

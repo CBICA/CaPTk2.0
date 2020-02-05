@@ -3,10 +3,10 @@
 
 namespace captk
 {
-class ROIConstructionItkHelperBase;
+class ROIConstructionHelperBase;
 }
 
-#include "CaPTkROIConstructionItkHelper.h"
+#include "CaPTkROIConstructionHelper.h"
 
 #include "mitkLabel.h"
 #include "mitkLabelSetImage.h"
@@ -37,41 +37,42 @@ public:
     ROIConstruction();
     ~ROIConstruction();
 
-    /** \brief Find all the different lattice points
-     * 
-     * See CaPTkROIConstructionImplementation for what the parameters are
-     */
+    /** \brief Find all the different lattice points */
     void Update(
-        // JUST CALCULATE FOR ALL LABELS std::vector<mitk::Label::PixelType> rois,
-        // CAN BE DEDUCED: std::vector< std::string > roi_labels,
         mitk::LabelSetImage::Pointer input,
-        bool  lattice,
-        float window,
-        bool  fluxNeumannCondition,
-        bool  patchConstructionROI,
-        bool  patchConstructionNone,
+        captk::ROIConstructionHelper::MODE mode,
+        float radius,
         float step
     );
 
     /** \brief Shows if there is another lattice mask left */
-    bool HasNext();
+    bool IsAtEnd();
 
-    /** \brief Get the next lattice mask */
-    mitk::LabelSetImage::Pointer GetNext();
+    /** \brief Get the next lattice mask 
+     * \param rMask an empty, but initialized LabelSetImage to be populated
+     * \return the weight of the ROI patch
+    */
+    float Get(mitk::LabelSetImage::Pointer& rMask);
 
     /** \brief Resets the index to the first lattice ROI */
     void GoToBegin();
 
-    /** \brief Get the name of the current lattice mask */
-    std::string GetCurrentName();
+    /** \brief ++ overloading to go to the next lattice */
+    ROIConstruction &operator++() //suffix
+    {
+        this->m_CurrentIndex++; // actual operation
+        return *this;
+    }
 
-    /** \brief Get the name of the current lattice mask */
-    int GetCurrentValue();
+    /** \brief ++ overloading to go to the next lattice */
+    ROIConstruction operator++(int) //postfix(calls suffix)
+    {
+        ROIConstruction tmp(*this);
+        operator++(); // call suffix
+        return tmp;
+    }
 
 private:
-    // /** \brief Convert the seeds to 2D itk::Image (because mitk::LabelSetImage is always at least 3D) */
-    // typename itk::Image<int,2>::Pointer
-    // Mitk3DLabelSetImageToItk2D(mitk::LabelSetImage::Pointer mask);
 
     template < typename TPixel, unsigned int VImageDimension >
     void CreateHelper(

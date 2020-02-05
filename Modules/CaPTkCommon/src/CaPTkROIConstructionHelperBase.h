@@ -39,14 +39,14 @@ public:
     // virtual void SetValuesAndNames(mitk::LabelSet::Pointer labelSet) = 0;
 
     /** \brief ++ overloading to go to the next lattice */
-    ROIConstructionHelperBase &operator++() # suffix
+    ROIConstructionHelperBase &operator++() // suffix
     {
         this->OnIncrement(); // call actual operation function
         return *this;
     }
 
     /** \brief ++ overloading to go to the next lattice */
-    ROIConstructionHelperBase operator++(int) # postfix (calls suffix)
+    ROIConstructionHelperBase operator++(int) // postfix (calls suffix)
     {
         ROIConstructionHelperBase tmp(*this);
         operator++(); // call suffix
