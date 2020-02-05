@@ -20,7 +20,7 @@
 namespace captk
 {
 /** \class ROIConstructionHelper
- * \brief Templated class to create the lattice ROIs
+ * \brief Templated class to create the lattice patch ROIs
  */
 template <typename TPixel, unsigned int VImageDimension>
 class MITKCAPTKCOMMON_EXPORT ROIConstructionHelper : public ROIConstructionHelperBase
@@ -89,7 +89,7 @@ public:
     // }
 
     /** \brief Populate empty mask with the next lattice ROI patch
-     * \param rMask an empty but initialized LabelSetImage
+     * \param rMask an empty but initialized LabelSetImage. It should contain an empty Label 1 (setting label name is the responsibility of the caller).
      * 
      * \return weight (what percentage of voxels of the patch were used)
      */
@@ -115,8 +115,14 @@ public:
                 for (unsigned int i = 0; i < niter.Size(); ++i)
                 {
                     // Check if that pixel is enabled
-                    m_Iter.SetIndex(niter.GetIndex(i));
-                    niter.SetPixel(i, 1);
+
+                    m_Iter.SetIndex( niter.GetIndex(i) );
+
+                    if ( this->m_Mode == MODE::FULL || 
+                        (this->m_Mode == MODE::ROI_BASED && m_Iter.Get() > 0))
+                    {
+                        niter.SetPixel(i, 1);
+                    }
                 }
             }
         }
