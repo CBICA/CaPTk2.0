@@ -64,6 +64,12 @@ private:
   // Generated from the associated UI file, it encapsulates all the widgets
   // of our view.
   Ui::PHIEstimatorViewControls m_Controls;
+
+  mitk::DataNode::Pointer m_ReferenceNode;
+  mitk::DataNode::Pointer m_WorkingNode;
+
+  mitk::NodePredicateAnd::Pointer m_ReferencePredicate;
+  mitk::NodePredicateAnd::Pointer m_SegmentationPredicate;
 };
 
 #endif
