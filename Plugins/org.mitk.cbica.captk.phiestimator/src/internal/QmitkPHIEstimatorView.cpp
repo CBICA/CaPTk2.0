@@ -72,7 +72,9 @@ namespace
 // Don't forget to initialize the VIEW_ID.
 const std::string QmitkPHIEstimatorView::VIEW_ID = "org.mitk.views.captk.phiestimator";
 
-QmitkPHIEstimatorView::QmitkPHIEstimatorView()
+QmitkPHIEstimatorView::QmitkPHIEstimatorView() :
+	m_ReferenceNode(nullptr),
+	m_WorkingNode(nullptr)
 {
 	m_SegmentationPredicate = mitk::NodePredicateAnd::New();
 	m_SegmentationPredicate->AddPredicate(
