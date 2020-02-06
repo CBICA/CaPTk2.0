@@ -84,6 +84,28 @@ QmitkPHIEstimatorView::QmitkPHIEstimatorView() :
 	(mitk::NodePredicateNot::New(mitk::NodePredicateProperty::New("helper object"))
 	);
 
+	mitk::TNodePredicateDataType<mitk::Image>::Pointer isImage = mitk::TNodePredicateDataType<mitk::Image>::New();
+	mitk::NodePredicateProperty::Pointer isBinary =
+		mitk::NodePredicateProperty::New("binary", mitk::BoolProperty::New(true));
+	mitk::NodePredicateAnd::Pointer isMask = mitk::NodePredicateAnd::New(isBinary, isImage);
+
+	mitk::NodePredicateDataType::Pointer isDwi = mitk::NodePredicateDataType::New("DiffusionImage");
+	mitk::NodePredicateDataType::Pointer isDti = mitk::NodePredicateDataType::New("TensorImage");
+	mitk::NodePredicateDataType::Pointer isOdf = mitk::NodePredicateDataType::New("OdfImage");
+	auto isSegment = mitk::NodePredicateDataType::New("Segment");
+
+	mitk::NodePredicateOr::Pointer validImages = mitk::NodePredicateOr::New();
+	validImages->AddPredicate(mitk::NodePredicateAnd::New(isImage, mitk::NodePredicateNot::New(isSegment)));
+	validImages->AddPredicate(isDwi);
+	validImages->AddPredicate(isDti);
+	validImages->AddPredicate(isOdf);
+
+	m_ReferencePredicate = mitk::NodePredicateAnd::New();
+	m_ReferencePredicate->AddPredicate(validImages);
+	m_ReferencePredicate->AddPredicate(mitk::NodePredicateNot::New(m_SegmentationPredicate));
+	m_ReferencePredicate->AddPredicate(mitk::NodePredicateNot::New(isMask));
+	m_ReferencePredicate->AddPredicate(mitk::NodePredicateNot::New(mitk::NodePredicateProperty::New("helper object")));
+
 }
 
 QmitkPHIEstimatorView::~QmitkPHIEstimatorView()
