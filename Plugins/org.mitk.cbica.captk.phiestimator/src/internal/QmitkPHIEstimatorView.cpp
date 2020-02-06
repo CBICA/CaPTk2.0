@@ -120,6 +120,20 @@ void QmitkPHIEstimatorView::CreateQtPartControl(QWidget* parent)
   m_Controls.setupUi(parent);
   m_Controls.Results->hide();
 
+  // *------------------------
+  // * DATA SELECTION WIDGETS
+  // *------------------------
+
+  m_Controls.m_cbReferenceNodeSelector->SetAutoSelectNewItems(true);
+  m_Controls.m_cbReferenceNodeSelector->SetPredicate(m_ReferencePredicate);
+  m_Controls.m_cbReferenceNodeSelector->SetDataStorage(this->GetDataStorage());
+
+  m_Controls.m_cbWorkingNodeSelector->SetAutoSelectNewItems(true);
+  m_Controls.m_cbWorkingNodeSelector->SetPredicate(m_SegmentationPredicate);
+  m_Controls.m_cbWorkingNodeSelector->SetDataStorage(this->GetDataStorage());
+
+
+
   // Wire up the UI widgets with our functionality.
   connect(m_Controls.processImageButton, SIGNAL(clicked()), this, SLOT(ProcessSelectedImage()));
 }
