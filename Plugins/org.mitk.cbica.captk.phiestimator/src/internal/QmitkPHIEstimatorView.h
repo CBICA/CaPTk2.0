@@ -20,6 +20,8 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <berryISelectionListener.h>
 #include <QmitkAbstractView.h>
 
+#include <mitkNodePredicateAnd.h>
+
 // There's an item "ExampleViewControls.ui" in the UI_FILES list in
 // files.cmake. The Qt UI Compiler will parse this file and generate a
 // header file prefixed with "ui_", which is located in the build directory.
