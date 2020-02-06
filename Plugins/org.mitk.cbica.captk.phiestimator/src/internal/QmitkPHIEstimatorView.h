@@ -41,6 +41,11 @@ class QmitkPHIEstimatorView : public QmitkAbstractView
   Q_OBJECT
   
 public:
+
+	//! constructor/desctructor
+	QmitkPHIEstimatorView();
+	virtual ~QmitkPHIEstimatorView();
+
   // This is a tricky one and will give you some headache later on in
   // your debug sessions if it has been forgotten. Also, don't forget
   // to initialize it in the implementation file.
