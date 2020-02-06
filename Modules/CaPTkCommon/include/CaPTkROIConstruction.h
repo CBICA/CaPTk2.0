@@ -52,7 +52,11 @@ public:
      * \param rMask an empty, but initialized LabelSetImage to be populated
      * \return the weight of the ROI patch
     */
-    float PopulateMask(mitk::LabelSetImage::Pointer& rMask);
+    float PopulateMask(
+        mitk::LabelSetImage::Pointer& rMask,
+        std::string labelName,
+        mitk::Label::PixelType labelValue
+    );
 
     /** \brief Resets the index to the first lattice ROI */
     void GoToBegin();
@@ -70,7 +74,7 @@ private:
         typename itk::Image<TPixel,VImageDimension>* mask
     );
 
-    captk::ROIConstructionHelperBase m_Helper;
+    std::shared_ptr<ROIConstructionHelperBase> m_Helper;
     
     mitk::LabelSetImage::Pointer m_MaskTemplate;
 };

@@ -5,6 +5,7 @@
 #include "mitkException.h"
 #include "mitkLogMacros.h"
 #include <mitkIOUtil.h>
+#include <mitkLabelSetImageConverter.h>
 
 #include <QString>
 #include <QDir>
@@ -15,6 +16,8 @@
 #include <fstream>
 #include <iostream>
 #include <memory>
+
+void deleteAllOtherLabels(mitk::LabelSetImage::Pointer, mitk::Label::PixelType);
 
 /** \brief command-line app for creating lattice ROIs from a mask
  *
@@ -42,10 +45,10 @@ int main(int argc, char* argv[])
             See mitkCommandLineParser::addArgument() for more information. ----*/
 
   parser.addArgument(
-    "mask",
-    "m",
+    "input",
+    "i",
     mitkCommandLineParser::String,
-    "Mask",
+    "Input (Mask)",
     "Input Mask Image",
     us::Any(),
     false); // false -> required parameter
@@ -71,7 +74,7 @@ int main(int argc, char* argv[])
   parser.addArgument(
     "mode",
     "m",
-    mitkCommandLineParser::Bool,
+    mitkCommandLineParser::String,
     "mode",
     "Set mode (roi_based or full)",
     us::Any(),
@@ -98,7 +101,7 @@ int main(int argc, char* argv[])
 
   /*---- Required parameters ----*/
 
-  if (parsedArgs["mask"].Empty())
+  if (parsedArgs["input"].Empty())
   {
     std::cerr << parser.helpText();
     return EXIT_FAILURE;
@@ -130,12 +133,12 @@ int main(int argc, char* argv[])
 
   /*---- Actual parsing ----*/
 
-  auto maskPath  = QString(us::any_cast<std::string>(parsedArgs["mask"]).c_str());
+  auto maskPath  = QString(us::any_cast<std::string>(parsedArgs["input"]).c_str());
   auto outputDir = QString(us::any_cast<std::string>(parsedArgs["output-dir"]).c_str());
   auto modeStr   = QString(us::any_cast<std::string>(parsedArgs["mode"]).c_str());
   float radius   = us::any_cast<float>(parsedArgs["radius"]);
   float step     = us::any_cast<float>(parsedArgs["step"]);
-
+  
   /*---- Run ----*/
 
   auto maskFileName = QFileInfo(maskPath).fileName();
@@ -151,49 +154,53 @@ int main(int argc, char* argv[])
     // Iterate through the labels
     mitk::LabelSet::Pointer labelSet = mask->GetActiveLabelSet();
     mitk::LabelSet::LabelContainerConstIteratorType it;
-    for (it = labelSet->IteratorConstBegin();
+    for (it =  labelSet->IteratorConstBegin();
          it != labelSet->IteratorConstEnd();
          ++it)
     {
-      if (it->second->GetValue() != 0) // Ignore zero
+      if (it->second->GetValue() == 0) { continue; } // Ignore zero
+
+      // ---- For each label in the mask ----
+
+      auto value = it->second->GetValue();
+      auto name  = it->second->GetName();
+
+      // Duplicate mask and work on that
+      mitk::LabelSetImage::Pointer maskCopy = mask->Clone();
+      
+      // Delete all other labels (ROIConstruction works with 1 label at a time)
+      deleteAllOtherLabels(maskCopy, value);
+
+      std::cout << "Found label: " << name 
+                << " (" << std::to_string(value) << ")\n";
+
+      captk::ROIConstruction constructor;
+      constructor.Update(
+          maskCopy,
+          mode,
+          radius,
+          step);
+
+      int counter = 1; // for unique output file name
+
+      for (constructor.GoToBegin(); !constructor.IsAtEnd(); constructor++)
       {
-        // ---- For each label in the mask ----
+        // Create patch mask (patch is the area around the lattice)
+        mitk::LabelSetImage::Pointer rMask = mitk::LabelSetImage::New();
 
-        auto value = it->second->GetValue();
-        auto name  = it->second->GetName();
+        float weight = constructor.PopulateMask(rMask, name, value);
 
-        // TODO: Delete all the other labels
+        auto outputPath = outputDir + QDir::separator() +
+                          QString::number(counter++) + QString("_") +
+                          QString::number(value)     + QString("_") +
+                          QString(name.c_str())      + QString("_") +
+                          QString::number(weight)    + QString("_") +
+                          maskFileName;
 
-        std::cout << "Found label set name: "
-                  << it->second->GetName() << "\n";
+        std::cout << ">Saving ROI to: "
+                  << outputPath.toStdString() << "\n";
 
-        captk::ROIConstruction constructor;
-        constructor.Update(
-            mask,
-            mode,
-            radius,
-            step);
-
-        int counter = 1;
-        while (!constructor.IsAtEnd())
-        {
-          mitk::LabelSetImage::Pointer rMask;
-          float weight = constructor.PopulateMask(rMask);
-
-          auto outputPath = outputDir + QDir::separator() +
-                            QString::number(counter++) + QString("_") +
-                            QString::number(value)     + QString("_") +
-                            QString(name.c_str())      + QString("_") +
-                            QString::number(weight)    + QString("_") +
-                            maskFileName;
-
-          std::cout << ">Saving ROI to: "
-                    << outputPath.toStdString() << "\n";
-
-          mitk::IOUtil::Save(rMask, outputPath.toStdString());
-
-          constructor++;
-        }
+        mitk::IOUtil::Save(rMask, outputPath.toStdString());
       }
     }
   }
@@ -205,5 +212,30 @@ int main(int argc, char* argv[])
   {
     std::cerr << "Unexpected error!";
    return EXIT_FAILURE;
+  }
+}
+
+void deleteAllOtherLabels(
+  mitk::LabelSetImage::Pointer mask, 
+  mitk::Label::PixelType label)
+{
+  std::vector< mitk::Label::PixelType > toRemove;
+
+  mitk::LabelSet::Pointer labelSet = mask->GetActiveLabelSet();
+  mitk::LabelSet::LabelContainerConstIteratorType it;
+  for (it =  labelSet->IteratorConstBegin();
+        it != labelSet->IteratorConstEnd();
+        ++it)
+  {
+    auto val = it->second->GetValue();
+    if (val != label) 
+    { 
+        toRemove.push_back(val);
+    }
+  }
+
+  for (auto& val : toRemove)
+  {
+    labelSet->RemoveLabel(val);
   }
 }

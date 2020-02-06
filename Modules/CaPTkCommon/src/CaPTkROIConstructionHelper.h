@@ -75,12 +75,12 @@ public:
         );
     }
 
-    virtual void GoToBegin()
+    void GoToBegin() override
     {
         m_CurrentIndex = 0;
     }
 
-    virtual bool IsAtEnd()
+    bool IsAtEnd() override
     {
         return (m_CurrentIndex >= m_Indeces.size());
     }
@@ -90,7 +90,9 @@ public:
      * 
      * \return weight (what percentage of voxels of the patch were used)
      */
-    float PopulateMask(mitk::LabelSetImage::Pointer& rMask) override
+    float PopulateMask(
+        mitk::LabelSetImage::Pointer& rMask,
+        mitk::Label::PixelType labelValue) override
     {
         // Convert mitk::LabelSetImage::Pointer to ImageType
         using MitkToItkImageConverterType = mitk::ImageToItk<ImageType>;
@@ -122,7 +124,7 @@ public:
                     if ( this->m_Mode == MODE::FULL || 
                         (this->m_Mode == MODE::ROI_BASED && m_Iter.Get() > 0))
                     {
-                        niter.SetPixel(i, 1);
+                        niter.SetPixel(i, labelValue);
                         usedPoints++;
                     }
                 }

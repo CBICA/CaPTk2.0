@@ -35,10 +35,10 @@ void captk::ROIConstruction::Update(
     // using the correct template
     AccessByItk(input, CreateHelper);
 
-    m_Helper.SetMode(mode);
+    m_Helper->SetMode(mode);
 
     // Construct the ROI indices
-    m_Helper.Update(
+    m_Helper->Update(
         radius,
         step
     );
@@ -46,27 +46,40 @@ void captk::ROIConstruction::Update(
 
 bool captk::ROIConstruction::IsAtEnd()
 {
-    return m_Helper.IsAtEnd();
+    return m_Helper->IsAtEnd();
 }
 
 float captk::ROIConstruction::PopulateMask(
-    mitk::LabelSetImage::Pointer& rMask)
+    mitk::LabelSetImage::Pointer& rMask,
+    std::string labelName,
+    mitk::Label::PixelType labelValue)
 {
     rMask->Initialize(
         mitk::ConvertLabelSetImageToImage(m_MaskTemplate.GetPointer())
     ); // This creates an empty copy, with the same meta-data
 
-    return m_Helper.PopulateMask(rMask);
+    auto label = mitk::Label::New();
+    // auto layer = mitk::LabelSet::New();
+    auto layer = rMask->GetActiveLabelSet();
+    label->SetName(labelName);
+    label->SetValue(labelValue);
+    layer->AddLabel(label);
+    layer->SetActiveLabel(labelValue);
+    rMask->AddLayer(layer);
+    // rMask->AddLabelSetToLayer(0, mitk::LabelSet::New());
+    // rMask->GetActiveLabelSet()->AddLabel(label);
+
+    return m_Helper->PopulateMask(rMask, labelValue);
 }
 
 void captk::ROIConstruction::GoToBegin()
 {
-    m_Helper.GoToBegin();
+    m_Helper->GoToBegin();
 }
 
 captk::ROIConstruction& captk::ROIConstruction::operator++() //suffix
 {
-    m_Helper++; // actual operation
+    ++*m_Helper.get(); // actual operation
     return *this;
 }
 

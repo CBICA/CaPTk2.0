@@ -68,7 +68,9 @@ public:
         m_Mode = mode;
     }
 
-    virtual float PopulateMask(mitk::LabelSetImage::Pointer& /*rMask*/)
+    virtual float PopulateMask(
+        mitk::LabelSetImage::Pointer& /*rMask*/,
+        mitk::Label::PixelType /*labelValue*/)
     {
         return 0.0f; // Return is required and we don't want this to be pure virtual
     }
