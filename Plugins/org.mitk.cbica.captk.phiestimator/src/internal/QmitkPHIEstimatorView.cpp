@@ -17,6 +17,10 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <berryISelectionService.h>
 #include <berryIWorkbenchWindow.h>
 
+#include <mitkNodePredicateDataType.h>
+#include <mitkNodePredicateNot.h>
+#include <mitkNodePredicateProperty.h>
+
 #include <usModuleRegistry.h>
 
 #include <QMessageBox>
@@ -30,6 +34,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 #include <mitkImageCast.h>
 #include <mitkImageToItk.h>
+#include "mitkLabelSetImage.h"
 
 #include <itkSmartPointer.h>
 #include <itkImage.h>
