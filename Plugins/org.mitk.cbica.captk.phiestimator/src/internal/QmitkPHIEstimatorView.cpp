@@ -69,6 +69,13 @@ const std::string QmitkPHIEstimatorView::VIEW_ID = "org.mitk.views.captk.phiesti
 
 QmitkPHIEstimatorView::QmitkPHIEstimatorView()
 {
+	m_SegmentationPredicate = mitk::NodePredicateAnd::New();
+	m_SegmentationPredicate->AddPredicate(
+		mitk::TNodePredicateDataType<mitk::LabelSetImage>::New()
+	);
+	m_SegmentationPredicate->AddPredicate
+	(mitk::NodePredicateNot::New(mitk::NodePredicateProperty::New("helper object"))
+	);
 
 }
 
