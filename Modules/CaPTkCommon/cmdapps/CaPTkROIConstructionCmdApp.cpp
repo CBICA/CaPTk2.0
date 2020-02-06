@@ -144,7 +144,7 @@ int main(int argc, char* argv[])
   {
     auto mask = mitk::IOUtil::Load<mitk::LabelSetImage>(maskPath.toStdString());
 
-    auto mode = (modeStr == "FULL") ? 
+    auto mode = (modeStr.toLower() == "full") ? 
         captk::ROIConstructionHelperBase::MODE::FULL : 
         captk::ROIConstructionHelperBase::MODE::ROI_BASED;
 
@@ -178,12 +178,13 @@ int main(int argc, char* argv[])
         while (!constructor.IsAtEnd())
         {
           mitk::LabelSetImage::Pointer rMask;
-          float weight = constructor.Get(rMask);
+          float weight = constructor.PopulateMask(rMask);
 
           auto outputPath = outputDir + QDir::separator() +
                             QString::number(counter++) + QString("_") +
                             QString::number(value)     + QString("_") +
                             QString(name.c_str())      + QString("_") +
+                            QString::number(weight)    + QString("_") +
                             maskFileName;
 
           std::cout << ">Saving ROI to: "

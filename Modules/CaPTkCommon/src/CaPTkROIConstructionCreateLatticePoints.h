@@ -29,7 +29,6 @@ ROIConstructionCreateLatticePoints(
 {
     using ImageType    = itk::Image<TPixel, VImageDimension>;
     using IndexType    = typename ImageType::IndexType;
-    using ImagePointer = typename ImageType::Pointer;
     using SpacingType  = typename ImageType::SpacingType;
     using SizeType     = typename ImageType::SizeType;
 

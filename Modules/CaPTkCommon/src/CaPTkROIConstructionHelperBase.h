@@ -27,19 +27,29 @@ public:
     {
         ROI_BASED,
         FULL
-    }
+    };
 
     virtual void Update(
-        float radius,
-        float step
-    ) = 0;
+        float /*radius*/,
+        float /*step*/)
+    {
+        // Cannot have pure virtual because ++ overloading needs instance
+    }
 
-    virtual bool HasNext() = 0;
+    virtual void GoToBegin()
+    {
+
+    }
+
+    virtual bool IsAtEnd()
+    {
+        return true; // Return is required and we don't want this to be pure virtual
+    }
 
     // virtual void SetValuesAndNames(mitk::LabelSet::Pointer labelSet) = 0;
 
     /** \brief ++ overloading to go to the next lattice */
-    ROIConstructionHelperBase &operator++() // suffix
+    ROIConstructionHelperBase &operator++() // prefix
     {
         this->OnIncrement(); // call actual operation function
         return *this;
@@ -49,7 +59,7 @@ public:
     ROIConstructionHelperBase operator++(int) // postfix (calls suffix)
     {
         ROIConstructionHelperBase tmp(*this);
-        operator++(); // call suffix
+        ++*this; // call suffix
         return tmp;
     }
 
@@ -58,10 +68,16 @@ public:
         m_Mode = mode;
     }
 
-    virtual void PopulateMask(mitk::LabelSetImage::Pointer rMask) = 0;
+    virtual float PopulateMask(mitk::LabelSetImage::Pointer& /*rMask*/)
+    {
+        return 0.0f; // Return is required and we don't want this to be pure virtual
+    }
 
 protected:
-    virtual void OnIncrement() = 0;
+    virtual void OnIncrement()
+    {
+
+    }
 
     MODE m_Mode = MODE::ROI_BASED;
 };

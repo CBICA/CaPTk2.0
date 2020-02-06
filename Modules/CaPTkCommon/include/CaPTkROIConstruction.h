@@ -40,7 +40,7 @@ public:
     /** \brief Find all the different lattice points */
     void Update(
         mitk::LabelSetImage::Pointer input,
-        captk::ROIConstructionHelper::MODE mode,
+        captk::ROIConstructionHelperBase::MODE mode,
         float radius,
         float step
     );
@@ -52,25 +52,16 @@ public:
      * \param rMask an empty, but initialized LabelSetImage to be populated
      * \return the weight of the ROI patch
     */
-    float Get(mitk::LabelSetImage::Pointer& rMask);
+    float PopulateMask(mitk::LabelSetImage::Pointer& rMask);
 
     /** \brief Resets the index to the first lattice ROI */
     void GoToBegin();
 
     /** \brief ++ overloading to go to the next lattice */
-    ROIConstruction &operator++() //suffix
-    {
-        this->m_CurrentIndex++; // actual operation
-        return *this;
-    }
+    ROIConstruction &operator++(); //suffix
 
     /** \brief ++ overloading to go to the next lattice */
-    ROIConstruction operator++(int) //postfix(calls suffix)
-    {
-        ROIConstruction tmp(*this);
-        operator++(); // call suffix
-        return tmp;
-    }
+    ROIConstruction operator++(int); //postfix(calls suffix)
 
 private:
 
@@ -79,11 +70,9 @@ private:
         typename itk::Image<TPixel,VImageDimension>* mask
     );
 
-    std::shared_ptr<captk::ROIConstructionItkHelperBase> m_Helper;
+    captk::ROIConstructionHelperBase m_Helper;
     
     mitk::LabelSetImage::Pointer m_MaskTemplate;
-    
-    size_t m_CurrentIndex;
 };
 }
 

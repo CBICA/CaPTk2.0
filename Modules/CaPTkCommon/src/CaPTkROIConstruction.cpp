@@ -6,10 +6,9 @@
 #include <mitkLabelSetImageConverter.h>
 #include <mitkITKImageImport.h>
 
-#include "CaPTkROIConstructionItkHelperBase.h"
+#include "CaPTkROIConstructionHelperBase.h"
 
-captk::ROIConstruction::ROIConstruction() :
-    m_CurrentIndex(0)
+captk::ROIConstruction::ROIConstruction()
 {
     
 }
@@ -21,7 +20,7 @@ captk::ROIConstruction::~ROIConstruction()
 
 void captk::ROIConstruction::Update(
         mitk::LabelSetImage::Pointer input,
-        captk::ROIConstructionHelper::MODE mode,
+        captk::ROIConstructionHelperBase::MODE mode,
         float radius,
         float step)
 {
@@ -36,37 +35,44 @@ void captk::ROIConstruction::Update(
     // using the correct template
     AccessByItk(input, CreateHelper);
 
-    m_Helper->SetMode(mode);
+    m_Helper.SetMode(mode);
 
     // Construct the ROI indices
-    m_Helper->Update(
+    m_Helper.Update(
         radius,
         step
     );
-
-    m_CurrentIndex = 0;
 }
 
 bool captk::ROIConstruction::IsAtEnd()
 {
-    return (m_CurrentIndex >= m_Helper->GetPropertiesSize());
+    return m_Helper.IsAtEnd();
 }
 
-mitk::LabelSetImage::Pointer captk::ROIConstruction::Get(mitk::LabelSetImage::Pointer& rMask)
+float captk::ROIConstruction::PopulateMask(
+    mitk::LabelSetImage::Pointer& rMask)
 {
-    auto result = mitk::LabelSetImage::New();
-
-    result->Initialize(
+    rMask->Initialize(
         mitk::ConvertLabelSetImageToImage(m_MaskTemplate.GetPointer())
     ); // This creates an empty copy, with the same meta-data
 
-
-    m_Helper->PopulateMaskAtPatch(m_CurrentIndex, result);
-
-    return result;
+    return m_Helper.PopulateMask(rMask);
 }
 
 void captk::ROIConstruction::GoToBegin()
 {
-    m_CurrentIndex = 0;
+    m_Helper.GoToBegin();
+}
+
+captk::ROIConstruction& captk::ROIConstruction::operator++() //suffix
+{
+    m_Helper++; // actual operation
+    return *this;
+}
+
+captk::ROIConstruction captk::ROIConstruction::operator++(int) //postfix(calls suffix)
+{
+    ROIConstruction tmp(*this);
+    operator++(); // call suffix
+    return tmp;
 }
