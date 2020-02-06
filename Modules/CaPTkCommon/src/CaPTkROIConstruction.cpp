@@ -52,7 +52,8 @@ bool captk::ROIConstruction::IsAtEnd()
 float captk::ROIConstruction::PopulateMask(
     mitk::LabelSetImage::Pointer& rMask,
     std::string labelName,
-    mitk::Label::PixelType labelValue)
+    mitk::Label::PixelType labelValue,
+    mitk::Color color)
 {
     rMask->Initialize(
         mitk::ConvertLabelSetImageToImage(m_MaskTemplate.GetPointer())
@@ -63,6 +64,7 @@ float captk::ROIConstruction::PopulateMask(
     auto layer = rMask->GetActiveLabelSet();
     label->SetName(labelName);
     label->SetValue(labelValue);
+    label->SetColor(color);
     layer->AddLabel(label);
     layer->SetActiveLabel(labelValue);
     rMask->AddLayer(layer);

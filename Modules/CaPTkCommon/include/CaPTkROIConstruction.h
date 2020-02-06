@@ -55,7 +55,8 @@ public:
     float PopulateMask(
         mitk::LabelSetImage::Pointer& rMask,
         std::string labelName,
-        mitk::Label::PixelType labelValue
+        mitk::Label::PixelType labelValue,
+        mitk::Color color
     );
 
     /** \brief Resets the index to the first lattice ROI */

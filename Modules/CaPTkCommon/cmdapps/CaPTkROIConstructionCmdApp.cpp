@@ -164,6 +164,7 @@ int main(int argc, char* argv[])
 
       auto value = it->second->GetValue();
       auto name  = it->second->GetName();
+      auto color = it->second->GetColor();
 
       // Duplicate mask and work on that
       mitk::LabelSetImage::Pointer maskCopy = mask->Clone();
@@ -188,7 +189,7 @@ int main(int argc, char* argv[])
         // Create patch mask (patch is the area around the lattice)
         mitk::LabelSetImage::Pointer rMask = mitk::LabelSetImage::New();
 
-        float weight = constructor.PopulateMask(rMask, name, value);
+        float weight = constructor.PopulateMask(rMask, name, value, color);
 
         auto outputPath = outputDir + QDir::separator() +
                           QString::number(counter++) + QString("_") +
