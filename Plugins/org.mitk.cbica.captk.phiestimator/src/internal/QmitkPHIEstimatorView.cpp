@@ -67,6 +67,16 @@ namespace
 // Don't forget to initialize the VIEW_ID.
 const std::string QmitkPHIEstimatorView::VIEW_ID = "org.mitk.views.captk.phiestimator";
 
+QmitkPHIEstimatorView::QmitkPHIEstimatorView()
+{
+
+}
+
+QmitkPHIEstimatorView::~QmitkPHIEstimatorView()
+{
+
+}
+
 void QmitkPHIEstimatorView::CreateQtPartControl(QWidget* parent)
 {
   // Setting up the UI is a true pleasure when using .ui files, isn't it?
