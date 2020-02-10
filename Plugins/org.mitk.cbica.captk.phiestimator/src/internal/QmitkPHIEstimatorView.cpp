@@ -118,7 +118,7 @@ void QmitkPHIEstimatorView::CreateQtPartControl(QWidget* parent)
 {
   // Setting up the UI is a true pleasure when using .ui files, isn't it?
   m_Controls.setupUi(parent);
-  m_Controls.Results->hide();
+  m_Controls.groupBox_Result->hide();
 
   // *------------------------
   // * DATA SELECTION WIDGETS
@@ -138,6 +138,18 @@ void QmitkPHIEstimatorView::CreateQtPartControl(QWidget* parent)
   connect(m_Controls.processImageButton, SIGNAL(clicked()), this, SLOT(ProcessSelectedImage()));
 }
 
+void QmitkPHIEstimatorView::ResetResults()
+{
+	// clear results shown in UI
+	m_Controls.PhiValue->clear();
+	m_Controls.PhiRatioValue->clear();
+	m_Controls.NearROIVoxelsUsedValue->clear();
+	m_Controls.FarROIVoxelsUsedValue->clear();
+	m_Controls.PHIThresholdValue->clear();
+	m_Controls.TumorTypeValue->clear();
+
+}
+
 void QmitkPHIEstimatorView::SetFocus()
 {
   m_Controls.processImageButton->setFocus();
@@ -152,13 +164,10 @@ void QmitkPHIEstimatorView::OnSelectionChanged(berry::IWorkbenchPart::Pointer, c
     // even evaluated and we're safe (C++ short-circuit evaluation).
     if (dataNode.IsNotNull() && nullptr != dynamic_cast<mitk::Image*>(dataNode->GetData()))
     {
-      m_Controls.selectImageLabel->setVisible(false);
       return;
     }
   }
 
-  // Nothing is selected or the selection doesn't contain an image.
-  m_Controls.selectImageLabel->setVisible(true);
 }
 
 void QmitkPHIEstimatorView::ProcessSelectedImage()
@@ -293,7 +302,7 @@ if (maskdata == nullptr)
 	  MITK_INFO << " # far voxels = " << EGFRStatusParams[4];
 
 	  m_Controls.PhiValue->setText(QString::number(EGFRStatusParams[0]));
-	  m_Controls.Results->show();
+	  m_Controls.groupBox_Result->show();
 
       MITK_INFO << "  done";
 }

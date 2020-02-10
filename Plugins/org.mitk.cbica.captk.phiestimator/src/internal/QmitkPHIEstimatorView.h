@@ -68,6 +68,9 @@ private:
     berry::IWorkbenchPart::Pointer source,
     const QList<mitk::DataNode::Pointer>& dataNodes) override;
 
+  /// \brief Reset results
+  void ResetResults();
+
   // Generated from the associated UI file, it encapsulates all the widgets
   // of our view.
   Ui::PHIEstimatorViewControls m_Controls;
