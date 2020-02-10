@@ -307,7 +307,22 @@ void QmitkPHIEstimatorView::ProcessSelectedImage()
 	  MITK_INFO << " # Near Voxels = " << EGFRStatusParams[3];
 	  MITK_INFO << " # far voxels = " << EGFRStatusParams[4];
 
+	  // update results to be shown in UI
 	  m_Controls.PhiValue->setText(QString::number(EGFRStatusParams[0]));
+	  m_Controls.PhiRatioValue->setText(QString::number(EGFRStatusParams[1] / EGFRStatusParams[2]));
+	  m_Controls.NearROIVoxelsUsedValue->setText(QString::number(EGFRStatusParams[3]));
+	  m_Controls.FarROIVoxelsUsedValue->setText(QString::number(EGFRStatusParams[4]));
+	  m_Controls.PHIThresholdValue->setText(QString::number(0.1377));
+
+	  QString tumorType;
+	  //! if phi value less than threshold, then tumor type is mutant else wildtype
+	  if (EGFRStatusParams[0] < 0.1377) // threshold = 0.1377 
+		  tumorType = "EGFRvIII-Mutant";
+	  else
+		  tumorType = "EGFRvIII-Wildtype";
+
+	  m_Controls.TumorTypeValue->setText(tumorType);
+
 	  m_Controls.groupBox_Result->show();
 
       MITK_INFO << "  done";
