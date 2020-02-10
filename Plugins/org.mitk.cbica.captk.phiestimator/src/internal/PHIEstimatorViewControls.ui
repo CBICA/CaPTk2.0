@@ -75,7 +75,12 @@ color: rgb(0, 170, 255);
       <string>Process selected image</string>
      </property>
      <property name="styleSheet">
-      <string notr="true"/>
+      <string notr="true">QPushButton:hover:!pressed
+{
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(0, 170, 255);
+}</string>
      </property>
      <property name="text">
       <string>Run PHi Estimator</string>
