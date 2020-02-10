@@ -181,13 +181,13 @@ void QmitkPHIEstimatorView::OnSelectionChanged(berry::IWorkbenchPart::Pointer, c
 
 void QmitkPHIEstimatorView::OnReferenceSelectionChanged(const mitk::DataNode * node)
 {
-	//m_Controls.groupBox_Result->hide();
+	m_Controls.groupBox_Result->hide();
 	this->ResetResults();
 }
 
 void QmitkPHIEstimatorView::OnSegmentationSelectionChanged(const mitk::DataNode * node)
 {
-	//m_Controls.groupBox_Result->hide();
+	m_Controls.groupBox_Result->hide();
 	this->ResetResults();
 }
 
@@ -310,8 +310,8 @@ void QmitkPHIEstimatorView::ProcessSelectedImage()
 	  // update results to be shown in UI
 	  m_Controls.PhiValue->setText(QString::number(EGFRStatusParams[0]));
 	  m_Controls.PhiRatioValue->setText(QString::number(EGFRStatusParams[1] / EGFRStatusParams[2]));
-	  m_Controls.NearROIVoxelsUsedValue->setText(QString::number(EGFRStatusParams[3]));
-	  m_Controls.FarROIVoxelsUsedValue->setText(QString::number(EGFRStatusParams[4]));
+	  m_Controls.NearROIVoxelsUsedValue->setText(QString::number(EGFRStatusParams[3]) + "/" + QString::number(nearIndices.size()));
+	  m_Controls.FarROIVoxelsUsedValue->setText(QString::number(EGFRStatusParams[4]) + "/" + QString::number(farIndices.size()));
 	  m_Controls.PHIThresholdValue->setText(QString::number(0.1377));
 
 	  QString tumorType;
