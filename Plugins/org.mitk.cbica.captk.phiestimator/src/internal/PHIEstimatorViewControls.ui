@@ -84,6 +84,12 @@ color: rgb(0, 170, 255);
    </item>
    <item>
     <widget class="QGroupBox" name="groupBox_Result">
+     <property name="styleSheet">
+      <string notr="true">QGroupBox::title {
+color: rgb(0, 170, 255);
+}
+</string>
+     </property>
      <property name="title">
       <string>Results</string>
      </property>
