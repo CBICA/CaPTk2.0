@@ -132,7 +132,16 @@ void QmitkPHIEstimatorView::CreateQtPartControl(QWidget* parent)
   m_Controls.m_cbWorkingNodeSelector->SetPredicate(m_SegmentationPredicate);
   m_Controls.m_cbWorkingNodeSelector->SetDataStorage(this->GetDataStorage());
 
+  // signals/slots connections
+  connect(m_Controls.m_cbReferenceNodeSelector,
+	  SIGNAL(OnSelectionChanged(const mitk::DataNode *)),
+	  this,
+	  SLOT(OnReferenceSelectionChanged(const mitk::DataNode *)));
 
+  connect(m_Controls.m_cbWorkingNodeSelector,
+	  SIGNAL(OnSelectionChanged(const mitk::DataNode *)),
+	  this,
+	  SLOT(OnSegmentationSelectionChanged(const mitk::DataNode *)));
 
   // Wire up the UI widgets with our functionality.
   connect(m_Controls.processImageButton, SIGNAL(clicked()), this, SLOT(ProcessSelectedImage()));
