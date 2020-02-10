@@ -224,6 +224,21 @@ void QmitkPHIEstimatorView::ProcessSelectedImage()
 		return;
 	}
 
+	// is segmentation selected
+	mitk::DataNode::Pointer workingNode = m_Controls.m_cbWorkingNodeSelector->GetSelectedNode();
+	if (workingNode.IsNull())
+	{
+		QMessageBox::information(nullptr, "New PHI Estimator Session", "Please load a seed image before starting some action.");
+		return;
+	}
+
+	// Something is selected, but does it contain data?
+	mitk::BaseData::Pointer wdata = workingNode->GetData();
+	if (wdata.IsNull())
+	{
+		QMessageBox::information(nullptr, "New PHI Estimator Session", "Please load a seed image before starting some action.");
+		return;
+	}
   // Before we even think about processing something, we need to make sure
   // that we have valid input. Don't be sloppy, this is a main reason
   // for application crashes if neglected.
