@@ -170,6 +170,18 @@ void QmitkPHIEstimatorView::OnSelectionChanged(berry::IWorkbenchPart::Pointer, c
 
 }
 
+void QmitkPHIEstimatorView::OnReferenceSelectionChanged(const mitk::DataNode * node)
+{
+	//m_Controls.groupBox_Result->hide();
+	this->ResetResults();
+}
+
+void QmitkPHIEstimatorView::OnSegmentationSelectionChanged(const mitk::DataNode * node)
+{
+	//m_Controls.groupBox_Result->hide();
+	this->ResetResults();
+}
+
 void QmitkPHIEstimatorView::ProcessSelectedImage()
 {
 	typedef itk::Image<unsigned short, 3> MaskImageType;

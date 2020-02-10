@@ -58,6 +58,13 @@ public:
 private slots:
   void ProcessSelectedImage();
 
+  /// \brief reaction to the selection of a new patient (reference) image in the DataStorage combobox
+  void OnReferenceSelectionChanged(const mitk::DataNode* node);
+
+  /// \brief reaction to the selection of a new Segmentation (working) image in the DataStorage combobox
+  void OnSegmentationSelectionChanged(const mitk::DataNode* node);
+
+
 private:
   // Typically a one-liner. Set the focus to the default widget.
   void SetFocus() override;
