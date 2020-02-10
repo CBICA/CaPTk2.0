@@ -247,40 +247,6 @@ void QmitkPHIEstimatorView::ProcessSelectedImage()
 		QMessageBox::information(nullptr, "New PHI Estimator Session", "Please load a seed image before starting some action.");
 		return;
 	}
-  // Before we even think about processing something, we need to make sure
-  // that we have valid input. Don't be sloppy, this is a main reason
-  // for application crashes if neglected.
-  auto selectedDataNodes = this->GetDataManagerSelection();
-
-  if (selectedDataNodes.empty())
-    return;
-
-  auto firstSelectedDataNode = selectedDataNodes.front();
-
-mitk::DataNode::Pointer maskNode = this->GetDataStorage()->GetNamedNode("Near_Far_masks");
-
-if (maskNode.IsNull())
-{
-	QMessageBox::information(nullptr, "Example View", "Please load mask before starting image processing.");
-	return;
-}
-
-auto maskdata = maskNode->GetData();
-
-// Something is selected, but does it contain data?
-if (maskdata == nullptr)
-{
-	QMessageBox::information(nullptr, "PHI Estimator View", "Please load mask before starting image processing.");
-	return;
-}
-	mitk::Image::Pointer maskimage = dynamic_cast<mitk::Image*>(maskdata);
-
-	// Something is selected and it contains data, but is it an image?
-	if (maskimage.IsNull())
-	{
-		QMessageBox::information(nullptr, "PHI Estimator View", "Please load mask before starting image processing.");
-		return;
-	}
 
 		//typename PerfusionImageType::Pointer pimg = PerfusionImageType::New();
 		//mitk::CastToItkImage(image, pimg);
@@ -292,40 +258,11 @@ if (maskdata == nullptr)
 		//writer1->SetFileName("imageMask.nii.gz");
 		//writer1->Write();
 
-  if (firstSelectedDataNode.IsNull())
-  {
-    QMessageBox::information(nullptr, "PHI Estimator View", "Please load and select an image before starting image processing.");
-    return;
-  }
-
-  auto data = firstSelectedDataNode->GetData();
-
-  // Something is selected, but does it contain data?
-  if (data == nullptr)
-  {
-	  QMessageBox::information(nullptr, "PHI Estimator View", "Please load mask before starting image processing.");
-	  return;
-  }
-    // We don't use the auto keyword here, which would evaluate to a native
-    // image pointer. Instead, we want a smart pointer in order to ensure that
-    // the image isn't deleted somewhere else while we're using it.
-    mitk::Image::Pointer image = dynamic_cast<mitk::Image*>(data);
-
-    // Something is selected and it contains data, but is it an image?
-    if (image.IsNull())
-    {
-		QMessageBox::information(nullptr, "PHI Estimator View", "Please load mask before starting image processing.");
-		return;
-	}
-      auto imageName = firstSelectedDataNode->GetName();
-
-      MITK_INFO << "Process image \"" << imageName << "\" ...";
-
       // We're finally using the ExampleImageFilter
  
 	  //typename PerfusionImageType::Pointer pimg = PerfusionImageType::New();
 	  //mitk::CastToItkImage(image, pimg);
-	  PerfusionImageType::Pointer pimg = mitk::ImageToItkImage<short,4>(image);
+	  PerfusionImageType::Pointer pimg = mitk::ImageToItkImage<short,4>(rimage);
 
 	  typedef itk::ImageDuplicator<PerfusionImageType> ImgDuplicator;
 	  ImgDuplicator::Pointer d = ImgDuplicator::New();
