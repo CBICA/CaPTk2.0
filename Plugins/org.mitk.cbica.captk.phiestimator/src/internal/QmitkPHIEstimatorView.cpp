@@ -239,6 +239,14 @@ void QmitkPHIEstimatorView::ProcessSelectedImage()
 		QMessageBox::information(nullptr, "New PHI Estimator Session", "Please load a seed image before starting some action.");
 		return;
 	}
+
+	// Something is selected and it contains data, but is it an image?
+	mitk::Image::Pointer maskimage = dynamic_cast<mitk::Image*>(wdata.GetPointer());
+	if (maskimage.IsNull())
+	{
+		QMessageBox::information(nullptr, "New PHI Estimator Session", "Please load a seed image before starting some action.");
+		return;
+	}
   // Before we even think about processing something, we need to make sure
   // that we have valid input. Don't be sloppy, this is a main reason
   // for application crashes if neglected.
