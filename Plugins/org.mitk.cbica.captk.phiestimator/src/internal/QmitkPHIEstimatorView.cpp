@@ -199,6 +199,31 @@ void QmitkPHIEstimatorView::ProcessSelectedImage()
 	MaskImageType::Pointer maskimg;
 	Float4DImage::Pointer perfImg;
 
+	mitk::DataNode::Pointer referenceNode = m_Controls.m_cbReferenceNodeSelector->GetSelectedNode();
+
+	// is something selected
+	if (referenceNode.IsNull())
+	{
+		QMessageBox::information(nullptr, "New PHI Estimator Session", "Please load a reference image before starting some action.");
+		return;
+	}
+
+	// Something is selected, but does it contain data?
+	mitk::BaseData::Pointer rdata = referenceNode->GetData();
+	if (rdata.IsNull())
+	{
+		QMessageBox::information(nullptr, "New PHI Estimator Session", "Please load a reference image before starting some action.");
+		return;
+	}
+
+	// Something is selected and it contains data, but is it an image?
+	mitk::Image::Pointer rimage = dynamic_cast<mitk::Image*>(rdata.GetPointer());
+	if (rimage.IsNull())
+	{
+		QMessageBox::information(nullptr, "New PHI Estimator Session", "Please load a reference image before starting some action.");
+		return;
+	}
+
   // Before we even think about processing something, we need to make sure
   // that we have valid input. Don't be sloppy, this is a main reason
   // for application crashes if neglected.
