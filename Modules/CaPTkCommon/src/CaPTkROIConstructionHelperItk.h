@@ -114,7 +114,7 @@ public:
             iter_mm.Set(currentValue);
         }
 
-        return 1.234;
+        return this->m_Properties[m_CurrentIndex].weight;
     }
 
     virtual void GoToBegin()
