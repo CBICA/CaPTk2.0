@@ -16,7 +16,7 @@ see SBIA_noncommercial_license.txt file.
 #ifndef _EGFRvIIISurrogateIndex_h_
 #define _EGFRvIIISurrogateIndex_h_
 
-#include <MitkPHIEstimatorModuleExports.h>
+#include <MitkCaPTkPHIEstimatorExports.h>
 
 #include "CaPTkEnums.h"
 #include "CaPTkDefines.h"
@@ -53,7 +53,7 @@ year={},
 organization={}
 }
 */
-class MITKPHIESTIMATORMODULE_EXPORT EGFRStatusPredictor
+class MITKCAPTKPHIESTIMATOR_EXPORT EGFRStatusPredictor
 #ifdef APP_BASE_CAPTK_H
   : public ApplicationBase
 #endif

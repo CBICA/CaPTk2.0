@@ -48,6 +48,7 @@ captk::ROIConstruction::Mitk3DLabelSetImageToItk2D(mitk::LabelSetImage::Pointer 
 }
 
 void captk::ROIConstruction::Update(
+    bool  /*lattice*/,
     float window,
     bool  fluxNeumannCondition,
     bool  patchConstructionROI,
@@ -141,9 +142,19 @@ mitk::LabelSetImage::Pointer captk::ROIConstruction::GetNext()
     return mitk::LabelSetImage::New();
 }
 
+void captk::ROIConstruction::GoToBegin()
+{
+    m_CurrentIndex = 0;
+}
 
 std::string captk::ROIConstruction::GetCurrentName()
 {
     // TODO
     return "";
+}
+
+int captk::ROIConstruction::GetCurrentValue()
+{
+    // TODO
+    return 0;
 }
