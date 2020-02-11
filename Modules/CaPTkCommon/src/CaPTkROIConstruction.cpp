@@ -34,11 +34,16 @@ void captk::ROIConstruction::Update(
     // using the correct template
     AccessByItk(input, CreateHelper);
 
+    // TODO: Pass labels and values to helper
+    std::vector<std::string> labels;
+    std::vector<int> values;
+    this->GetLabelsAndValuesVectors(input, labels, values);
+    m_Helper->SetValuesAndNames(values, labels);
+
     // Construct the ROI indices
     m_Helper->Update(
         radius,
-        step
-    );
+        step);
 }
 
 bool captk::ROIConstruction::IsAtEnd()
@@ -81,4 +86,24 @@ captk::ROIConstruction captk::ROIConstruction::operator++(int) //postfix(calls s
     ROIConstruction tmp(*this);
     operator++(); // call suffix
     return tmp;
+}
+
+void captk::ROIConstruction::GetLabelsAndValuesVectors(
+    mitk::LabelSetImage::Pointer mask,
+    std::vector<std::string> &labels,
+    std::vector<int> &values)
+{
+    // ---- Construct roi values and names from LabelSet
+    mitk::LabelSet::Pointer labelSet = mask->GetActiveLabelSet();
+    mitk::LabelSet::LabelContainerConstIteratorType it;
+    for (it = labelSet->IteratorConstBegin();
+         it != labelSet->IteratorConstEnd();
+         ++it)
+    {
+        if (it->second->GetValue() != 0)
+        {
+            values.push_back(it->second->GetValue());
+            labels.push_back(it->second->GetName());
+        }
+    }
 }

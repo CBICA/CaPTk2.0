@@ -69,6 +69,11 @@ private:
         typename itk::Image<TPixel,VImageDimension>* mask
     );
 
+    void GetLabelsAndValuesVectors(
+        mitk::LabelSetImage::Pointer mask, 
+        std::vector<std::string>& labels, 
+        std::vector<int>& values);
+
     std::shared_ptr<ROIConstructionHelperBase> m_Helper;
     
     mitk::Image::Pointer m_MaskTemplate; /// Template empty image, same properties as input mask

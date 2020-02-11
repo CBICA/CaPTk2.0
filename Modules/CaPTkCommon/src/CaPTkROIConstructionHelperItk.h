@@ -61,28 +61,28 @@ public:
     {
         m_CurrentIndex = 0;
 
-        captk::ROIConstructionImplementation< TImageType > roiItkConstructor;
+        captk::ROIConstructionImplementation< TImageType > roiConstructorItk;
 
-        roiItkConstructor.SetInputMask(m_Mask);
-        roiItkConstructor.SetSelectedROIsAndLabels(m_Values, m_Names);
-        roiItkConstructor.SetLatticeGridStep(step);
-        roiItkConstructor.SetLatticeWindowSize(2.0 * radius);
-        // roiItkConstructor.SetBoundaryCondition(fluxNeumannCondition);
-        // roiItkConstructor.SetPatchConstructionConditionROI(patchConstructionROI);
-        // roiItkConstructor.SetPatchConstructionConditionNone(patchConstructionNone);
+        roiConstructorItk.SetInputMask(m_Mask);
+        roiConstructorItk.SetSelectedROIsAndLabels(m_Values, m_Names);
+        roiConstructorItk.SetLatticeGridStep(step);
+        roiConstructorItk.SetLatticeWindowSize(2.0 * radius);
+        // roiConstructorItk.SetBoundaryCondition(fluxNeumannCondition);
+        // roiConstructorItk.SetPatchConstructionConditionROI(patchConstructionROI);
+        // roiConstructorItk.SetPatchConstructionConditionNone(patchConstructionNone);
         
-        roiItkConstructor.Update();
+        roiConstructorItk.Update();
 
         // Show info
         std::cout << "\nNumber of valid lattice points: " 
-                  << roiItkConstructor.GetNumberOfValidLatticePoints()
+                  << roiConstructorItk.GetNumberOfValidLatticePoints()
                   << std::endl;
 
         std::cout << "Lattice radius: " 
-                  << roiItkConstructor.GetLatticeRadius()
+                  << roiConstructorItk.GetLatticeRadius()
                   << std::endl;
 
-        m_Properties = roiItkConstructor.GetOutput();
+        m_Properties = roiConstructorItk.GetOutput();
     }
 
     float PopulateMask(mitk::LabelSetImage::Pointer miniMask) override
