@@ -23,17 +23,11 @@ public:
 
     virtual ~ROIConstructionHelperBase() {}
 
-    enum MODE
-    {
-        ROI_BASED,
-        FULL
-    };
-
     virtual void Update(
         float /*radius*/,
         float /*step*/)
     {
-        // Cannot have pure virtual because ++ overloading needs instance
+        // Cannot have pure virtual because we want to use the base class
     }
 
     virtual void GoToBegin()
@@ -46,7 +40,12 @@ public:
         return true; // Return is required and we don't want this to be pure virtual
     }
 
-    // virtual void SetValuesAndNames(mitk::LabelSet::Pointer labelSet) = 0;
+    virtual void SetValuesAndNames(
+        std::vector<int>         /*values*/,
+        std::vector<std::string> /*names*/)
+    {
+        
+    }
 
     /** \brief ++ overloading to go to the next lattice */
     ROIConstructionHelperBase &operator++() // prefix
@@ -63,14 +62,7 @@ public:
         return tmp;
     }
 
-    void SetMode(MODE mode)
-    {
-        m_Mode = mode;
-    }
-
-    virtual float PopulateMask(
-        mitk::LabelSetImage::Pointer& /*rMask*/,
-        mitk::Label::PixelType /*labelValue*/)
+    virtual float PopulateMask(mitk::LabelSetImage::Pointer /*rMask*/)
     {
         return 0.0f; // Return is required and we don't want this to be pure virtual
     }
@@ -80,8 +72,6 @@ protected:
     {
 
     }
-
-    MODE m_Mode = MODE::ROI_BASED;
 };
 } // namespace captk
 

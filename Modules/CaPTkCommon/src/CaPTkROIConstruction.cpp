@@ -20,12 +20,11 @@ captk::ROIConstruction::~ROIConstruction()
 
 void captk::ROIConstruction::Update(
         mitk::LabelSetImage::Pointer input,
-        captk::ROIConstructionHelperBase::MODE mode,
         float radius,
         float step)
 {
     // ---- Save template image for GetNext() use
-    m_MaskTemplate = mitk::LabelSetImage::New();
+    m_MaskTemplate = mitk::Image::New();
     m_MaskTemplate->Initialize(
         mitk::ConvertLabelSetImageToImage(input.GetPointer())
     ); // This creates an empty copy, with the same meta-data
@@ -34,8 +33,6 @@ void captk::ROIConstruction::Update(
     // AccessByItk calls the function with the ITK image (not MITK)
     // using the correct template
     AccessByItk(input, CreateHelper);
-
-    m_Helper->SetMode(mode);
 
     // Construct the ROI indices
     m_Helper->Update(
@@ -49,29 +46,23 @@ bool captk::ROIConstruction::IsAtEnd()
     return m_Helper->IsAtEnd();
 }
 
-float captk::ROIConstruction::PopulateMask(
-    mitk::LabelSetImage::Pointer& rMask,
-    std::string labelName,
-    mitk::Label::PixelType labelValue,
-    mitk::Color color)
+float captk::ROIConstruction::PopulateMask(mitk::LabelSetImage::Pointer& rMask)
 {
-    rMask->Initialize(
-        mitk::ConvertLabelSetImageToImage(m_MaskTemplate.GetPointer())
-    ); // This creates an empty copy, with the same meta-data
+    rMask->Initialize(m_MaskTemplate); // This creates an empty copy, with the same meta-data
 
-    auto label = mitk::Label::New();
-    // auto layer = mitk::LabelSet::New();
-    auto layer = rMask->GetActiveLabelSet();
-    label->SetName(labelName);
-    label->SetValue(labelValue);
-    label->SetColor(color);
-    layer->AddLabel(label);
-    layer->SetActiveLabel(labelValue);
-    rMask->AddLayer(layer);
-    // rMask->AddLabelSetToLayer(0, mitk::LabelSet::New());
-    // rMask->GetActiveLabelSet()->AddLabel(label);
+    // auto label = mitk::Label::New();
+    // // auto layer = mitk::LabelSet::New();
+    // auto layer = rMask->GetActiveLabelSet();
+    // label->SetName(labelName);
+    // label->SetValue(labelValue);
+    // label->SetColor(color);
+    // layer->AddLabel(label);
+    // layer->SetActiveLabel(labelValue);
+    // rMask->AddLayer(layer);
+    // // rMask->AddLabelSetToLayer(0, mitk::LabelSet::New());
+    // // rMask->GetActiveLabelSet()->AddLabel(label);
 
-    return m_Helper->PopulateMask(rMask, labelValue);
+    return m_Helper->PopulateMask(rMask);
 }
 
 void captk::ROIConstruction::GoToBegin()

@@ -6,7 +6,7 @@ namespace captk
 class ROIConstructionHelperBase;
 }
 
-#include "CaPTkROIConstructionHelper.h"
+#include "CaPTkROIConstructionHelperItk.h"
 
 #include "mitkLabel.h"
 #include "mitkLabelSetImage.h"
@@ -40,7 +40,6 @@ public:
     /** \brief Find all the different lattice points */
     void Update(
         mitk::LabelSetImage::Pointer input,
-        captk::ROIConstructionHelperBase::MODE mode,
         float radius,
         float step
     );
@@ -52,12 +51,7 @@ public:
      * \param rMask an empty, but initialized LabelSetImage to be populated
      * \return the weight of the ROI patch
     */
-    float PopulateMask(
-        mitk::LabelSetImage::Pointer& rMask,
-        std::string labelName,
-        mitk::Label::PixelType labelValue,
-        mitk::Color color
-    );
+    float PopulateMask(mitk::LabelSetImage::Pointer& rMask);
 
     /** \brief Resets the index to the first lattice ROI */
     void GoToBegin();
@@ -77,7 +71,7 @@ private:
 
     std::shared_ptr<ROIConstructionHelperBase> m_Helper;
     
-    mitk::LabelSetImage::Pointer m_MaskTemplate;
+    mitk::Image::Pointer m_MaskTemplate; /// Template empty image, same properties as input mask
 };
 }
 

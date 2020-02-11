@@ -3,6 +3,6 @@ void captk::ROIConstruction::CreateHelper(
     typename itk::Image<TPixel,VImageDimension>* mask)
 {
     m_Helper = std::shared_ptr<ROIConstructionHelperBase>(
-        new ROIConstructionHelper<TPixel, VImageDimension>(mask)
+        new ROIConstructionHelperItk<TPixel, VImageDimension>(mask)
     );
 }
