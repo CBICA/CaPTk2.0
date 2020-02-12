@@ -48,28 +48,6 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include "itkImageDuplicator.h"
 #include "itkCastImageFilter.h"
 
-namespace
-{
-  // Helper function to create a fully set up instance of our
-  // ExampleImageInteractor, based on the state machine specified in Paint.xml
-  // as well as its configuration in PaintConfig.xml. Both files are compiled
-  // into ExtPHIEstimatorModule as resources.
-  static ExampleImageInteractor::Pointer CreateExampleImageInteractor()
-  {
-    auto PHIEstimatorModule = us::ModuleRegistry::GetModule("MitkCaPTkPHIEstimator");
-
-    if (nullptr != PHIEstimatorModule)
-    {
-      auto interactor = ExampleImageInteractor::New();
-      interactor->LoadStateMachine("Paint.xml", PHIEstimatorModule);
-      interactor->SetEventConfig("PaintConfig.xml", PHIEstimatorModule);
-      return interactor;
-    }
-
-    return nullptr;
-  }
-}
-
 // Don't forget to initialize the VIEW_ID.
 const std::string QmitkPHIEstimatorView::VIEW_ID = "org.mitk.views.captk.phiestimator";
 
@@ -179,13 +157,13 @@ void QmitkPHIEstimatorView::OnSelectionChanged(berry::IWorkbenchPart::Pointer, c
 
 }
 
-void QmitkPHIEstimatorView::OnReferenceSelectionChanged(const mitk::DataNode * node)
+void QmitkPHIEstimatorView::OnReferenceSelectionChanged(const mitk::DataNode * /*node*/)
 {
 	m_Controls.groupBox_Result->hide();
 	this->ResetResults();
 }
 
-void QmitkPHIEstimatorView::OnSegmentationSelectionChanged(const mitk::DataNode * node)
+void QmitkPHIEstimatorView::OnSegmentationSelectionChanged(const mitk::DataNode * /*node*/)
 {
 	m_Controls.groupBox_Result->hide();
 	this->ResetResults();
