@@ -41,6 +41,7 @@ public:
     void Update(
         // JUST CALCULATE FOR ALL LABELS std::vector<mitk::Label::PixelType> rois,
         // CAN BE DEDUCED: std::vector< std::string > roi_labels,
+        bool  lattice,
         float window,
         bool  fluxNeumannCondition,
         bool  patchConstructionROI,
@@ -53,6 +54,9 @@ public:
 
     /** \brief Get the next lattice mask */
     mitk::LabelSetImage::Pointer GetNext();
+
+    /** \brief Resets the index to the first lattice ROI */
+    void GoToBegin();
 
     /** \brief Get the name of the current lattice mask */
     std::string GetCurrentName();
