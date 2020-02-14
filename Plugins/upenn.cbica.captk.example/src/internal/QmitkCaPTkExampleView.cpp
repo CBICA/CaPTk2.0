@@ -38,8 +38,8 @@
 
 #include <regex>
 
-const std::string QmitkCaPTkExampleView::VIEW_ID = 
-  "org.mitk.views.captkexample";
+const std::string QmitkCaPTkExampleView::VIEW_ID =
+    "upenn.cbica.captk.views.example";
 
 QmitkCaPTkExampleView::QmitkCaPTkExampleView() : 
     m_Parent(nullptr),
