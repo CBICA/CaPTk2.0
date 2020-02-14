@@ -14,7 +14,7 @@
 class QmitkRenderWindow;
 
 class QmitkCaPTkExampleView : public QmitkAbstractView, 
-                                              public mitk::ILifecycleAwarePart
+                              public mitk::ILifecycleAwarePart
 {
   Q_OBJECT
 
