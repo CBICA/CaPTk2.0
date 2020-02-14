@@ -9,4 +9,5 @@ set(MITK_PLUGINS
   org.mitk.cbica.captk.ui:ON
   org.mitk.cbica.captk.application:ON
   org.mitk.cbica.captk.training:ON
+  upenn.cbica.captk.example:OFF
 )
