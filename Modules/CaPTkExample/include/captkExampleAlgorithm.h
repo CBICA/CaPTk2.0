@@ -24,11 +24,12 @@ namespace captk
  * accessed by AccessByItk_n(). AccessByItk_n always takes an 
  * mitk::Image::Pointer as the first parameter, and a function as the second.
  * You can follow with more parameters (like we do here with maximum and outputImage).
- * In this particular case it would be called with the following two lines: 
- * mitk::Image::Pointer outputMitkImage;
- * AccessByItk_n(mitkImagePointer, captk::ExampleAlgorithm, maximumVal, outputMitkImage);
+ * In this particular case, it would be called with the following two lines: 
+ * mitk::Image::Pointer outputMitkImage = mitk::Image::New();
+ * AccessByItk_n(mitkInputImagePointer, captk::ExampleAlgorithm, maximumVal, outputMitkImagePointer);
  * MITK takes care of converting the first parameter to the template of the function
- * and convert it to itk.
+ * and convert it to itk. Functions like this are always void, and return results
+ * by parameters (reference or pointers).
  * \param inputItkImage the input ITK image
  * \param maximum int value, used by the invert intensity filter
  * \param outputImage the result will be written here (mitk image, not itk)
