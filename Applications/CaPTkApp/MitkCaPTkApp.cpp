@@ -40,7 +40,7 @@ int main(int argc, char **argv)
   // preloadLibs << "liborg_mitk_gui_qt_ext";
   app.setPreloadLibraries(preloadLibs);
 
-  app.setProperty(mitk::BaseApplication::PROP_PRODUCT, "org.mitk.cbica.captk.application.captk");
+  app.setProperty(mitk::BaseApplication::PROP_PRODUCT, "upenn.cbica.captk.application.captk");
   // app.setProperty(mitk::BaseApplication::PROP_PRODUCT, "org.mitk.gui.qt.extapplication.workbench");
   // app.setProperty(mitk::BaseApplication::PROP_APPLICATION, "org.mitk.qt.coreapplication"); // Simple
 
