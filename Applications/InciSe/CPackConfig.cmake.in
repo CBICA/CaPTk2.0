@@ -11,7 +11,7 @@ if(CPACK_GENERATOR MATCHES "NSIS")
 
   # tell cpack to create links to the doc files
   SET(CPACK_NSIS_MENU_LINKS
-    "https://www.med.upenn.cbica/captk/" "CaPTk website - CBICA"
+    "https://www.med.upenn.edu/captk/" "CaPTk website - CBICA"
     )
 
   # tell cpack the executables you want in the start menu as links

@@ -1,5 +1,5 @@
 set(Plugin-Name "CaPTk")
 set(Plugin-Version "1.0.0")
 set(Plugin-Vendor "CBICA, University of Pennsylvania")
-set(Plugin-ContactAddress "https://www.med.upenn.cbica/")
+set(Plugin-ContactAddress "https://www.med.upenn.edu/")
 set(Require-Plugin upenn.cbica.captk.ui)

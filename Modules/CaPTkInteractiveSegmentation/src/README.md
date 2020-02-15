@@ -138,7 +138,7 @@ See [here](EXTRA_ADVANCED.md#use-different-labels) for instructions on how to us
 
 Please also note that the quality of the segmentations are highly correlated to the quality of the provided "sample of labels" image. Also, especially in the more difficult cases, there might be misclassified regions in the output segmentation. If that is the case the user can add more labels in the "sample of labels" images that are within these regions and run the tool again. 
 
-[CaPTk](https://www.med.upenn.cbica/captk/) can be used to draw the labels image. Drag and drop the MRI images in the "Images" area, draw labels through the "Drawing" tab and export using File>Save>ROI. For drawing more labels to an old labels image use File>Load>ROI, draw the new labels and export.
+[CaPTk](https://www.med.upenn.edu/captk/) can be used to draw the labels image. Drag and drop the MRI images in the "Images" area, draw labels through the "Drawing" tab and export using File>Save>ROI. For drawing more labels to an old labels image use File>Load>ROI, draw the new labels and export.
 
 <a name="#run"></a>
 #### Run

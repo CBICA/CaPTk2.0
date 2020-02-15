@@ -1,5 +1,5 @@
 set(Plugin-Name "CaPTk Training Plugin")
 set(Plugin-Version "1.0.0")
 set(Plugin-Vendor "CBICA")
-set(Plugin-ContactAddress "https://www.med.upenn.cbica/")
+set(Plugin-ContactAddress "https://www.med.upenn.edu/")
 set(Require-Plugin org.mitk.gui.qt.common org.mitk.gui.qt.datamanager)
