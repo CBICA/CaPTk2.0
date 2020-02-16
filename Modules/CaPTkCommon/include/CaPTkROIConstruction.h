@@ -9,6 +9,7 @@ class ROIConstructionHelperBase;
 #include "CaPTkROIConstructionHelperItk.h"
 
 #include "mitkLabel.h"
+#include "mitkLabelSet.h"
 #include "mitkLabelSetImage.h"
 
 #include "itkImage.h"
@@ -77,6 +78,8 @@ private:
     std::shared_ptr<ROIConstructionHelperBase> m_Helper;
     
     mitk::Image::Pointer m_MaskTemplate; /// Template empty image, same properties as input mask
+
+    mitk::LabelSet::Pointer m_MaskLabelSetCopy;
 };
 }
 

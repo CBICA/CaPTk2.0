@@ -29,6 +29,8 @@ void captk::ROIConstruction::Update(
         mitk::ConvertLabelSetImageToImage(input.GetPointer())
     ); // This creates an empty copy, with the same meta-data
 
+    m_MaskLabelSetCopy = input->GetActiveLabelSet()->Clone();
+
     // Create helper with the mask, by calling CreateHelper
     // AccessByItk calls the function with the ITK image (not MITK)
     // using the correct template
@@ -67,7 +69,13 @@ float captk::ROIConstruction::PopulateMask(mitk::LabelSetImage::Pointer& rMask)
     // // rMask->AddLabelSetToLayer(0, mitk::LabelSet::New());
     // // rMask->GetActiveLabelSet()->AddLabel(label);
 
-    return m_Helper->PopulateMask(rMask);
+    float weight = m_Helper->PopulateMask(rMask);
+
+    // Change color of label
+    auto label = rMask->GetActiveLabelSet()->GetActiveLabel();
+    label->SetColor(m_MaskLabelSetCopy->GetLabel(label->GetValue())->GetColor());
+
+    return weight;
 }
 
 void captk::ROIConstruction::GoToBegin()

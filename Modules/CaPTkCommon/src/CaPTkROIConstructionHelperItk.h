@@ -92,6 +92,7 @@ public:
         label->SetName(m_Properties[m_CurrentIndex].label);
         label->SetValue(m_Properties[m_CurrentIndex].value);
         miniMask->GetActiveLabelSet()->AddLabel(label);
+        //miniMask->SetActiveLabel(label->GetValue());
 
         // Convert mitk::LabelSetImage::Pointer to TImageType
         using ImageToItkType = mitk::ImageToItk<TImageType>;
