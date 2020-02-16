@@ -71,7 +71,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 // }
 
 // Don't forget to initialize the VIEW_ID.
-const std::string QmitkPHIEstimatorView::VIEW_ID = "org.mitk.views.captk.phiestimator";
+const std::string QmitkPHIEstimatorView::VIEW_ID = "upenn.cbica.captk.views.phiestimator";
 
 QmitkPHIEstimatorView::QmitkPHIEstimatorView() :
 	m_ReferenceNode(nullptr),

@@ -52,7 +52,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 #include <regex>
 
-const std::string QmitkCaPTkTrainingView::VIEW_ID = "org.mitk.views.captk.training";
+const std::string QmitkCaPTkTrainingView::VIEW_ID = "upenn.cbica.captk.views.training";
 
 QmitkCaPTkTrainingView::QmitkCaPTkTrainingView()
   : m_Parent(nullptr)

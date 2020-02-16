@@ -39,7 +39,7 @@
 #include <regex>
 
 const std::string QmitkCaPTkInteractiveSegmentationView::VIEW_ID = 
-  "org.mitk.views.captkinteractivesegmentation";
+  "upenn.cbica.captk.views.interactivesegmentation";
 
 QmitkCaPTkInteractiveSegmentationView::QmitkCaPTkInteractiveSegmentationView()
   : m_Parent(nullptr),

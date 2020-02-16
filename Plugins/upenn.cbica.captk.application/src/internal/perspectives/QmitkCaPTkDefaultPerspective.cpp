@@ -29,7 +29,7 @@ void QmitkCaPTkDefaultPerspective::CreateInitialLayout(berry::IPageLayout::Point
   // non-closable "Start" menu of CaPTk, that also offers shortcuts
   // for different perspectives for Brain, Breast, Lung Cancer etc
   layout->AddView(
-    "org.mitk.views.captkinteractivesegmentation", berry::IPageLayout::RIGHT, 
+    "upenn.cbica.captk.views.interactivesegmentation", berry::IPageLayout::RIGHT, 
     0.6f, editorArea
   );
 
