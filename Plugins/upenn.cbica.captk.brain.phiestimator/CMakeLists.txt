@@ -1,4 +1,4 @@
-project(upenn_cbica_captk_phiestimator)
+project(upenn.cbica.captk.brain.phiestimator)
 
 mitk_create_plugin(
   #DEPENDS MitkCore
