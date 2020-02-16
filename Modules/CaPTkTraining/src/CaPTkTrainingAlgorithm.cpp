@@ -25,7 +25,7 @@ See COPYING file or https://www.med.upenn.edu/sbia/software/license.html
 #include <tuple>
 #include <numeric>
 
-bool captk::TrainingModuleAlgorithm::CheckPerformanceStatus(double ist, double second, double third, double fourth, double fifth, double sixth, double seventh, double eighth, double ninth, double tenth)
+bool captk::TrainingAlgorithm::CheckPerformanceStatus(double ist, double second, double third, double fourth, double fifth, double sixth, double seventh, double eighth, double ninth, double tenth)
 {
   if (ist<tenth && second<tenth && third<tenth && fourth<tenth && fifth < tenth && sixth <tenth && seventh<tenth && eighth<tenth && ninth < tenth)
     return false;
@@ -33,9 +33,9 @@ bool captk::TrainingModuleAlgorithm::CheckPerformanceStatus(double ist, double s
     return true;
 }
 
-captk::TrainingModuleAlgorithm::VectorDouble captk::TrainingModuleAlgorithm::CalculatePerformanceMeasures(
-  captk::TrainingModuleAlgorithm::VectorDouble predictedLabels, 
-  captk::TrainingModuleAlgorithm::VectorDouble GivenLabels)
+captk::TrainingAlgorithm::VectorDouble captk::TrainingAlgorithm::CalculatePerformanceMeasures(
+  captk::TrainingAlgorithm::VectorDouble predictedLabels, 
+  captk::TrainingAlgorithm::VectorDouble GivenLabels)
 {
   //calcualte performance measures
   double TP = 0;
@@ -68,9 +68,9 @@ captk::TrainingModuleAlgorithm::VectorDouble captk::TrainingModuleAlgorithm::Cal
   return result;
 }
 
-captk::TrainingModuleAlgorithm::VectorDouble 
-captk::TrainingModuleAlgorithm::CalculatePerformanceMeasures(
-  captk::TrainingModuleAlgorithm::VariableLengthVectorType predictedLabels, 
+captk::TrainingAlgorithm::VectorDouble 
+captk::TrainingAlgorithm::CalculatePerformanceMeasures(
+  captk::TrainingAlgorithm::VariableLengthVectorType predictedLabels, 
   std::vector<double> GivenLabels)
 {
   //calcualte performance measures
@@ -104,9 +104,9 @@ captk::TrainingModuleAlgorithm::CalculatePerformanceMeasures(
   return result;
 }
 
-captk::TrainingModuleAlgorithm::VectorDouble 
-captk::TrainingModuleAlgorithm::InternalCrossValidation(
-  captk::TrainingModuleAlgorithm::VariableSizeMatrixType inputFeatures, 
+captk::TrainingAlgorithm::VectorDouble 
+captk::TrainingAlgorithm::InternalCrossValidation(
+  captk::TrainingAlgorithm::VariableSizeMatrixType inputFeatures, 
   std::vector<double> inputLabels, double cValue, double gValue, int kerneltype)
 {
   VariableLengthVectorType predictedLabels;
@@ -201,9 +201,9 @@ captk::TrainingModuleAlgorithm::InternalCrossValidation(
   return results;
 }
 
-captk::TrainingModuleAlgorithm::VectorDouble 
-captk::TrainingModuleAlgorithm::InternalCrossValidationSplitTrainTest(
-  captk::TrainingModuleAlgorithm::VariableSizeMatrixType inputFeatures, 
+captk::TrainingAlgorithm::VectorDouble 
+captk::TrainingAlgorithm::InternalCrossValidationSplitTrainTest(
+  captk::TrainingAlgorithm::VariableSizeMatrixType inputFeatures, 
   std::vector<double> inputLabels, double cValue, double gValue, 
   int kerneltype, int counter, std::string outputfolder)
 {
@@ -301,10 +301,10 @@ captk::TrainingModuleAlgorithm::InternalCrossValidationSplitTrainTest(
   return results;
 }
 
-captk::TrainingModuleAlgorithm::VectorDouble 
-captk::TrainingModuleAlgorithm::CrossValidation(
-  const captk::TrainingModuleAlgorithm::VariableSizeMatrixType inputFeatures, 
-  const captk::TrainingModuleAlgorithm::VariableLengthVectorType inputLabels, 
+captk::TrainingAlgorithm::VectorDouble 
+captk::TrainingAlgorithm::CrossValidation(
+  const captk::TrainingAlgorithm::VariableSizeMatrixType inputFeatures, 
+  const captk::TrainingAlgorithm::VariableLengthVectorType inputLabels, 
   const std::string outputfolder, const int classifiertype, const int number_of_folds)
 {
   MapType FoldingDataMap;
@@ -559,9 +559,9 @@ captk::TrainingModuleAlgorithm::CrossValidation(
 
 
 
-captk::TrainingModuleAlgorithm::VectorDouble 
-captk::TrainingModuleAlgorithm::EffectSizeFeatureSelection(
-  const captk::TrainingModuleAlgorithm::VariableSizeMatrixType training_features, 
+captk::TrainingAlgorithm::VectorDouble 
+captk::TrainingAlgorithm::EffectSizeFeatureSelection(
+  const captk::TrainingAlgorithm::VariableSizeMatrixType training_features, 
   std::vector<double> target)
 {
   //make set 1and set2
@@ -646,8 +646,8 @@ captk::TrainingModuleAlgorithm::EffectSizeFeatureSelection(
 
 
 //----------------------------------------------------------------------------------------------
-captk::TrainingModuleAlgorithm::VectorDouble 
-captk::TrainingModuleAlgorithm::CombineEstimates(
+captk::TrainingAlgorithm::VectorDouble 
+captk::TrainingAlgorithm::CombineEstimates(
   const VariableLengthVectorType &estimates1, 
   const VariableLengthVectorType &estimates2)
 {
@@ -721,9 +721,9 @@ captk::TrainingModuleAlgorithm::CombineEstimates(
   return returnVec;
 }
 
-// captk::TrainingModuleAlgorithm::VectorDouble 
-// captk::TrainingModuleAlgorithm::testOpenCVSVM(
-//   const captk::TrainingModuleAlgorithm::VariableSizeMatrixType &testingData, 
+// captk::TrainingAlgorithm::VectorDouble 
+// captk::TrainingAlgorithm::testOpenCVSVM(
+//   const captk::TrainingAlgorithm::VariableSizeMatrixType &testingData, 
 //   const std::string &inputModelName)
 // {
   //auto svm = cv::Algorithm::load<cv::ml::SVM>(inputModelName);
@@ -787,7 +787,7 @@ captk::TrainingModuleAlgorithm::CombineEstimates(
 
 
 std::tuple<bool, std::string>
-captk::TrainingModuleAlgorithm::Run(
+captk::TrainingAlgorithm::Run(
   const std::string inputFeaturesFile, const std::string inputLabelsFile, 
   const std::string outputdirectory, const int classifiertype, 
   const int foldtype, const int confType, const std::string modeldirectory)
@@ -897,7 +897,7 @@ captk::TrainingModuleAlgorithm::Run(
 
   std::cout << "Data loaded." << std::endl;
 
-  captk::TrainingModuleAlgorithm mTrainingSimulator;
+  captk::TrainingAlgorithm mTrainingSimulator;
   VectorDouble FinalResult;
 
   if (confType == 1)
@@ -1025,7 +1025,7 @@ captk::TrainingModuleAlgorithm::Run(
 }
 
 template <typename T>
-std::vector<size_t> captk::TrainingModuleAlgorithm::sort_indexes(const std::vector<T> &v)
+std::vector<size_t> captk::TrainingAlgorithm::sort_indexes(const std::vector<T> &v)
 {
   // initialize original index locations
   std::vector<size_t> idx(v.size());
@@ -1037,8 +1037,8 @@ std::vector<size_t> captk::TrainingModuleAlgorithm::sort_indexes(const std::vect
   return idx;
 }
 
-captk::TrainingModuleAlgorithm::VectorDouble 
-captk::TrainingModuleAlgorithm::SplitTrainTest(
+captk::TrainingAlgorithm::VectorDouble 
+captk::TrainingAlgorithm::SplitTrainTest(
   const VariableSizeMatrixType inputFeatures, const VariableLengthVectorType inputLabels,
   const std::string outputfolder, const int classifiertype, const int training_size)
 {
@@ -1293,8 +1293,8 @@ captk::TrainingModuleAlgorithm::SplitTrainTest(
 
 
 
-captk::TrainingModuleAlgorithm::VectorDouble 
-captk::TrainingModuleAlgorithm::TrainData(
+captk::TrainingAlgorithm::VectorDouble 
+captk::TrainingAlgorithm::TrainData(
   const VariableSizeMatrixType inputFeatures, const VariableLengthVectorType inputLabels,
   const std::string outputdirectory, const int classifiertype)
 {
@@ -1566,9 +1566,9 @@ captk::TrainingModuleAlgorithm::TrainData(
 }
 
 
-captk::TrainingModuleAlgorithm::VectorDouble 
-captk::TrainingModuleAlgorithm::TestData(
-  const captk::TrainingModuleAlgorithm::VariableSizeMatrixType inputFeatures, 
+captk::TrainingAlgorithm::VectorDouble 
+captk::TrainingAlgorithm::TestData(
+  const captk::TrainingAlgorithm::VariableSizeMatrixType inputFeatures, 
   const std::string modeldirectory, 
   const int classifiertype, const std::string outputfolder)
 {

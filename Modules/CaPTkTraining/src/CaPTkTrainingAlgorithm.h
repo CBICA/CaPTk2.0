@@ -20,7 +20,7 @@ See COPYING file or https://www.med.upenn.edu/sbia/software-agreement.html
 // that you want to be part of the public interface of your module.
 #include <MitkCaPTkTrainingExports.h>
 
-#include "itkExtractImageFilter.h"
+#include "itkImage.h"
 #include "itkCSVArray2DFileReader.h"
 #include <itkConstantBoundaryCondition.h>
 #include <itkVariableSizeMatrix.h>
@@ -31,7 +31,7 @@ See COPYING file or https://www.med.upenn.edu/sbia/software-agreement.html
 
 namespace captk
 {
-class MITKCAPTKTRAINING_EXPORT TrainingModuleAlgorithm
+class MITKCAPTKTRAINING_EXPORT TrainingAlgorithm
 {
 public:
   /**** Types ****/
@@ -55,8 +55,8 @@ public:
 
   /**** Public methods ****/
 
-  TrainingModuleAlgorithm() {};
-  ~TrainingModuleAlgorithm() {};
+  TrainingAlgorithm() {};
+  ~TrainingAlgorithm() {};
 
   VectorDouble TestData(const VariableSizeMatrixType inputFeatures, const std::string modelfolder, 
     const int classifiertype, const std::string outputfolder);

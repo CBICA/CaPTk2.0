@@ -7,7 +7,10 @@
 
 #include "ui_QmitkCaPTkTrainingControls.h"
 
-class CaPTkTraining;
+namespace captk 
+{
+class Training;
+}
 
 // berry
 #include <berryIBerryPreferences.h>
@@ -92,7 +95,7 @@ protected:
   /// \brief Qt GUI file
   Ui::QmitkCaPTkTrainingControls m_Controls;
 
-  CaPTkTraining* m_CaPTkTraining;
+  captk::Training* m_CaPTkTraining;
 };
 
 #endif // QmitkCaPTkTrainingView_h
