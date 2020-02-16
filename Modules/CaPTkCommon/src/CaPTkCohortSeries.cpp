@@ -6,8 +6,7 @@
 #include "mitkLogMacros.h"
 #include "mitkIOUtil.h"
 
-captk::CohortSeries::CohortSeries(QObject* parent) :
-    QObject(parent)
+captk::CohortSeries::CohortSeries()
 {
 
 }
@@ -32,7 +31,7 @@ QString captk::CohortSeries::GetSegmentLabel()
     return m_SegmentLabel;
 }
 
-QList<captk::CohortImage*> captk::CohortSeries::GetImages()
+QList<QSharedPointer<captk::CohortImage>> captk::CohortSeries::GetImages()
 {
     return m_Images; 
 }
@@ -45,6 +44,9 @@ mitk::Image::Pointer captk::CohortSeries::LoadImagesAsOne()
     {
         try
         {
+            // Load the first one and the others will follow
+            // automatically
+            // TODO: what happens when they are not in the same dir?
             auto path = this->GetImages()[0]->GetPath();
             image = mitk::IOUtil::Load<mitk::Image>(path.toStdString());
         }
@@ -65,6 +67,9 @@ mitk::LabelSetImage::Pointer captk::CohortSeries::LoadSegmentationImagesAsOne()
     {
         try
         {
+            // Load the first one and the others will follow
+            // automatically
+            // TODO: what happens when they are not in the same dir?
             auto path = this->GetImages()[0]->GetPath();
             image = mitk::IOUtil::Load<mitk::LabelSetImage>(path.toStdString());
         }
@@ -92,7 +97,7 @@ void captk::CohortSeries::SetSegmentLabel(QString segmentLabel)
     m_SegmentLabel = segmentLabel;
 }
 
-void captk::CohortSeries::SetImages(QList<captk::CohortImage*> images)
+void captk::CohortSeries::SetImages(QList<QSharedPointer<captk::CohortImage>> images)
 {
     m_Images = images;
 }

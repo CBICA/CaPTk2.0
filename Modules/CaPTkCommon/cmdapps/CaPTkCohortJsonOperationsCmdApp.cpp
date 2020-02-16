@@ -1,14 +1,23 @@
+/** \file CaPTkCohortJsonOperationsCmdApp.cpp
+ * \brief CLI program for operations related to cohorts
+ * 
+ * Such operations are related with interacting with
+ * cohort representations on the file system,
+ * either via json files or directory structures
+ */
+
 #include <mitkCommandLineParser.h>
 
-#include <CaPTkCohortJsonOperations.h>
+#include "CaPTkCohortOperations.h"
 
-#include "mitkException.h"
-#include "mitkLogMacros.h"
+#include <mitkException.h>
+#include <mitkLogMacros.h>
 
 #include <QString>
 #include <QStringList>
 #include <QFile>
 #include <QJsonDocument>
+#include <QSharedPointer>
 
 #include <algorithm>
 #include <string>
@@ -16,13 +25,12 @@
 #include <iostream>
 #include <memory>
 
-// MODE_DIR_TO_JSON:  input directory structure -> json
-// MODE_MERGE_JSONS: input json files -> one merged json file
-
+/** \brief input directory structure -> json */
 const QString MODE_DIR_TO_JSON = "dirtojson";
+/** \brief input json files -> one merged json file */
 const QString MODE_MERGE_JSONS = "mergejsons";
 
-/** list of all the modes (operations) */
+/** \brief list of all the modes (operations) */
 const QStringList MODES = QStringList() 
   << MODE_DIR_TO_JSON
   << MODE_MERGE_JSONS;
@@ -109,8 +117,12 @@ int main(int argc, char* argv[])
     return EXIT_FAILURE;
   }
 
-  auto outputfile = QString(us::any_cast<std::string>(parsedArgs["outputfile"]).c_str());
-  auto mode = QString(us::any_cast<std::string>(parsedArgs["mode"]).c_str());
+  auto outputfile = QString(
+    us::any_cast<std::string>(parsedArgs["outputfile"]).c_str()
+  );
+  auto mode = QString(
+    us::any_cast<std::string>(parsedArgs["mode"]).c_str()
+  );
 
   if (!MODES.contains(mode))
   {
@@ -125,23 +137,33 @@ int main(int argc, char* argv[])
 
   if (mode == MODE_DIR_TO_JSON)
   {
+    // This mode needs the following arguments
+
     if (parsedArgs["directories"].Empty())
     {
       std::cerr << parser.helpText();
+      std::cerr << "arg \"directories\" is required in mode" << mode.toStdString() << "\n";
       return EXIT_FAILURE;
     }
     // Separate by comma
-    directories = QString(us::any_cast<std::string>(parsedArgs["directories"]).c_str()).split(",");
+    directories = QString(
+      us::any_cast<std::string>(parsedArgs["directories"]).c_str()
+    ).split(",");
   }
   else if (mode == MODE_MERGE_JSONS)
   {
+    // This mode needs the following arguments
+
     if (parsedArgs["jsons"].Empty())
     {
       std::cerr << parser.helpText();
+      std::cerr << "arg \"jsons\" is required in mode" << mode.toStdString() << "\n";
       return EXIT_FAILURE;
     }
     // Separate by comma
-    jsons = QString(us::any_cast<std::string>(parsedArgs["jsons"]).c_str()).split(",");
+    jsons = QString(
+      us::any_cast<std::string>(parsedArgs["jsons"]).c_str()
+    ).split(",");
   }
 
   /*---- Run ----*/
@@ -158,7 +180,13 @@ int main(int argc, char* argv[])
       }
 
       // Create merged json from all the jsonDocs
-      auto mergedJson = captk::CohortJsonMergeObjects(jsonDocs);
+      QList<QSharedPointer<captk::Cohort>> cohorts;
+      for (auto jsonDoc : jsonDocs)
+      {
+        cohorts.push_back(captk::CohortJsonLoad(jsonDoc));
+      }
+      auto mergedCohort = captk::CohortMerge(cohorts);
+      auto mergedJson = captk::CohortToJson(mergedCohort);
       
       // Save merged json to file
       QFile jsonFile(outputfile);
@@ -183,7 +211,13 @@ int main(int argc, char* argv[])
       }
 
       // Create merged json from all the jsonDocs
-      auto mergedJson = captk::CohortJsonMergeObjects(jsonDocs);
+      QList<QSharedPointer<captk::Cohort>> cohorts;
+      for (auto jsonDoc : jsonDocs)
+      {
+        cohorts.push_back(captk::CohortJsonLoad(jsonDoc));
+      }
+      auto mergedCohort = captk::CohortMerge(cohorts);
+      auto mergedJson = captk::CohortToJson(mergedCohort);
 
       // Save merged json to file
       QFile jsonFile(outputfile);

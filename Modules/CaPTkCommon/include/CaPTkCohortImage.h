@@ -6,17 +6,17 @@
 // that you want to be part of the public interface of your module.
 #include <MitkCaPTkCommonExports.h>
 
-#include <QObject>
 #include <QString>
 
 namespace captk
 {
-class MITKCAPTKCOMMON_EXPORT CohortImage : public QObject
+/** \class CohortImage
+ * \brief Defines information about an image
+ */
+class MITKCAPTKCOMMON_EXPORT CohortImage
 {
-    Q_OBJECT
-
 public:
-    explicit CohortImage(QObject* parent = nullptr);
+    CohortImage();
 
     ~CohortImage();
 
@@ -24,12 +24,21 @@ public:
 
     QString GetPath();
 
+    /** \brief Get the path to the (optional) image information file
+     * 
+     * Image info is reserved for a file that holds meta-data about an image
+     * \return the image info path. Empty QString if there is no such file
+     */
     QString GetImageInfoPath();
 
     /* Setters */
 
     void SetPath(QString path);
 
+    /** \brief Set the path to the (optional) image information file
+     * 
+     * Image info is reserved for a file that holds meta-data about an image
+     */
     void SetImageInfoPath(QString imageInfoPath);
 
 private:
