@@ -1202,7 +1202,7 @@ Contact: software@cbica.upenn.edu<br><br>\
 Disclaimer: CaPTk has been designed for non-commercial research purposes only and has not been reviewed or approved by the Food and Drug Administration (FDA). It is not intended or recommended for clinical application.<br><br>\
 Funding: This work was supported in part by NIH 1U24CA189523-01A1.<br><br>\
 Copyright (c) 2020 Center for Biomedical Image Computing and Analytics, University of Pennsylvania. All rights reserved<br><br>\
-LICENSE: <a href=\"https://www.med.upenn.edu/sbia/software-agreement.html\">https://www.med.upenn.edu/sbia/software-agreement.html</a><br><br>\
+LICENSE: <a href=\"https://www.med.upenn.edu/cbica/sbia/software-agreement.html\">https://www.med.upenn.edu/cbica/sbia/software-agreement.html</a><br><br>\
     "),
                 //  QString("Cancer Imaging Phenomics Toolkit\n\n")
                 //     + QString("by CBICA (Center for Biomedical Image Computing & Analytics)\n\n")
