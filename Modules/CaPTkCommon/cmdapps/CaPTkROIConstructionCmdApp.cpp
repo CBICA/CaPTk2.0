@@ -17,6 +17,22 @@
 #include <iostream>
 #include <memory>
 
+mitk::LabelSetImage::Pointer 
+ReadLabelSetImageFromFile(QString path)
+{
+  if (path.endsWith(".nrrd"))
+  {
+    return mitk::IOUtil::Load<mitk::LabelSetImage>(path.toStdString());
+  }
+  else
+  {
+    mitk::Image::Pointer image = mitk::IOUtil::Load<mitk::Image>(path.toStdString());
+    mitk::LabelSetImage::Pointer res = mitk::LabelSetImage::New();
+    res->InitializeByLabeledImage(image);
+    return res;
+  }
+}
+
 /** \brief command-line app for creating lattice ROIs from a mask
  *
  * This command-line app takes a mask and creates multiple lattice ROIs
@@ -127,7 +143,9 @@ int main(int argc, char* argv[])
 
   try
   {
-    auto mask = mitk::IOUtil::Load<mitk::LabelSetImage>(maskPath.toStdString());
+    mitk::LabelSetImage::Pointer mask = ReadLabelSetImageFromFile(maskPath);
+
+    QDir().mkpath(outputDir); // Create output directory
 
     captk::ROIConstruction constructor;
     
