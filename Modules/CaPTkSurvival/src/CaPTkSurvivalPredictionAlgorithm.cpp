@@ -4,9 +4,9 @@
 namespace captk {
 std::tuple<bool, std::string>
 SurvivalPredictionModuleAlgorithm::Run(
-        QString modelDir,
-        QString outputDir,
-        QString subjectDir)
+        QString /*modelDir*/,
+        QString /*outputDir*/,
+        QString /*subjectDir*/)
 {
     // ******************************************
     // TODO: Include actual algorithm logic here
