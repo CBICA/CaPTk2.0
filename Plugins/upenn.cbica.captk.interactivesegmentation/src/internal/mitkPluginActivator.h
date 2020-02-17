@@ -1,5 +1,5 @@
-#ifndef upenn_cbica_captk_example_Activator_h
-#define upenn_cbica_captk_example_Activator_h
+#ifndef upenn_cbica_captk_interactivesegmentation_Activator_h
+#define upenn_cbica_captk_interactivesegmentation_Activator_h
 
 #include <ctkPluginActivator.h>
 
@@ -8,7 +8,7 @@ namespace mitk
   class PluginActivator : public QObject, public ctkPluginActivator
   {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "upenn_cbica_captk_example")
+    Q_PLUGIN_METADATA(IID "upenn_cbica_captk_interactivesegmentation")
     Q_INTERFACES(ctkPluginActivator)
 
   public:
@@ -22,4 +22,4 @@ namespace mitk
   };
 }
 
-#endif // ! upenn_cbica_captk_example_Activator_h
+#endif // ! upenn_cbica_captk_interactivesegmentation_Activator_h
