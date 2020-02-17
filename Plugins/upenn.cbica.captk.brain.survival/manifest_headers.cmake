@@ -1,4 +1,4 @@
-set(Plugin-Name "CaPTk Interactive Segmentation")
+set(Plugin-Name "CaPTk Survival Prediction Index")
 set(Plugin-Version "1.0.0")
 set(Plugin-Vendor "CBICA")
 set(Plugin-ContactAddress "https://www.med.upenn.edu/cbica/")
