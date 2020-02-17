@@ -113,10 +113,20 @@ void QmitkCaPTkSurvivalView::CreateQtPartControl(QWidget *parent)
               this->GetPreferences()->Get("SurvivalModelSourceComboBox", "CBICA CaPTk Model")
   );
 
-
-
-
-
+  // Set model information
+  m_Controls.label_PaperInformation->setWordWrap(true);
+  QString modelInfo = ("This is a model trained on de novo glioblastoma cases.<br>"
+                       "Please note that this model was created following certain assumptions<br>"
+                       "(described in the paper below)<br>"
+                       "It can be used for research purposes only.<br><br>"
+                       "L.Macyszyn, et al. Imaging Patterns Predict Patient Survival and Molecular<br>"
+                       "Subtype in Glioblastoma via Machine Learning Techniques, Neuro-Oncology.<br>"
+                       "18(3) : 417-425, 2016.<br><br>"
+                       "<a href=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4767233\" style=\"color:red\">[LINK]</a>");
+  m_Controls.label_PaperInformation->setText(modelInfo);
+  m_Controls.label_PaperInformation->setTextFormat(Qt::RichText);
+  m_Controls.label_PaperInformation->setTextInteractionFlags(Qt::TextBrowserInteraction);
+  m_Controls.label_PaperInformation->setOpenExternalLinks(true);
 }
 
 void QmitkCaPTkSurvivalView::Activated()
