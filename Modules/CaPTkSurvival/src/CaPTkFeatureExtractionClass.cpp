@@ -12,17 +12,16 @@ See COPYING file or https://www.med.upenn.edu/sbia/software-agreement.html
 */
 
 #include "CaPTkFeatureExtractionClass.h"
-//#include "itkVariableSizeMatrix.h"
 //#include "itkVariableLengthVector.h"
-//#include "CAPTk.h"
 #include "CaPTkEnums.h"
 
-FeatureExtractionClass::FeatureExtractionClass()
+captk::FeatureExtractionClass::FeatureExtractionClass()
 {
 
 }
 
-VariableSizeMatrixType FeatureExtractionClass::ResampleTrainingData(const VariableSizeMatrixType &trainingdata, const unsigned int NumberOfNearSamples, const unsigned int NumberOfFarSamples)
+captk::FeatureExtractionClass::VariableSizeMatrixType 
+captk::FeatureExtractionClass::ResampleTrainingData(const VariableSizeMatrixType &trainingdata, const unsigned int NumberOfNearSamples, const unsigned int NumberOfFarSamples)
 {
   VariableSizeMatrixType sampledTrainingData;
   int NumberOfFeatures = trainingdata.Cols() - 1;
@@ -53,7 +52,7 @@ VariableSizeMatrixType FeatureExtractionClass::ResampleTrainingData(const Variab
 }
 
 
-void FeatureExtractionClass::FormulateTrainingData(const std::vector< VectorDouble > &nearintensitities, const std::vector< VectorDouble > &farintensitities)
+void captk::FeatureExtractionClass::FormulateTrainingData(const std::vector< VectorDouble > &nearintensitities, const std::vector< VectorDouble > &farintensitities)
 {
   size_t NumberOfNearSamples = nearintensitities.size();
   size_t NumberOfFarSamples = farintensitities.size();
@@ -77,7 +76,8 @@ void FeatureExtractionClass::FormulateTrainingData(const std::vector< VectorDoub
 }
 
 
-VariableSizeMatrixType FeatureExtractionClass::FormulateTestData(const std::vector< VectorDouble > &testdata)
+captk::FeatureExtractionClass::VariableSizeMatrixType 
+captk::FeatureExtractionClass::FormulateTestData(const std::vector< VectorDouble > &testdata)
 {
   size_t NumberOfFeatures = testdata[0].size();
   size_t NumberOfSamples = testdata.size();
@@ -95,7 +95,7 @@ VariableSizeMatrixType FeatureExtractionClass::FormulateTestData(const std::vect
   return mTestData;
 }
 
-void FeatureExtractionClass::FormulateSurvivalTrainingData(const VariableSizeMatrixType &inputFeatures, std::vector<double> inputSurvival, VariableSizeMatrixType & SixModelFeatures, VariableSizeMatrixType & EighteenModelFeatures)
+void captk::FeatureExtractionClass::FormulateSurvivalTrainingData(const VariableSizeMatrixType &inputFeatures, std::vector<double> inputSurvival, VariableSizeMatrixType & SixModelFeatures, VariableSizeMatrixType & EighteenModelFeatures)
 {
   std::vector<int> SixModelLowerIndices;
   std::vector<int> SixModelHigherIndices;
@@ -149,7 +149,7 @@ void FeatureExtractionClass::FormulateSurvivalTrainingData(const VariableSizeMat
 }
 
 
-void FeatureExtractionClass::FormulatePseudoprogressionTrainingData(const VariableSizeMatrixType &inputFeatures, std::vector<double> inputSurvival, VariableSizeMatrixType & PseudoModelFeatures, VariableSizeMatrixType & RecurrenceModelFeatures)
+void captk::FeatureExtractionClass::FormulatePseudoprogressionTrainingData(const VariableSizeMatrixType &inputFeatures, std::vector<double> inputSurvival, VariableSizeMatrixType & PseudoModelFeatures, VariableSizeMatrixType & RecurrenceModelFeatures)
 {
   std::vector<int> PseudoModelLowerIndices;
   std::vector<int> PseudoModelHigherIndices;
@@ -205,7 +205,7 @@ void FeatureExtractionClass::FormulatePseudoprogressionTrainingData(const Variab
 
 
 
-void FeatureExtractionClass::FormulateEGFRTrainingData(const VariableSizeMatrixType &inputFeatures, std::vector<double> inputSurvival, VariableSizeMatrixType & SixModelFeatures)
+void captk::FeatureExtractionClass::FormulateEGFRTrainingData(const VariableSizeMatrixType &inputFeatures, std::vector<double> inputSurvival, VariableSizeMatrixType & SixModelFeatures)
 {
   std::vector<int> posIndices;
   std::vector<int> negIndices;
@@ -240,7 +240,7 @@ void FeatureExtractionClass::FormulateEGFRTrainingData(const VariableSizeMatrixT
 
 
 
-void FeatureExtractionClass::FormulateMolecularTrainingData(const VariableSizeMatrixType &inputFeatures, std::vector<double> inputLabels, VariableSizeMatrixType & proneuralModelFeatures, VariableSizeMatrixType & neuralModelFeatures, VariableSizeMatrixType & messenchymalModelFeatures, VariableSizeMatrixType & classicalModelFeatures)
+void captk::FeatureExtractionClass::FormulateMolecularTrainingData(const VariableSizeMatrixType &inputFeatures, std::vector<double> inputLabels, VariableSizeMatrixType & proneuralModelFeatures, VariableSizeMatrixType & neuralModelFeatures, VariableSizeMatrixType & messenchymalModelFeatures, VariableSizeMatrixType & classicalModelFeatures)
 {
 	std::vector<int> proneuralModelIndices;
 	std::vector<int> neuralModelIndices;
