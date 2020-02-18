@@ -19,8 +19,7 @@ set(MOC_H_FILES
 )
 
 set(CACHED_RESOURCE_FILES
-  #resources/NewSegmentationSession_48x48.png
-  #resources/mll_icon2.svg
+  resources/icon.svg
   plugin.xml
 )
 
