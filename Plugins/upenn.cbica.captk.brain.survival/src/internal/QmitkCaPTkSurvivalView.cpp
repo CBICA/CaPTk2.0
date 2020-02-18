@@ -293,16 +293,30 @@ void QmitkCaPTkSurvivalView::OnRunButtonPressed()
   QString modelCsvPath = m_Controls.lineEdit_CustomModelDir->text();
   QString subjectDirPath = m_Controls.lineEdit_SubjectDir->text();
   QString outputDirPath = m_Controls.lineEdit_OutputDir->text();
+  bool trainNewModel; // true if training, false if using an existing model
+  bool useCustomModel; // true if using a custom model, false if using CBICA's CaPTk model
 
+  if (m_Controls.m_cbUsageSelector->currentText() == "Train New Model") {
+      trainNewModel = true;
+  }
+  else if (m_Controls.m_cbUsageSelector->currentText() == "Use Existing Model") {
+      trainNewModel = false;
+  }
+
+  if  (m_Controls.m_cbModelSourceSelector->currentText() == "CBICA CaPTk Model") {
+      useCustomModel = false;
+  }
+  else if (m_Controls.m_cbModelSourceSelector->currentText() == "Custom") {
+      useCustomModel = true;
+  }
+
+  // TODO: Uncomment when CaPTkSurvival is fully implemented
 //  m_CaPTkSurvival->Run(
-//    featuresCsvPath,
-//    responsesCsvPath,
-//    classificationKernelStr,
-//    configurationStr,
-//    folds,
-//    samples,
 //    modelDirPath,
-//    outputDirPath
+//    subjectDirPath,
+//    outputDirPath,
+//    trainNewModel,
+//    useCustomModel
 //  );
 }
 

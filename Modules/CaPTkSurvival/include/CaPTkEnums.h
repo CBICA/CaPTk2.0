@@ -1,6 +1,6 @@
 #pragma once
 
-namespace CAPTK
+namespace captk
 {
   enum ImageExtension
   {

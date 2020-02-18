@@ -2,6 +2,7 @@
 
 #include <QtConcurrent/QtConcurrent>
 #include <QMessageBox>
+#include <QFileInfo>
 
 #include <iostream>
 #include <fstream>
@@ -17,11 +18,13 @@ CaPTkSurvival::CaPTkSurvival(
 
 void CaPTkSurvival::Run(
         QString modelDir,
+        QString subjectDir,
         QString outputDir,
-        QString subjectDir
+        bool trainNewModel,
+        bool useCustomModel
 	)
 {
-	std::cout << "[CaPTkSurvival::Run]\n";
+    MITK_INFO << "[CaPTkSurvival::Run]";
 
 	/* ---- Check if it's already running ---- */
 
@@ -43,6 +46,8 @@ void CaPTkSurvival::Run(
 	bool ok = true;              // Becomes false if there is an issue
 	std::string problemStr = ""; // Populated if there is an issue
 
+
+
 	// TODO: Check requirements (now everything is assumed ok)
 
 	// Return if there is an issue
@@ -58,14 +63,15 @@ void CaPTkSurvival::Run(
 	}
 
 	/* ---- Run ---- */
-
-    // std::bind is used because normally
-    // QtConcurrent::run accepts max=5 function arguments
+    // This should only be reached if all requirements are met.
+    // std::bind is used because normally QtConcurrent::run accepts max=5 function arguments
     m_FutureResult = QtConcurrent::run(std::bind(
         &CaPTkSurvival::RunThread, this,
         modelDir,
+        subjectDir,
         outputDir,
-        subjectDir
+        trainNewModel,
+        useCustomModel
     ));
     m_Watcher.setFuture(m_FutureResult);
 }
@@ -77,7 +83,7 @@ void CaPTkSurvival::SetProgressBar(QProgressBar* progressBar)
 
 void CaPTkSurvival::OnAlgorithmFinished()
 {
-	std::cout << "[CaPTkSurvival::OnAlgorithmFinished]\n";
+    MITK_INFO << "[CaPTkSurvival::OnAlgorithmFinished]";
 
 	if (m_FutureResult.result().ok)
 	{
@@ -99,20 +105,23 @@ void CaPTkSurvival::OnAlgorithmFinished()
 CaPTkSurvival::Result
 CaPTkSurvival::RunThread(
         QString modelDir,
+        QString subjectDir,
         QString outputDir,
-        QString subjectDir
+        bool trainNewModel,
+        bool useCustomModel
 	)
 {
-	std::cout << "[CaPTkSurvival::RunThread]\n";
+    MITK_INFO << "[CaPTkSurvival::RunThread]";
 
     CaPTkSurvival::Result runResult;
-
 
     SurvivalPredictionModuleAlgorithm algorithm = SurvivalPredictionModuleAlgorithm();
     auto resAlgorithm = algorithm.Run(
                modelDir,
+               subjectDir,
                outputDir,
-               subjectDir
+               trainNewModel,
+               useCustomModel
                 );
 
 	runResult.ok = std::get<0>(resAlgorithm);

@@ -31,12 +31,16 @@ public:
      * 
      * @param QString subjectDirPath path to the subject directory
      * @param QString modelDirPath path to the model directory
-     * @param QString outputDirPath 
+     * @param QString outputDirPath path to the desired output directory
+     * @param bool trainNewModel whether to train a new model or not (if false, use an existing model)
+     * @param bool useCustomModel whether a custom model is being used (if false, use CBICA CaPTk model)
     */
     void Run(
             QString modelDir,
+            QString subjectDir,
             QString outputDir,
-            QString subjectDir
+            bool trainNewModel,
+            bool useCustomModel
     );
 
     void SetProgressBar(QProgressBar* progressBar);
@@ -71,8 +75,10 @@ protected:
     */
     Result RunThread(
             QString modelDir,
+            QString subjectDir,
             QString outputDir,
-            QString subjectDir
+            bool trainNewModel,
+            bool useCustomModel
     );
 
     bool m_IsRunning = false;
