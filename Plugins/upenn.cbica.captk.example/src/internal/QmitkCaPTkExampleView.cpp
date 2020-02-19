@@ -30,7 +30,7 @@
 #include <QMessageBox>
 
 // CaPTk
-#include "captkExampleAlgorithm.h"
+#include "CaPTkExampleAlgorithm.h"
 
 #include "tinyxml.h"
 

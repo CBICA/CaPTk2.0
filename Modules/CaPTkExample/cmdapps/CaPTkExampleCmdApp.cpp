@@ -11,7 +11,7 @@
 #include <mitkIOUtil.h>
 #include <mitkImageAccessByItk.h>
 
-#include "captkExampleAlgorithm.h"
+#include "CaPTkExampleAlgorithm.h"
 
 
 /** \brief command-line app for example module
