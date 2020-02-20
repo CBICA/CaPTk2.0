@@ -55,10 +55,10 @@ public:
     }
 
     /** \brief ++ overloading to go to the next lattice */
-    ROIConstructionHelperBase operator++(int) // postfix (calls suffix)
+    ROIConstructionHelperBase operator++(int) // suffix (calls prefix)
     {
         ROIConstructionHelperBase tmp(*this);
-        ++*this; // call suffix
+        ++*this; // call prefix
         return tmp;
     }
 
