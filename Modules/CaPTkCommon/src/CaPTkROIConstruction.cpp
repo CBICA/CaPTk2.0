@@ -57,18 +57,6 @@ float captk::ROIConstruction::PopulateMask(mitk::LabelSetImage::Pointer& rMask)
 {
     rMask->Initialize(m_MaskTemplate); // This creates an empty copy, with the same meta-data
 
-    // auto label = mitk::Label::New();
-    // // auto layer = mitk::LabelSet::New();
-    // auto layer = rMask->GetActiveLabelSet();
-    // label->SetName(labelName);
-    // label->SetValue(labelValue);
-    // label->SetColor(color);
-    // layer->AddLabel(label);
-    // layer->SetActiveLabel(labelValue);
-    // rMask->AddLayer(layer);
-    // // rMask->AddLabelSetToLayer(0, mitk::LabelSet::New());
-    // // rMask->GetActiveLabelSet()->AddLabel(label);
-
     float weight = m_Helper->PopulateMask(rMask);
 
     // Change color of label
