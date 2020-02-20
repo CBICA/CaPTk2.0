@@ -47,8 +47,7 @@ inline VectorDouble trainOpenCVSVM(const VariableSizeMatrixType &trainingDataAnd
 
   auto svm = cv::ml::SVM::create();
   svm->setType(cv::ml::SVM::C_SVC);
-  //svm->setC(1);
-  //svm->setGamma(0.01);
+
   // parameters for auto_train
   cv::ml::ParamGrid grid_C(-5, 5, 2); // Parameter C of a SVM optimization problem (C_SVC / EPS_SVR / NU_SVR)
   cv::ml::ParamGrid grid_Gamma(-5, 5, 2); // Parameter \gamma of a kernel function (POLY / RBF / SIGMOID / CHI2)

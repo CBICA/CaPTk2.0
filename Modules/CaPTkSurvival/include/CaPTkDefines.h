@@ -1,5 +1,4 @@
 #pragma once
-//#include "cbicaUtilities.h"
 #include "itkVariableLengthVector.h"
 #include "itkVariableSizeMatrix.h"
 #include "itkImageRegionIteratorWithIndex.h"
@@ -30,8 +29,6 @@
 #define IMG_EXT "img"
 #define PARAM_EXT "txt"
 #define CSV_EXT "csv"
-
-//  static QString IMAGES_EXTENSIONS = "Images (*.nii.gz *.nii *.dcm)";
 
 
   // Common defines - these are required for GCC compilation 
