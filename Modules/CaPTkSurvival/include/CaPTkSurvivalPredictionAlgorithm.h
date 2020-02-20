@@ -36,6 +36,7 @@ See COPYING file or https://www.med.upenn.edu/sbia/software-agreement.html
 #include "CaPTkFeatureScalingClass.h"
 #include "CaPTkFeatureExtractionClass.h"
 #include "CaPTkEnums.h"
+#include "CaPTkDefines.h"
 
 /**
 \class SurvivalPredictionModuleAlgorithm
@@ -57,13 +58,6 @@ publisher={Society for Neuro-Oncology}
 
 */
 
-// define extension types
-#define NII_EXT ".nii" // [TBD] - convert to enum
-#define NII_GZ_EXT ".nii.gz"
-#define HDR_EXT ".hdr"
-#define IMG_EXT ".img"
-#define PARAM_EXT ".txt"
-#define CSV_EXT ".csv"
 
 // pre-calculated values
 #define SURVIVAL_MODEL6_RHO		-1.0927
@@ -85,6 +79,8 @@ public:
     typedef itk::CSVArray2DFileReader<double> CSVFileReaderType;
     typedef vnl_matrix<double> MatrixType;
     typedef itk::VariableLengthVector<double> VariableLengthVectorType;
+    typedef std::vector<double> VectorDouble;
+    typedef itk::VariableSizeMatrix<double> VariableSizeMatrixType;
 
 
   /**** Defaults ****/
@@ -106,7 +102,8 @@ public:
           QString subjectDir,
           QString outputDir,
           bool trainNewModel,
-          bool useCustomModel
+          bool useCustomModel,
+          QString cbicaModelDir
       );
 
  /**** Protected methods ****/
@@ -169,9 +166,10 @@ protected:
     const std::vector< std::map< ImageModalityType, std::string > > &qualifiedsubjects,
     const std::string &outputdirectory);
 
+  void CallForSurvivalPredictionOnExistingModel(const std::string modeldirectory, const std::string inputdirectory, const std::string outputdirectory);
+  void CallForNewSurvivalPredictionModel(const std::string inputdirectory, const std::string outputdirectory);
 
-
-  VariableSizeMatrixType SelectSixMonthsModelFeatures(const VariableSizeMatrixType &SixMonthsFeatures);
+  VariableSizeMatrixType SelectSixMonthsModelFeatures(const VariableSizeMatrixType &SixModelFeatures);
   VariableSizeMatrixType SelectEighteenMonthsModelFeatures(const VariableSizeMatrixType &EighteenModelFeatures);
 
 
@@ -181,6 +179,7 @@ protected:
   VectorDouble CombineEstimates(const VectorDouble &estimates1, const VectorDouble &estimates2);
 
   void WriteCSVFiles(VariableSizeMatrixType inputdata, std::string filepath);
+
 
   /**** Templated Function Definitions ****/
 
@@ -900,7 +899,6 @@ protected:
       interIt.GoToBegin();
       while (!interIt.IsAtEnd())
       {
-          typename ImageType::IndexType index = imIt.GetIndex();
           if (imIt.Get() == label1)
               interIt.Set(captk::VOXEL_STATUS::ON);
           else

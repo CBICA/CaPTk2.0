@@ -20,7 +20,7 @@ captk::FeatureExtractionClass::FeatureExtractionClass()
 
 }
 
-captk::FeatureExtractionClass::VariableSizeMatrixType 
+captk::FeatureExtractionClass::VariableSizeMatrixType
 captk::FeatureExtractionClass::ResampleTrainingData(const VariableSizeMatrixType &trainingdata, const unsigned int NumberOfNearSamples, const unsigned int NumberOfFarSamples)
 {
   VariableSizeMatrixType sampledTrainingData;
@@ -76,7 +76,7 @@ void captk::FeatureExtractionClass::FormulateTrainingData(const std::vector< Vec
 }
 
 
-captk::FeatureExtractionClass::VariableSizeMatrixType 
+captk::FeatureExtractionClass::VariableSizeMatrixType
 captk::FeatureExtractionClass::FormulateTestData(const std::vector< VectorDouble > &testdata)
 {
   size_t NumberOfFeatures = testdata[0].size();
@@ -249,11 +249,11 @@ void captk::FeatureExtractionClass::FormulateMolecularTrainingData(const Variabl
 
 	for (unsigned int i = 0; i < inputLabels.size(); i++)
 	{
-		if (inputLabels[i] == CAPTK::MOLECULAR_SUBTYPES::PRONEURAL)
+        if (inputLabels[i] == captk::MOLECULAR_SUBTYPES::PRONEURAL)
 			proneuralModelIndices.push_back(i);
-		else if (inputLabels[i] == CAPTK::MOLECULAR_SUBTYPES::NEURAL)
+        else if (inputLabels[i] == captk::MOLECULAR_SUBTYPES::NEURAL)
 			neuralModelIndices.push_back(i);
-		else if (inputLabels[i] == CAPTK::MOLECULAR_SUBTYPES::MESSENCHYMAL)
+        else if (inputLabels[i] == captk::MOLECULAR_SUBTYPES::MESSENCHYMAL)
 			messenchymalModelIndices.push_back(i);
 		else
 			classicalModelIndices.push_back(i);
@@ -274,21 +274,21 @@ void captk::FeatureExtractionClass::FormulateMolecularTrainingData(const Variabl
 			proneuralModelFeatures(i, j) = inputFeatures(i, j);
 			messenchymalModelFeatures(i, j) = inputFeatures(i, j);
 		}
-		if (inputLabels[i] == CAPTK::MOLECULAR_SUBTYPES::PRONEURAL)
+        if (inputLabels[i] == captk::MOLECULAR_SUBTYPES::PRONEURAL)
 		{
 			proneuralModelFeatures(i, j) = 1;
 			neuralModelFeatures(i, j) = 0;
 			messenchymalModelFeatures(i, j) = 0;
 			classicalModelFeatures(i, j) = 0;
 		}
-		else if (inputLabels[i] == CAPTK::MOLECULAR_SUBTYPES::NEURAL)
+        else if (inputLabels[i] == captk::MOLECULAR_SUBTYPES::NEURAL)
 		{
 			proneuralModelFeatures(i, j) = 0;
 			neuralModelFeatures(i, j) = 1;
 			messenchymalModelFeatures(i, j) = 0;
 			classicalModelFeatures(i, j) = 0;
 		}
-		else if (inputLabels[i] == CAPTK::MOLECULAR_SUBTYPES::CLASSICAL)
+        else if (inputLabels[i] == captk::MOLECULAR_SUBTYPES::CLASSICAL)
 		{
 			proneuralModelFeatures(i, j) = 0;
 			neuralModelFeatures(i, j) = 0;

@@ -290,34 +290,36 @@ void QmitkCaPTkSurvivalView::OnOutputDirectoryButtonClicked()
 
 void QmitkCaPTkSurvivalView::OnRunButtonPressed()
 {
-  QString modelCsvPath = m_Controls.lineEdit_CustomModelDir->text();
+  QString modelDirPath = m_Controls.lineEdit_CustomModelDir->text();
   QString subjectDirPath = m_Controls.lineEdit_SubjectDir->text();
   QString outputDirPath = m_Controls.lineEdit_OutputDir->text();
-  bool trainNewModel; // true if training, false if using an existing model
-  bool useCustomModel; // true if using a custom model, false if using CBICA's CaPTk model
+  bool trainNewModel = false; // true if training, false if using an existing model
+  bool useCustomModel = false; // true if using a custom model, false if using CBICA's CaPTk model
 
   if (m_Controls.m_cbUsageSelector->currentText() == "Train New Model") {
       trainNewModel = true;
+      useCustomModel = false;
   }
   else if (m_Controls.m_cbUsageSelector->currentText() == "Use Existing Model") {
       trainNewModel = false;
-  }
 
-  if  (m_Controls.m_cbModelSourceSelector->currentText() == "CBICA CaPTk Model") {
-      useCustomModel = false;
-  }
-  else if (m_Controls.m_cbModelSourceSelector->currentText() == "Custom") {
-      useCustomModel = true;
-  }
+      if  (m_Controls.m_cbModelSourceSelector->currentText() == "CBICA CaPTk Model") {
+          useCustomModel = false;
+      }
+      else if (m_Controls.m_cbModelSourceSelector->currentText() == "Custom") {
+          useCustomModel = true;
+      }
 
-  // TODO: Uncomment when CaPTkSurvival is fully implemented
-//  m_CaPTkSurvival->Run(
-//    modelDirPath,
-//    subjectDirPath,
-//    outputDirPath,
-//    trainNewModel,
-//    useCustomModel
-//  );
+  }
+  m_Controls.pushButtonRun->setText("Running Survival Prediction..."); // Change button to reflect running status
+  m_CaPTkSurvival->Run(
+   modelDirPath,
+   subjectDirPath,
+   outputDirPath,
+   trainNewModel,
+   useCustomModel
+   );
+  m_Controls.pushButtonRun->setText("Run Survival Prediction"); // Change button back no matter the result
 }
 
 /************************************************************************/

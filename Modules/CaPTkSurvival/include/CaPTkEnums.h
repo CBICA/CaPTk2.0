@@ -18,7 +18,7 @@ namespace captk
   };
 
   //! The modality strings that are used in the GUI 
-  static const char ImageModalityString[CAPTK::ImageModalityType::IMAGE_TYPE_FEATURES + 1][15] =
+  static const char ImageModalityString[captk::ImageModalityType::IMAGE_TYPE_FEATURES + 1][15] =
   { "DEF", "T1", "T1Gd", "T2",
   "FLAIR", "DTI_AX", "DTI_FA", "DTI_RAD", "DTI_TR",
   "PERFUSION", "DTI", "REC", "PP", "CT",

@@ -23,6 +23,7 @@ public:
     CaPTkSurvival(QObject *parent = 0);
 
     ~CaPTkSurvival() {}
+    QString cbicaModelDir;
 
     /** \brief Runs the algorithm
      * 
@@ -78,7 +79,8 @@ protected:
             QString subjectDir,
             QString outputDir,
             bool trainNewModel,
-            bool useCustomModel
+            bool useCustomModel,
+            QString cbicaModelDir
     );
 
     bool m_IsRunning = false;

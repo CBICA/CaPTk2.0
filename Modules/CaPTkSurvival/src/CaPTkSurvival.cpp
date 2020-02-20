@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <fstream>
+#include "mitkLogMacros.h"
 
 #include "CaPTkSurvivalPredictionAlgorithm.h"
 namespace captk {
@@ -14,6 +15,8 @@ CaPTkSurvival::CaPTkSurvival(
 	: QObject(parent)
 {
 	connect(&m_Watcher, SIGNAL(finished()), this, SLOT(OnAlgorithmFinished()));
+    cbicaModelDir = qApp->applicationDirPath() + QString("/models/survival_model");
+    MITK_INFO << cbicaModelDir.toStdString();
 }
 
 void CaPTkSurvival::Run(
@@ -49,6 +52,18 @@ void CaPTkSurvival::Run(
 
 
 	// TODO: Check requirements (now everything is assumed ok)
+    if (subjectDir.isEmpty()) {
+        ok = false;
+        problemStr += "Please specify a directory containing subject data.\n";
+    }
+    if (useCustomModel && modelDir.isEmpty()) {
+        ok = false;
+        problemStr += "Please specify a directory containing a model to use.\n";
+    }
+    if (outputDir.isEmpty()) {
+        ok = false;
+        problemStr += "Please specify a valid output directory.\n";
+    }
 
 	// Return if there is an issue
 	if (!ok)
@@ -71,7 +86,8 @@ void CaPTkSurvival::Run(
         subjectDir,
         outputDir,
         trainNewModel,
-        useCustomModel
+        useCustomModel,
+        cbicaModelDir
     ));
     m_Watcher.setFuture(m_FutureResult);
 }
@@ -87,12 +103,22 @@ void CaPTkSurvival::OnAlgorithmFinished()
 
 	if (m_FutureResult.result().ok)
 	{
+
 		// Execution finished successfully
+        QMessageBox msgSuccess;
+        QString msg = "A Survival Prediction Index (SPI) has been calculated for the given subjects by applying the specified model. \n\n";
+        //msg = msg + "SPI = " + QString::number(m_FutureResult.result()) + "\n\n";
+        msg = msg + "SPI index saved in 'results.csv' file in the output directory. \n\n";
+        msgSuccess.setText(msg);
+        msgSuccess.setIcon(QMessageBox::Information);
+        msgSuccess.setWindowTitle("CaPTk Survival Module Success!");
+        msgSuccess.exec();
 	}
 	else
 	{
 		// Something went wrong
 		QMessageBox msgError;
+
 		msgError.setText(m_FutureResult.result().errorMessage.c_str());
 		msgError.setIcon(QMessageBox::Critical);
 		msgError.setWindowTitle("CaPTk Survival Module Error!");
@@ -108,7 +134,8 @@ CaPTkSurvival::RunThread(
         QString subjectDir,
         QString outputDir,
         bool trainNewModel,
-        bool useCustomModel
+        bool useCustomModel,
+        QString cbicaModelDir
 	)
 {
     MITK_INFO << "[CaPTkSurvival::RunThread]";
@@ -121,7 +148,8 @@ CaPTkSurvival::RunThread(
                subjectDir,
                outputDir,
                trainNewModel,
-               useCustomModel
+               useCustomModel,
+               cbicaModelDir
                 );
 
 	runResult.ok = std::get<0>(resAlgorithm);
@@ -129,4 +157,6 @@ CaPTkSurvival::RunThread(
 
 	return runResult;
 }
+
+
 }

@@ -1,7 +1,6 @@
 set(CPP_FILES
   CaPTkSurvival.cpp
   CaPTkSurvivalPredictionAlgorithm.cpp
-  deletethis
   CaPTkFeatureExtractionClass.cpp
 )
 
@@ -14,6 +13,8 @@ set(H_FILES
   include/CaPTkFeatureExtractionClass.h
   include/CaPTkSurvivalPredictionAlgorithm.h
   include/CaPTkEnums.h
+  include/CaPTkClassifierUtils.h
+  include/CaPTkDefines.h
 )
 
 set(MOC_H_FILES
@@ -21,5 +22,5 @@ set(MOC_H_FILES
 )
 
 set(RESOURCE_FILES
-
+ 
 )
