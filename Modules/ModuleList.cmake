@@ -8,5 +8,6 @@ set(MITK_MODULES
   CaPTkPHIEstimator
   CaPTkTraining
   CaPTkInteractiveSegmentation
+  CaPTkSurvival
   CaPTkExample
 )
