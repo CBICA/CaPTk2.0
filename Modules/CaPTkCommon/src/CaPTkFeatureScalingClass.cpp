@@ -93,7 +93,6 @@ captk::FeatureScalingClass::VariableSizeMatrixType captk::FeatureScalingClass::S
 }
 double captk::FeatureScalingClass::GetZScore(const double &mean, const double &variance, const double &featureval)
 {
-  //return (featureval - mean) / (variance + FLT_MIN);
   return (featureval - mean) / (variance + 0.0);
 }
 void captk::FeatureScalingClass::ScaleGivenTrainingFeatures(const captk::FeatureScalingClass::VariableSizeMatrixType &inputdata, captk::FeatureScalingClass::VariableSizeMatrixType &scaledFeatureSet, VariableLengthVectorType &meanVector, VariableLengthVectorType &stdVector)
@@ -139,37 +138,6 @@ captk::FeatureScalingClass::VariableSizeMatrixType captk::FeatureScalingClass::S
     for (int sampleNo = 0; sampleNo < NumberOfSamples; sampleNo++)
       scaledFeatureSet(sampleNo, featureNo) = GetZScore(meandata[featureNo], stddata[featureNo], inputdata(sampleNo, featureNo));
   }
-
-  //typedef itk::CSVNumericObjectFileWriter<double, 1, 453> WriterTypeMatrixMean;
-  //WriterTypeMatrixMean::Pointer writermatrixmean = WriterTypeMatrixMean::New();
-  //typedef vnl_matrix<double> MatrixType;
-  //MatrixType data;
-  //data.set_size(1, 453);
-  //  for (int j = 0; j < 453; j++)
-  //    data(0, j) = meandata[j];
-  //writermatrixmean->SetFileName("mean.csv");
-  //writermatrixmean->SetInput(&data);
-  //writermatrixmean->Write();
-
-  //for (int j = 0; j < 453; j++)
-  //  data(0, j) = stddata[j];
-  //writermatrixmean->SetFileName("std.csv");
-  //writermatrixmean->SetInput(&data);
-  //writermatrixmean->Write();
-
-
-
-
-  //typedef itk::CSVNumericObjectFileWriter<double, 2, 453> WriterTypeMatrix1;
-  //WriterTypeMatrix1::Pointer writermatrix1 = WriterTypeMatrix1::New();
-
-  //data.set_size(2, 453);
-  //for (int i = 0; i < 2; i++)
-  //  for (int j = 0; j < 453; j++)
-  //    data(i, j) = scaledFeatureSet(i, j);
-  //writermatrix1->SetFileName("scaled_test_features.csv");
-  //writermatrix1->SetInput(&data);
-  //writermatrix1->Write();
 
 
   return scaledFeatureSet;
