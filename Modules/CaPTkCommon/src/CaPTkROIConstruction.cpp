@@ -73,7 +73,7 @@ void captk::ROIConstruction::GoToBegin()
 
 captk::ROIConstruction& captk::ROIConstruction::operator++() //suffix
 {
-    ++*m_Helper.get(); // actual operation
+    ++*m_Helper.get(); // actual operation, get() gets raw pointer, * gets the object, ++ is the operation
     return *this;
 }
 
