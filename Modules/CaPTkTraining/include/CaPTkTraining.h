@@ -11,17 +11,18 @@
 #include <QFutureWatcher>
 #include <QProgressBar>
 
-/** \class CaPTkTraining
+namespace captk {
+/** \class captk::Training
  *  \brief Training Module API
  */
-class MITKCAPTKTRAINING_EXPORT CaPTkTraining : public QObject
+class MITKCAPTKTRAINING_EXPORT Training : public QObject
 {
     Q_OBJECT
 
 public:
-    CaPTkTraining(QObject *parent = 0);
+    Training(QObject *parent = 0);
 
-    ~CaPTkTraining() {}
+    ~Training();
 
     /** \brief Runs the algorithm
      * 
@@ -95,5 +96,7 @@ protected:
 
     QProgressBar* m_ProgressBar;
 };
+
+}
 
 #endif // ! CaPTkTraining_h

@@ -1,5 +1,5 @@
-#ifndef org_mitk_cbica_captk_example_Activator_h
-#define org_mitk_cbica_captk_example_Activator_h
+#ifndef upenn_cbica_captk_example_Activator_h
+#define upenn_cbica_captk_example_Activator_h
 
 #include <ctkPluginActivator.h>
 
@@ -22,4 +22,4 @@ namespace mitk
   };
 }
 
-#endif // ! org_mitk_cbica_captk_example_Activator_h
+#endif // ! upenn_cbica_captk_example_Activator_h

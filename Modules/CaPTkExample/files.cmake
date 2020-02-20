@@ -12,11 +12,11 @@ set(UI_FILES
 )
 
 set(MOC_H_FILES
-  include/captkExampleAlgorithm.h
+  include/CaPTkExampleAlgorithm.h
 )
 
 set(H_FILES
-  include/captkExampleAlgorithm.h
+  include/CaPTkExampleAlgorithm.h
 )
 
 set(RESOURCE_FILES
