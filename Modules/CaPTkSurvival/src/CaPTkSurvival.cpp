@@ -15,8 +15,8 @@ CaPTkSurvival::CaPTkSurvival(
 	: QObject(parent)
 {
 	connect(&m_Watcher, SIGNAL(finished()), this, SLOT(OnAlgorithmFinished()));
-    cbicaModelDir = qApp->applicationDirPath() + QString("/models/survival_model");
-    MITK_INFO << cbicaModelDir.toStdString();
+    m_CbicaModelDir = qApp->applicationDirPath() + QString("/models/survival_model");
+    MITK_INFO << m_CbicaModelDir.toStdString();
 }
 
 void CaPTkSurvival::Run(
@@ -87,15 +87,11 @@ void CaPTkSurvival::Run(
         outputDir,
         trainNewModel,
         useCustomModel,
-        cbicaModelDir
+        m_CbicaModelDir
     ));
     m_Watcher.setFuture(m_FutureResult);
 }
 
-void CaPTkSurvival::SetProgressBar(QProgressBar* progressBar)
-{
-	m_ProgressBar = progressBar;
-}
 
 void CaPTkSurvival::OnAlgorithmFinished()
 {
@@ -103,12 +99,11 @@ void CaPTkSurvival::OnAlgorithmFinished()
 
 	if (m_FutureResult.result().ok)
 	{
-
 		// Execution finished successfully
         QMessageBox msgSuccess;
-        QString msg = "A Survival Prediction Index (SPI) has been calculated for the given subjects by applying the specified model. \n\n";
-        //msg = msg + "SPI = " + QString::number(m_FutureResult.result()) + "\n\n";
-        msg = msg + "SPI index saved in 'results.csv' file in the output directory. \n\n";
+        QString msg = "A Survival Prediction Index (SPI) has been calculated for "
+                      "the given subjects by applying the specified model. \n\n";
+        msg += "SPI index saved in 'results.csv' file in the output directory. \n\n";
         msgSuccess.setText(msg);
         msgSuccess.setIcon(QMessageBox::Information);
         msgSuccess.setWindowTitle("CaPTk Survival Module Success!");

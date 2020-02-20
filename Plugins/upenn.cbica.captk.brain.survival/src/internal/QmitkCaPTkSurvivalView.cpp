@@ -46,12 +46,6 @@ See LICENSE.txt or http://www.mitk.org for details.
 // CaPTk
 #include "CaPTkSurvival.h"
 
-//#include "tinyxml.h"
-
-//#include <itksys/SystemTools.hxx>
-
-//#include <regex>
-
 const std::string QmitkCaPTkSurvivalView::VIEW_ID = "upenn.cbica.captk.views.survival";
 
 QmitkCaPTkSurvivalView::QmitkCaPTkSurvivalView()
@@ -72,10 +66,8 @@ void QmitkCaPTkSurvivalView::CreateQtPartControl(QWidget *parent)
 
   m_Controls.setupUi(parent);
 
-  //m_CaPTkSurvival->SetProgressBar(m_Controls.progressBar);
 
   /**** Connect signals & slots ****/
-  // Note: done ahead of time so that initialization can trigger the right events
 
   connect(m_Controls.m_cbUsageSelector, SIGNAL(currentTextChanged(QString)),
           this, SLOT(OnUsageComboBoxCurrentTextChanged(QString)));
@@ -181,7 +173,7 @@ int QmitkCaPTkSurvivalView::ComputePreferredSize(bool width,
 /************************************************************************/
 void QmitkCaPTkSurvivalView::OnUsageComboBoxCurrentTextChanged(const QString& text)
 {
-  // Remember it
+  // set preference to remember usage choice
   this->GetPreferences()->Put("SurvivalUsageComboBox", text);
   this->GetPreferences()->Flush();
 
@@ -211,7 +203,7 @@ void QmitkCaPTkSurvivalView::OnUsageComboBoxCurrentTextChanged(const QString& te
 
 void QmitkCaPTkSurvivalView::OnModelSourceComboBoxCurrentTextChanged(const QString& text)
 {
-  // Remember it
+  // Set preference to remember model source choice
   this->GetPreferences()->Put("SurvivalSourceComboBox", text);
   this->GetPreferences()->Flush();
 
@@ -311,7 +303,7 @@ void QmitkCaPTkSurvivalView::OnRunButtonPressed()
       }
 
   }
-  m_Controls.pushButtonRun->setText("Running Survival Prediction..."); // Change button to reflect running status
+
   m_CaPTkSurvival->Run(
    modelDirPath,
    subjectDirPath,
@@ -319,7 +311,6 @@ void QmitkCaPTkSurvivalView::OnRunButtonPressed()
    trainNewModel,
    useCustomModel
    );
-  m_Controls.pushButtonRun->setText("Run Survival Prediction"); // Change button back no matter the result
 }
 
 /************************************************************************/
@@ -351,9 +342,6 @@ void QmitkCaPTkSurvivalView::SetFocus()
 
 void QmitkCaPTkSurvivalView::UpdateControls()
 {
-  // Hide views that are not useful
-  // m_Controls.label_PatientImage->setVisible(false);
-
   this->RequestRenderWindowUpdate(mitk::RenderingManager::REQUEST_UPDATE_ALL);
 }
 

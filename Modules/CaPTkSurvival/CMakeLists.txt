@@ -6,8 +6,8 @@ mitk_create_module(
   DEPENDS PUBLIC MitkCaPTkCommon #MitkCore
 )
 
-# standard cmake way of copying files -- doesn't copy into the packaged install
-#file(COPY resources/models/survival_model DESTINATION ${CMAKE_BINARY_DIR}/bin/models)
+# standard cmake way of copying files -- doesn't copy into the packaged install, but into the build directory
+file(COPY resources/models/survival_model DESTINATION ${CMAKE_BINARY_DIR}/bin/models)
 
 # the below macro does the work necessary to install the models into the packaged executable
 MITK_INSTALL( DIRECTORY resources/models)

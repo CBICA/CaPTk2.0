@@ -334,18 +334,8 @@ protected:
               throw std::string("No existing model file in directory " + modeldirectory); // propagate error message
           }
 
-          //Estimates=(abs(Estimates)<=1).*Estimates+(Estimates>1)-(Estimates<-1);
           results = CombineEstimates(result_6, result_18);
-          //std::ofstream myfile;
-          //myfile.open(outputdirectory + "/results.csv");
-          //myfile << "SubjectName,Result\n";
 
-          //for (size_t i = 0; i < results.size(); i++)
-          //{
-          //	std::map< ImageModalityType, std::string > currentsubject = qualifiedsubjects[i];
-          //	myfile << static_cast<std::string>(currentsubject[IMAGE_TYPE_SUDOID]) + "," + std::to_string(result_6[i]) + "," + std::to_string(result_18[i]) + "," + std::to_string(results[i]) + "\n";
-          //}
-          //myfile.close();
       }
       catch (itk::ExceptionObject & excp)
       {
@@ -418,7 +408,6 @@ protected:
       VectorDouble necoreIntensitiesPH;
 
 
-      //VectorDouble GlistrFeatures = GetGlistrFeatures(parametersNames);
 
 
       typedef itk::ImageRegionIteratorWithIndex <ImageType> IteratorType;

@@ -9,7 +9,6 @@
 #include <QObject>
 #include <QFuture>
 #include <QFutureWatcher>
-#include <QProgressBar>
 
 namespace captk {
 /** \class CaPTkSurvival
@@ -23,7 +22,7 @@ public:
     CaPTkSurvival(QObject *parent = 0);
 
     ~CaPTkSurvival() {}
-    QString cbicaModelDir;
+
 
     /** \brief Runs the algorithm
      * 
@@ -44,8 +43,6 @@ public:
             bool useCustomModel
     );
 
-    void SetProgressBar(QProgressBar* progressBar);
-
     /** \struct Result
      *  \brief result of the execution of the algorithm
      * 
@@ -65,6 +62,7 @@ public slots:
     void OnAlgorithmFinished();
 
 protected:
+    QString m_CbicaModelDir;
 
     /** \brief Runs the algorithm after the operations in Run
      * 
@@ -87,7 +85,6 @@ protected:
     QFutureWatcher<Result> m_Watcher;
     QFuture<Result> m_FutureResult;
 
-    QProgressBar* m_ProgressBar;
 };
 }
 

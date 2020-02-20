@@ -72,15 +72,6 @@ std::string getApplicationDirectory() {
     return qApp->applicationDirPath().toStdString();
 }
 
-//bool isValidImageExtension(std::string extension) {
-//    bool isValid = (strcmp(extension, NII_EXT))
-//    return isValid;
-//}
-
-//bool isValidParameterExtension(std::string extension) {
-
-//}
-
 
 
 std::tuple<bool, std::string>
@@ -125,13 +116,11 @@ void SurvivalPredictionModuleAlgorithm::CallForSurvivalPredictionOnExistingModel
   if (modeldirectory.empty())
   {
     throw std::string("Please provide path of a directory having SVM model");
-    //help_contextual("Glioblastoma_Survival.html");
     return;
   }
   if (!directoryExists(modeldirectory))
   {
     throw std::string("The given SVM model directory does not exist");
-    //help_contextual("Glioblastoma_Survival.html");
     return;
   }
   if (!(fileExists(modeldirectory + "/Survival_SVM_Model6.csv") || fileExists(modeldirectory + "/Survival_SVM_Model6.xml"))
@@ -139,26 +128,22 @@ void SurvivalPredictionModuleAlgorithm::CallForSurvivalPredictionOnExistingModel
     || !fileExists(modeldirectory + "/Survival_ZScore_Std.csv") || !fileExists(modeldirectory + "/Survival_ZScore_Mean.csv"))
   {
     throw std::string("The given SVM model directory does not have all the model files");
-    //help_contextual("Glioblastoma_Survival.html"); // TBD -- we could add help handlers to each module/plugin.
     return;
   }
 
   if (inputdirectory.empty())
   {
     throw std::string("Please provide path of a directory having input images");
-    //help_contextual("Glioblastoma_Survival.html");
     return;
   }
   if (!directoryExists(inputdirectory))
   {
     throw std::string("The given input directory does not exist");
-    //help_contextual("Glioblastoma_Survival.html");
     return;
   }
   if (outputdirectory.empty())
   {
     throw std::string("Please provide path of a directory to save output");
-    //help_contextual("Glioblastoma_Survival.html");
     return;
   }
   if (!directoryExists(outputdirectory))
@@ -166,7 +151,6 @@ void SurvivalPredictionModuleAlgorithm::CallForSurvivalPredictionOnExistingModel
     if (!QDir(QString::fromStdString(outputdirectory)).mkpath(QString::fromStdString(outputdirectory)))
     {
       throw std::string("Unable to create the output directory");
-      //help_contextual("Glioblastoma_Survival.html");
       return;
     }
   }
@@ -177,7 +161,6 @@ void SurvivalPredictionModuleAlgorithm::CallForSurvivalPredictionOnExistingModel
   if (QualifiedSubjects.size() == 0)
   {
     throw std::string("No patient inside the given input directory has required scans");
-    //help_contextual("Glioblastoma_Survival.html");
     return;
   }
 
@@ -200,13 +183,11 @@ void SurvivalPredictionModuleAlgorithm::CallForNewSurvivalPredictionModel(const 
   if (inputdirectory.empty())
   {
     throw std::string("Please provide path of a directory having input images");
-    //help_contextual("Glioblastoma_Survival.html");
     return;
   }
   if (!directoryExists(inputdirectory))
   {
     throw std::string("The given input directory does not exist");
-    //help_contextual("Glioblastoma_Survival.html");
     return;
   }
 
@@ -214,7 +195,6 @@ void SurvivalPredictionModuleAlgorithm::CallForNewSurvivalPredictionModel(const 
   if (outputdirectory.empty())
   {
     throw std::string("Please provide path of a directory to save output");
-    //help_contextual("Glioblastoma_Survival.html");
     return;
   }
   if (!directoryExists(outputdirectory))
@@ -222,7 +202,6 @@ void SurvivalPredictionModuleAlgorithm::CallForNewSurvivalPredictionModel(const 
     if (!QDir(QString::fromStdString(outputdirectory)).mkpath(QString::fromStdString(outputdirectory)))
     {
       throw std::string("Unable to create the output directory");
-      //help_contextual("Glioblastoma_Survival.html");
       return;
     }
   }
@@ -231,7 +210,6 @@ void SurvivalPredictionModuleAlgorithm::CallForNewSurvivalPredictionModel(const 
   if (QualifiedSubjects.size() == 0)
   {
     throw std::string("No patient inside the given input directory has required scans");
-    //help_contextual("Glioblastoma_Survival.html");
     return;
   }
 
@@ -494,7 +472,6 @@ int SurvivalPredictionModuleAlgorithm::PrepareNewSurvivalPredictionModel(const s
   MatrixType dataMatrix;
   try
   {
-      //reader->SetFileName(getCaPTkDataDir() + "/survival/Survival_HMFeatures_Configuration.csv");
       reader->SetFileName(getApplicationDirectory() + "/models/survival_model/Survival_HMFeatures_Configuration.csv");
       reader->SetFieldDelimiterCharacter(',');
       reader->HasColumnHeadersOff();
@@ -521,8 +498,7 @@ int SurvivalPredictionModuleAlgorithm::PrepareNewSurvivalPredictionModel(const s
       {
           ImageType::Pointer LabelImagePointer = ReadNiftiImage<ImageType>(static_cast<std::string>(currentsubject[captk::ImageModalityType::IMAGE_TYPE_SEG]));
           ImageType::Pointer AtlasImagePointer = ReadNiftiImage<ImageType>(static_cast<std::string>(currentsubject[captk::ImageModalityType::IMAGE_TYPE_ATLAS]));
-          //ImageType::Pointer TemplateImagePointer = ReadNiftiImage<ImageType>("../data/survival/Template.nii.gz");
-      ImageType::Pointer TemplateImagePointer = ReadNiftiImage<ImageType>(getApplicationDirectory() + "/models/survival_model/Template.nii.gz");
+          ImageType::Pointer TemplateImagePointer = ReadNiftiImage<ImageType>(getApplicationDirectory() + "/models/survival_model/Template.nii.gz");
           ImageType::Pointer RCBVImagePointer = RescaleImageIntensity<ImageType>(ReadNiftiImage<ImageType>(static_cast<std::string>(currentsubject[captk::ImageModalityType::IMAGE_TYPE_RCBV])));
           ImageType::Pointer PHImagePointer = RescaleImageIntensity<ImageType>(ReadNiftiImage<ImageType>(static_cast<std::string>(currentsubject[captk::ImageModalityType::IMAGE_TYPE_PH])));
           ImageType::Pointer T1CEImagePointer = RescaleImageIntensity<ImageType>(ReadNiftiImage<ImageType>(static_cast<std::string>(currentsubject[captk::ImageModalityType::IMAGE_TYPE_T1CE])));
@@ -577,44 +553,8 @@ int SurvivalPredictionModuleAlgorithm::PrepareNewSurvivalPredictionModel(const s
     for (unsigned int j = 0; j < scaledFeatureSet.Cols(); j++)
       if (std::isnan(scaledFeatureSet(i, j)))
         scaledFeatureSet(i, j) = 0;
-    //
-//  for (int i = 0; i < 105; i++)
-//    for (int j = 0; j < 166; j++)
-//      data(i, j) = scaledFeatureSet(i, j);
-//  writer->SetFileName("scaled_train_features.csv");
-//  writer->SetInput(&data);
-//  writer->Write();
-//
-//
-//
-  //VariableSizeMatrixType ScaledFeatureSetAfterAddingAge;
-  //ScaledFeatureSetAfterAddingAge.SetSize(scaledFeatureSet.Rows(), scaledFeatureSet.Cols() + 1);
-  //for (unsigned int i = 0; i < scaledFeatureSet.Rows(); i++)
-  //{
-  //  ScaledFeatureSetAfterAddingAge(i, 0) = ages[i];
-  //  for (unsigned int j = 0; j < scaledFeatureSet.Cols(); j++)
-  //  {
-  //    ScaledFeatureSetAfterAddingAge(i, j+1) = scaledFeatureSet(i, j);
-  //  }
-  //}
-//
-//  //readerMean->SetFileName("scaledfeatures.csv");
-//  //readerMean->SetFieldDelimiterCharacter(',');
-//  //readerMean->HasColumnHeadersOff();
-//  //readerMean->HasRowHeadersOff();
-//  //readerMean->Parse();
-//  ////typedef vnl_matrix<double> MatrixType;
-//  //dataMatrix = readerMean->GetArray2DDataObject()->GetMatrix();
-//
-//  //for (unsigned int i = 0; i < dataMatrix.rows(); i++)
-//  //  for (unsigned int j = 0; j < dataMatrix.cols(); j++)
-//  //    scaledFeatureSet(i, j) = dataMatrix(i, j);
-//  //{
-//  //  ages.push_back(dataMatrix(i, 0));
-//  //  survival.push_back(dataMatrix(i, 1));
-//  //}
-//
-////-----------------------writing in files to compare results------------------------------
+
+// //-----------------------writing in files to compare results------------------------------
   typedef vnl_matrix<double> MatrixType;
   MatrixType data;
 
@@ -650,13 +590,6 @@ int SurvivalPredictionModuleAlgorithm::PrepareNewSurvivalPredictionModel(const s
 //  //---------------------------------------------------------------------------
   VariableSizeMatrixType SixModelSelectedFeatures = SelectSixMonthsModelFeatures(SixModelFeatures);
   VariableSizeMatrixType EighteenModelSelectedFeatures = SelectEighteenMonthsModelFeatures(EighteenModelFeatures);
-
-  //WriteCSVFiles(FeaturesOfAllSubjects, outputdirectory + "/FeaturesOfAllSubjects.csv");
-  //WriteCSVFiles(scaledFeatureSet, outputdirectory + "/scaledFeatureSet.csv");
-  //WriteCSVFiles(SixModelFeatures, outputdirectory + "/SixModelFeatures.csv");
-  //WriteCSVFiles(EighteenModelFeatures, outputdirectory + "/EighteenModelFeatures.csv");
-  //WriteCSVFiles(SixModelSelectedFeatures, outputdirectory + "/SixModelSelectedFeatures.csv");
-  //WriteCSVFiles(EighteenModelSelectedFeatures, outputdirectory + "/EighteenModelSelectedFeatures.csv");
 
    try
    {
@@ -753,8 +686,7 @@ VectorDouble SurvivalPredictionModuleAlgorithm::SurvivalPredictionOnExistingMode
         {
             ImageType::Pointer LabelImagePointer = ReadNiftiImage<ImageType>(static_cast<std::string>(currentsubject[captk::ImageModalityType::IMAGE_TYPE_SEG]));
             ImageType::Pointer AtlasImagePointer = ReadNiftiImage<ImageType>(static_cast<std::string>(currentsubject[captk::ImageModalityType::IMAGE_TYPE_ATLAS]));
-            //ImageType::Pointer TemplateImagePointer = ReadNiftiImage<ImageType>("../data/survival/Template.nii.gz");
-      ImageType::Pointer TemplateImagePointer = ReadNiftiImage<ImageType>(getApplicationDirectory() + "/models/survival_model/Template.nii.gz");
+            ImageType::Pointer TemplateImagePointer = ReadNiftiImage<ImageType>(getApplicationDirectory() + "/models/survival_model/Template.nii.gz");
             ImageType::Pointer RCBVImagePointer = RescaleImageIntensity<ImageType>(ReadNiftiImage<ImageType>(static_cast<std::string>(currentsubject[captk::ImageModalityType::IMAGE_TYPE_RCBV])));
             ImageType::Pointer PHImagePointer = RescaleImageIntensity<ImageType>(ReadNiftiImage<ImageType>(static_cast<std::string>(currentsubject[captk::ImageModalityType::IMAGE_TYPE_PH])));
             ImageType::Pointer T1CEImagePointer = RescaleImageIntensity<ImageType>(ReadNiftiImage<ImageType>(static_cast<std::string>(currentsubject[captk::ImageModalityType::IMAGE_TYPE_T1CE])));
@@ -810,57 +742,6 @@ VectorDouble SurvivalPredictionModuleAlgorithm::SurvivalPredictionOnExistingMode
 
     VariableSizeMatrixType SixModelSelectedFeatures = SelectSixMonthsModelFeatures(ScaledFeatureSetAfterAddingLabel);
     VariableSizeMatrixType EighteenModelSelectedFeatures = SelectEighteenMonthsModelFeatures(ScaledFeatureSetAfterAddingLabel);
-
-  //WriteCSVFiles(FeaturesOfAllSubjects, outputdirectory + "/PlainTestFeaturescsv");
-  //WriteCSVFiles(ScaledFeatureSetAfterAddingLabel, outputdirectory + "/ScaledFeatureSetAfterAddingLabel.csv");
-  //WriteCSVFiles(SixModelSelectedFeatures, outputdirectory + "/SixModelSelectedFeatures.csv");
-  //WriteCSVFiles(EighteenModelSelectedFeatures, outputdirectory + "/EighteenModelSelectedFeatures.csv");
-    //------------------------------------------------------------------------------------------------------------------
-    //typedef itk::CSVNumericObjectFileWriter<double, 2, 161> WriterTypeMatrix;
-    //WriterTypeMatrix::Pointer writermatrix = WriterTypeMatrix::New();
-    //MatrixType data;
-    //data.set_size(2,161);
-    //for (int i = 0; i < 2; i++)
-    //	for (int j = 0; j < 161; j++)
-    //		data(i, j) = FeaturesOfAllSubjects(i, j);
-    //writermatrix->SetFileName("plain_test_features.csv");
-    //writermatrix->SetInput(&data);
-    //writermatrix->Write();
-    //
-    //for (int i = 0; i < 2; i++)
-    //	for (int j = 0; j < 161; j++)
-    //		data(i, j) = ScaledTestingData(i, j);
-    //writermatrix->SetFileName("scaled_test_features.csv");
-    //writermatrix->SetInput(&data);
-    //writermatrix->Write();
-
-    //typedef itk::CSVNumericObjectFileWriter<double, 2, 162> WriterTypeMatrixE;
-    //WriterTypeMatrixE::Pointer writermatrixe = WriterTypeMatrixE::New();
-    //data.set_size(2, 162);
-    //for (int i = 0; i < 2; i++)
-    //	for (int j = 0; j < 162; j++)
-    //		data(i, j) = ScaledFeatureSetAfterAddingLabel(i, j);
-    //writermatrixe->SetFileName("scaled_test_features_labels.csv");
-    //writermatrixe->SetInput(&data);
-    //writermatrixe->Write();
-
-    //typedef itk::CSVNumericObjectFileWriter<double, 2, 21> WriterTypeMatrixS;
-    //WriterTypeMatrixS::Pointer writermatrixs = WriterTypeMatrixS::New();
-    //data.set_size(2, 21);
-    //for (int i = 0; i < 2; i++)
-    //	for (int j = 0; j < 21; j++)
-    //		data(i, j) = SixModelSelectedFeatures(i, j);
-    //writermatrixs->SetFileName("six_model_features.csv");
-    //writermatrixs->SetInput(&data);
-    //writermatrixs->Write();
-
-    //for (int i = 0; i < 2; i++)
-    //	for (int j = 0; j < 21; j++)
-    //		data(i, j) = EighteenModelSelectedFeatures(i, j);
-    //writermatrixs->SetFileName("eighteen_model_features.csv");
-    //writermatrixs->SetInput(&data);
-    //writermatrixs->Write();
-    //---------------------------------------------------------------------------------------------------------------
 
 
     try
@@ -1037,7 +918,8 @@ VariableLengthVectorType SurvivalPredictionModuleAlgorithm::DistanceFunction(con
     return Distances;
 }
 
-VectorDouble SurvivalPredictionModuleAlgorithm::CombineEstimates(const VectorDouble &estimates1, const VectorDouble &estimates2)
+VectorDouble SurvivalPredictionModuleAlgorithm::CombineEstimates(
+        const VectorDouble &estimates1, const VectorDouble &estimates2)
 {
     VectorDouble returnVec;
     returnVec.resize(estimates1.size());
@@ -1113,8 +995,6 @@ VariableSizeMatrixType SurvivalPredictionModuleAlgorithm::SelectSixMonthsModelFe
 {
    int selectedFeatures[20] = { 1,    5,    9,    10,    20,    23,    24,    37,    38,    43,    44,    48,    49,    50,    51,    56,    57,    61,    62,    63};
 
-//   int selectedFeatures[20] = { 1, 5, 9, 10, 13, 26, 33, 35, 38, 41, 43, 44, 48, 50, 51, 56, 57, 63, 64, 69 };
-
    for (unsigned int i = 0; i <20; i++)
     selectedFeatures[i] = selectedFeatures[i] - 1;
   VariableSizeMatrixType SixModelSelectedFeatures;
@@ -1136,7 +1016,6 @@ VariableSizeMatrixType SurvivalPredictionModuleAlgorithm::SelectEighteenMonthsMo
 {
     int selectedFeatures[20] = { 1, 5, 10, 15, 24, 27, 37, 38, 50, 51, 53, 62, 63, 64, 67, 70, 71, 85, 158, 159 };
 
-//   int selectedFeatures[20] = { 1, 2, 3, 5, 6, 7, 9, 10, 16, 18, 33, 35, 38, 42, 47, 48, 49, 50, 51, 56 };
    for(unsigned int i=0;i<20;i++)
     selectedFeatures[i] = selectedFeatures[i] - 1;
 
@@ -1153,8 +1032,6 @@ VariableSizeMatrixType SurvivalPredictionModuleAlgorithm::SelectEighteenMonthsMo
     EighteenModelSelectedFeatures(j, 20) = EighteenModelFeatures(j, 161);
   return EighteenModelSelectedFeatures;
 }
-
-//>>>> insert here
 
 
 
