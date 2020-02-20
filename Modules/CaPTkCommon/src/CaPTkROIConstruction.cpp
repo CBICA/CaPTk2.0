@@ -71,16 +71,16 @@ void captk::ROIConstruction::GoToBegin()
     m_Helper->GoToBegin();
 }
 
-captk::ROIConstruction& captk::ROIConstruction::operator++() //suffix
+captk::ROIConstruction& captk::ROIConstruction::operator++() //prefix
 {
     ++*m_Helper.get(); // actual operation, get() gets raw pointer, * gets the object, ++ is the operation
     return *this;
 }
 
-captk::ROIConstruction captk::ROIConstruction::operator++(int) //postfix(calls suffix)
+captk::ROIConstruction captk::ROIConstruction::operator++(int) //suffix(calls prefix)
 {
     ROIConstruction tmp(*this);
-    operator++(); // call suffix
+    operator++(); // call prefix
     return tmp;
 }
 
