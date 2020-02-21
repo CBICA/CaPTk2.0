@@ -18,7 +18,9 @@ set(_plugins
 
  upenn.cbica.captk.ui
  upenn.cbica.captk.application
+ upenn.cbica.captk.common
  upenn.cbica.captk.interactivesegmentation
+
  org.mitk.gui.qt.imagenavigator
  org_mitk_gui_qt_imagenavigator
  org.mitk.gui.qt.measurementtoolbox
