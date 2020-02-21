@@ -15,9 +15,9 @@ set(_plugins
  org.mitk.gui.qt.datamanager
  org_mitk_planarfigure
 
- org.mitk.cbica.captk.ui
- org.mitk.cbica.captk.application
- org.mitk.cbica.captk.interactivesegmentation
+ upenn.cbica.captk.ui
+ upenn.cbica.captk.application
+ upenn.cbica.captk.interactivesegmentation
  org.mitk.gui.qt.imagenavigator
  org_mitk_gui_qt_imagenavigator
  org.mitk.gui.qt.measurementtoolbox
