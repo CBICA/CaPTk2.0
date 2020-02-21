@@ -15,14 +15,14 @@ set(_plugins
  org.mitk.gui.qt.datamanager
  org_mitk_planarfigure
 
- org.mitk.cbica.captk.ui
- org.mitk.cbica.captk.application
- org.mitk.cbica.captk.interactivesegmentation
+ upenn.cbica.captk.ui
+ upenn.cbica.captk.application
+ upenn.cbica.captk.interactivesegmentation
  org.mitk.gui.qt.imagenavigator
  org_mitk_gui_qt_imagenavigator
  org.mitk.gui.qt.measurementtoolbox
- org.mitk.gui.qt.multilabelsegmentation
  org.mitk.gui.qt.segmentation
+ org.mitk.gui.qt.multilabelsegmentation
 )
 
 # For CaPTk icon to be included (this cmake file is in CMake/)
