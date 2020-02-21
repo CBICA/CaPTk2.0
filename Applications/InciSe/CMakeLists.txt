@@ -21,8 +21,8 @@ set(_plugins
  org.mitk.gui.qt.imagenavigator
  org_mitk_gui_qt_imagenavigator
  org.mitk.gui.qt.measurementtoolbox
- org.mitk.gui.qt.multilabelsegmentation
  org.mitk.gui.qt.segmentation
+ org.mitk.gui.qt.multilabelsegmentation
 )
 
 # Plug-ins listed below will not be
