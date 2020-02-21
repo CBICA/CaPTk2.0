@@ -9,5 +9,6 @@ set(MITK_PLUGINS
   upenn.cbica.captk.ui:ON
   upenn.cbica.captk.application:ON
   upenn.cbica.captk.training:ON
+  upenn.cbica.captk.brain.survival:ON
   upenn.cbica.captk.example:OFF
 )
