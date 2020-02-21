@@ -14,6 +14,7 @@ set(_plugins
  org.mitk.gui.qt.stdmultiwidgeteditor
  org.mitk.gui.qt.datamanager
  org_mitk_planarfigure
+ org.blueberry.ui.qt.help
 
  org.mitk.cbica.captk.ui
  org.mitk.cbica.captk.application
