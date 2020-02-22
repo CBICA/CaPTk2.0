@@ -3,7 +3,7 @@
 <plugin>
 
   <extension point="org.mitk.gui.qt.datamanager.contextMenuActions">
-    <contextMenuAction nodeDescriptorName="LabelSetImage" label="Split labels to different images" icon="" class="QmitkCaPTkSplitLabelsToImages" />
+    <contextMenuAction nodeDescriptorName="LabelSetImage" label="Split labels to different images" icon="" class="QmitkCaPTkSplitLabelsToImagesAction" />
   </extension>
 
 </plugin>

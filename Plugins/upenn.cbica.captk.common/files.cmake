@@ -3,7 +3,8 @@ set(SRC_CPP_FILES
 )
 
 set(INTERNAL_CPP_FILES
-  QmitkCaPTkSplitLabelsToImages.cpp
+  QmitkCaPTkSplitLabelsToImagesAction.cpp
+  mitkPluginActivator.cpp
 )
 
 set(UI_FILES
@@ -11,7 +12,8 @@ set(UI_FILES
 )
 
 set(MOC_H_FILES
-  src/internal/QmitkCaPTkSplitLabelsToImages.h
+  src/internal/QmitkCaPTkSplitLabelsToImagesAction.h
+  src/internal/mitkPluginActivator.h
 )
 
 set(CACHED_RESOURCE_FILES

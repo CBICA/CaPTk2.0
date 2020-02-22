@@ -1,5 +1,5 @@
-#ifndef __QmitkCaPTkSplitLabelsToImages_H_
-#define __QmitkCaPTkSplitLabelsToImages_H_
+#ifndef __QmitkCaPTkSplitLabelsToImagesAction_H_
+#define __QmitkCaPTkSplitLabelsToImagesAction_H_
 
 #include "mitkIContextMenuAction.h"
 
@@ -9,7 +9,7 @@
 #include "mitkDataNode.h"
 #include "mitkImage.h"
 
-class UPENN_CBICA_CAPTK_COMMON_EXPORTS QmitkCaPTkSplitLabelsToImages : 
+class UPENN_CBICA_CAPTK_COMMON_EXPORTS QmitkCaPTkSplitLabelsToImagesAction : 
         public QObject, public mitk::IContextMenuAction
 {
   Q_OBJECT
@@ -17,8 +17,8 @@ class UPENN_CBICA_CAPTK_COMMON_EXPORTS QmitkCaPTkSplitLabelsToImages :
 
 public:
 
-  QmitkCaPTkSplitLabelsToImages();
-  virtual ~QmitkCaPTkSplitLabelsToImages();
+  QmitkCaPTkSplitLabelsToImagesAction();
+  virtual ~QmitkCaPTkSplitLabelsToImagesAction();
 
   //interface methods
   void Run( const QList<mitk::DataNode::Pointer>& selectedNodes );
@@ -37,4 +37,4 @@ private:
 
 };
 
-#endif // __QmitkCaPTkSplitLabelsToImages_H_
+#endif // __QmitkCaPTkSplitLabelsToImagesAction_H_

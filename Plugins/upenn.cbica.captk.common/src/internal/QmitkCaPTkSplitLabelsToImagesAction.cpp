@@ -1,19 +1,4 @@
-/*===================================================================
-
-The Medical Imaging Interaction Toolkit (MITK)
-
-Copyright (c) German Cancer Research Center,
-Division of Medical and Biological Informatics.
-All rights reserved.
-
-This software is distributed WITHOUT ANY WARRANTY; without
-even the implied warranty of MERCHANTABILITY or FITNESS FOR
-A PARTICULAR PURPOSE.
-
-See LICENSE.txt or http://www.mitk.org for details.
-
-===================================================================*/
-#include "QmitkCaPTkSplitLabelsToImages.h"
+#include "QmitkCaPTkSplitLabelsToImagesAction.h"
 
 #include "mitkRenderingManager.h"
 #include "mitkLabelSetImage.h"
@@ -22,15 +7,15 @@ See LICENSE.txt or http://www.mitk.org for details.
 //needed for qApp
 #include <qcoreapplication.h>
 
-QmitkCaPTkSplitLabelsToImages::QmitkCaPTkSplitLabelsToImages()
+QmitkCaPTkSplitLabelsToImagesAction::QmitkCaPTkSplitLabelsToImagesAction()
 {
 }
 
-QmitkCaPTkSplitLabelsToImages::~QmitkCaPTkSplitLabelsToImages()
+QmitkCaPTkSplitLabelsToImagesAction::~QmitkCaPTkSplitLabelsToImagesAction()
 {
 }
 
-void QmitkCaPTkSplitLabelsToImages::Run( const QList<mitk::DataNode::Pointer> &selectedNodes )
+void QmitkCaPTkSplitLabelsToImagesAction::Run( const QList<mitk::DataNode::Pointer> &selectedNodes )
 {
   // mitk::ToolManager::Pointer toolManager = mitk::ToolManagerProvider::GetInstance()->GetToolManager();
   // assert(toolManager);
@@ -84,22 +69,22 @@ void QmitkCaPTkSplitLabelsToImages::Run( const QList<mitk::DataNode::Pointer> &s
   }
 }
 
-void QmitkCaPTkSplitLabelsToImages::SetSmoothed(bool /*smoothed*/)
+void QmitkCaPTkSplitLabelsToImagesAction::SetSmoothed(bool /*smoothed*/)
 {
  //not needed
 }
 
-void QmitkCaPTkSplitLabelsToImages::SetDecimated(bool /*decimated*/)
+void QmitkCaPTkSplitLabelsToImagesAction::SetDecimated(bool /*decimated*/)
 {
   //not needed
 }
 
-void QmitkCaPTkSplitLabelsToImages::SetDataStorage(mitk::DataStorage* dataStorage)
+void QmitkCaPTkSplitLabelsToImagesAction::SetDataStorage(mitk::DataStorage* dataStorage)
 {
   m_DataStorage = dataStorage;
 }
 
-void QmitkCaPTkSplitLabelsToImages::SetFunctionality(berry::QtViewPart* /*functionality*/)
+void QmitkCaPTkSplitLabelsToImagesAction::SetFunctionality(berry::QtViewPart* /*functionality*/)
 {
   //not needed
 }
