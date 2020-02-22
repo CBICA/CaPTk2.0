@@ -17,19 +17,7 @@ QmitkCaPTkSplitLabelsToImagesAction::~QmitkCaPTkSplitLabelsToImagesAction()
 
 void QmitkCaPTkSplitLabelsToImagesAction::Run( const QList<mitk::DataNode::Pointer> &selectedNodes )
 {
-  // mitk::ToolManager::Pointer toolManager = mitk::ToolManagerProvider::GetInstance()->GetToolManager();
-  // assert(toolManager);
-
-  // mitk::DataNode* workingNode = toolManager->GetWorkingData(0);
-  // if (!workingNode)
-  // {
-  //   MITK_INFO << "There is no available segmentation. Please load or create one before using this tool.";
-  //   return;
-  // }
-
-  // mitk::LabelSetImage* workingImage = dynamic_cast<mitk::LabelSetImage*>( workingNode->GetData() );
-  // assert(workingImage);
-
+  // Iterate through each node
   for ( mitk::DataNode::Pointer maskNode : selectedNodes )
   {
     if (!maskNode)
@@ -38,34 +26,56 @@ void QmitkCaPTkSplitLabelsToImagesAction::Run( const QList<mitk::DataNode::Point
       continue;
     }
 
-    mitk::LabelSetImage::Pointer mask = dynamic_cast<mitk::LabelSetImage*>(maskNode->GetData() );
+    // The input node
+    mitk::LabelSetImage::Pointer mask = dynamic_cast<mitk::LabelSetImage*>(
+      maskNode->GetData() 
+    );
+
     if (mask.IsNull()) continue;
     std::string name = maskNode->GetName();
 
-    mitk::DataNode::Pointer node = mitk::DataNode::New();
-    node->SetData(mask->Clone());
-    m_DataStorage->Add(node);
 
-    // mitk::Color color;
-    // mitk::ColorProperty::Pointer colorProp;
-    // maskNode->GetProperty(colorProp,"color");
-    // if (colorProp.IsNull()) continue;
-    // color = colorProp->GetValue();
-    // workingImage->GetLabelSet()->AddLabel(name,color);
-    // //workingImage->AddLabelEvent.Send();
+    mitk::LabelSet::Pointer labelSet = mask->GetActiveLabelSet();
+    mitk::LabelSet::LabelContainerConstIteratorType it;
 
-    // try
-    // {
-    //   workingImage->MaskStamp( mask, false );
-    // }
-    // catch ( mitk::Exception& e )
-    // {
-    //   MITK_ERROR << "Exception caught: " << e.GetDescription();
-    //   return;
-    // }
+    // Find all the labels in the mask (-> their integer value)
+    std::vector< mitk::Label::PixelType > labels;
+    for (it = labelSet->IteratorConstBegin();
+         it != labelSet->IteratorConstEnd();
+         ++it)
+    {
+      auto label = it->second->GetValue();
+      if (label != 0) { labels.push_back( label ); }
+    }
 
-    // maskNode->SetVisibility(false);
-    // mitk::RenderingManager::GetInstance()->RequestUpdateAll();
+    // Iterate through the labels again. 
+    // Each time clone the image, and delete all
+    // labels, except the one of the iteration 
+    for (it = labelSet->IteratorConstBegin();
+         it != labelSet->IteratorConstEnd();
+         ++it)
+    {
+      auto currentLabel = it->second->GetValue();
+      if (currentLabel == 0) { continue; }
+
+      mitk::LabelSetImage::Pointer labelMask = mask->Clone();
+
+      for (auto& label : labels)
+      {
+        if (label != currentLabel)
+        {
+          labelMask->EraseLabel(label);
+          labelMask->GetActiveLabelSet()->RemoveLabel(label);
+        }
+      }
+
+      // The output node for this label
+      mitk::DataNode::Pointer outNode = mitk::DataNode::New();
+
+      outNode->SetData(labelMask);
+      outNode->SetName(name + "-" + it->second->GetName());
+      m_DataStorage->Add(outNode, maskNode);
+    }
   }
 }
 
