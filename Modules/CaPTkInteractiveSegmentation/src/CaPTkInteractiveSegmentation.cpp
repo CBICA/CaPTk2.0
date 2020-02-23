@@ -271,6 +271,8 @@ void CaPTkInteractiveSegmentation::OnAlgorithmFinished()
 		msgError.exec();
 	}
 
+	m_FutureResult = QFuture<Result>(); // Don't keep the results indefinitely
+
 	m_IsRunning = false;
 }
 
@@ -330,6 +332,7 @@ CaPTkInteractiveSegmentation::RunThread(std::vector<mitk::Image::Pointer> &image
 			runResult.segmentation = segm;
 		}
 
+		delete algorithm;
 		runResult.ok = result->ok;
 		runResult.errorMessage = result->errorMessage;
 	}
@@ -425,6 +428,7 @@ CaPTkInteractiveSegmentation::RunThread(std::vector<mitk::Image::Pointer> &image
 			runResult.segmentation = segm;
 		}
 
+		delete algorithm;
 		runResult.ok = result->ok;
 		runResult.errorMessage = result->errorMessage;
 	}
