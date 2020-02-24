@@ -2,8 +2,8 @@
 
 # if(BUILD_CaPTkTrainingCmdApp)
 #   mitkFunctionCreateCommandLineApp(
-#     NAME CaPTkTraining
-#     CPP_FILES "${SRC_FILES}" CaPTkTraining.cpp
+#     NAME CaPTkTrainingCmdApp
+#     CPP_FILES "${SRC_FILES}" CaPTkTrainingCmdApp.cpp
 #     PACKAGE_DEPENDS ITK OpenCV Qt5|Core+WebEngineWidgets
 #     DEPENDS MitkCaPTkTraining
 #   )

@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/captksurvival" >
+  	<file>icon.svg</file>
+  </qresource>
+</RCC>

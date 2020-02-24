@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/upenn.cbica.captk.application">
+        <file>icon.png</file>
+        <file>cbica-logo.png</file>
+        <file>perspectives/eye.png</file>
+        <file>perspectives/viewer_icon.png</file>
+    </qresource>
+</RCC>
