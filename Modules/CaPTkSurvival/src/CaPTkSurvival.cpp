@@ -16,7 +16,6 @@ CaPTkSurvival::CaPTkSurvival(
 {
 	connect(&m_Watcher, SIGNAL(finished()), this, SLOT(OnAlgorithmFinished()));
     m_CbicaModelDir = qApp->applicationDirPath() + QString("/models/survival_model");
-    MITK_INFO << m_CbicaModelDir.toStdString();
 }
 
 void CaPTkSurvival::Run(
