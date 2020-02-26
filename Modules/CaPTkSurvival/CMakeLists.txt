@@ -11,4 +11,6 @@ file(COPY resources/models/survival_model DESTINATION ${CMAKE_BINARY_DIR}/bin/mo
 
 # the below macro does the work necessary to install the models into the packaged executable
 MITK_INSTALL( DIRECTORY resources/models)
-#add_subdirectory(cmdapps)
+
+
+add_subdirectory(cmdapps)
