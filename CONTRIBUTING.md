@@ -1,6 +1,6 @@
-Thanks for your interest in contributing to CaPTk! 🎉 ⌨️
+Thanks for your interest in contributing to CaPTk! 🎉
 
-The following guidelines will help keep CaPTk maintainable and useful. Although we understand that they might now always be possible to follow, so we welcome you to use your best judgment when interpreting them.
+The following guidelines will help keep CaPTk maintainable and useful. We understand that they might not always be easy to follow, so we welcome you to use your best judgment when interpreting them.
 
 # Contents
 
