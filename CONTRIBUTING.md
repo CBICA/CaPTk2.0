@@ -31,6 +31,7 @@ The following guidelines will help keep CaPTk maintainable and useful. We unders
 
 ## Code contributions
 
+- Please see [[the wiki]](https://github.com/CBICA/CaPTk2.0/wiki/Developer-Guide) for instructions on how to build/
 - Please refrain from writing lines using more than ~90 characters.
 - Comment/comment/comment your code
 - Document your functions & classes using [Doxygen](http://www.doxygen.nl/manual/docblocks.html)
