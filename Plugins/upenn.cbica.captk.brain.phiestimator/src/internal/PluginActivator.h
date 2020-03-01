@@ -22,7 +22,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 class PluginActivator : public QObject, public ctkPluginActivator
 {
   Q_OBJECT
-  Q_PLUGIN_METADATA(IID "org_mitk_gui_qt_exampleplugin")
+  Q_PLUGIN_METADATA(IID "upenn_cbica_captk_brain_phiestimator")
   Q_INTERFACES(ctkPluginActivator)
 
 public:
