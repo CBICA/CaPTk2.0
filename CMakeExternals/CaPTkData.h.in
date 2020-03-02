@@ -1,0 +1,15 @@
+#ifndef CaPTkData_h
+#define CaPTkData_h
+
+//#define CaPTkData_DIR "@CaPTkData_DIR@"
+
+namespace captk
+{
+namespace data
+{
+std::vector< std::string > relative_search_dirs = {"/","/bin/","/CaPTkData/","/bin/CaPTkData/"};
+std::vector< std::string > absolute_search_dirs = {"@CaPTkData_DIR@"};
+}
+}
+
+#endif
