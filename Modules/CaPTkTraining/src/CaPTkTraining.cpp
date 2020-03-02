@@ -128,7 +128,7 @@ captk::Training::RunThread(
 	int classificationKernel = (classificationKernelStr.contains("Linear", Qt::CaseInsensitive)) ?
 		1 : 2;
 
-	int configuration;
+	int configuration = 0;
 	if (configurationStr.contains("Cross", Qt::CaseInsensitive))
 	{
 		configuration = 1;
