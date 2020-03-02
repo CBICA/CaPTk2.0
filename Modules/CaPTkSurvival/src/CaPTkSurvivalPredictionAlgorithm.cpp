@@ -104,7 +104,21 @@ SurvivalPredictionModuleAlgorithm::Run(
         res = std::make_tuple(true, ""); // if nothing was thrown, we succeeded
 
     }
-    catch (std::string errorMessage) { // catch error strings thrown by underlying functions (TBD: add our own exception type to throw/catch instead?)
+    catch (std::exception error) { // catch error strings thrown by underlying functions
+        std::string errorMessage = error.what();
+        res = std::make_tuple(false, errorMessage);
+    }
+    catch (...) {
+        /* an uncaught exception in this background thread will terminate the thread
+         * and therefore will never update the module  with
+         * the OnAlgorithmFinished() signal. Therefore, we must catch ANY exception here
+         * or the algorithm will appear to be running forever.
+         * Only exceptions can be caught. Stuff like segfaults in the algorithm will still crash us. */
+
+        std::string errorMessage = "An uncaught exception of unexpected type was thrown"
+                                   " in the survival prediction thread, forcing"
+                                   " termination of the algorithm.";
+        MITK_ERROR << errorMessage;
         res = std::make_tuple(false, errorMessage);
     }
 
@@ -115,42 +129,42 @@ void SurvivalPredictionModuleAlgorithm::CallForSurvivalPredictionOnExistingModel
 {
   if (modeldirectory.empty())
   {
-    throw std::string("Please provide path of a directory having SVM model");
+    throw std::runtime_error("Please provide path of a directory having SVM model.");
     return;
   }
   if (!directoryExists(modeldirectory))
   {
-    throw std::string("The given SVM model directory does not exist");
+    throw std::runtime_error("The given SVM model directory does not exist.");
     return;
   }
   if (!(fileExists(modeldirectory + "/Survival_SVM_Model6.csv") || fileExists(modeldirectory + "/Survival_SVM_Model6.xml"))
     || !(fileExists(modeldirectory + "/Survival_SVM_Model18.csv") || fileExists(modeldirectory + "/Survival_SVM_Model18.xml"))
     || !fileExists(modeldirectory + "/Survival_ZScore_Std.csv") || !fileExists(modeldirectory + "/Survival_ZScore_Mean.csv"))
   {
-    throw std::string("The given SVM model directory does not have all the model files");
+    throw std::runtime_error("The given SVM model directory does not contain all the required model files.");
     return;
   }
 
   if (inputdirectory.empty())
   {
-    throw std::string("Please provide path of a directory having input images");
+    throw std::runtime_error("Please provide the path of a directory containing input subjects.");
     return;
   }
   if (!directoryExists(inputdirectory))
   {
-    throw std::string("The given input directory does not exist");
+    throw std::runtime_error("The given input directory does not exist.");
     return;
   }
   if (outputdirectory.empty())
   {
-    throw std::string("Please provide path of a directory to save output");
+    throw std::runtime_error("Please provide path of a directory to save output.");
     return;
   }
   if (!directoryExists(outputdirectory))
   {
     if (!QDir(QString::fromStdString(outputdirectory)).mkpath(QString::fromStdString(outputdirectory)))
     {
-      throw std::string("Unable to create the output directory");
+      throw std::runtime_error("Unable to create the output directory.");
       return;
     }
   }
@@ -160,7 +174,7 @@ void SurvivalPredictionModuleAlgorithm::CallForSurvivalPredictionOnExistingModel
   std::vector<std::map<captk::ImageModalityType, std::string>> QualifiedSubjects = LoadQualifiedSubjectsFromGivenDirectory(inputdirectory);
   if (QualifiedSubjects.size() == 0)
   {
-    throw std::string("No patient inside the given input directory has required scans");
+    throw std::runtime_error("No patient inside the given input directory has required scans");
     return;
   }
 
@@ -168,11 +182,12 @@ void SurvivalPredictionModuleAlgorithm::CallForSurvivalPredictionOnExistingModel
   QString msg;
   if (result.size() == 0)
   {
-    throw std::string("Survival model did not finish as expected, "
+    throw std::runtime_error("The survival model did not finish as expected, "
                       "please see log file for details.");
   }
   else
   {
+      return;
   }
 }
 
@@ -182,26 +197,26 @@ void SurvivalPredictionModuleAlgorithm::CallForNewSurvivalPredictionModel(const 
 
   if (inputdirectory.empty())
   {
-    throw std::string("Please provide path of a directory having input images");
+    throw std::runtime_error("Please provide path of a directory containing input subjects.");
     return;
   }
   if (!directoryExists(inputdirectory))
   {
-    throw std::string("The given input directory does not exist");
+    throw std::runtime_error("The given input directory does not exist.");
     return;
   }
 
 
   if (outputdirectory.empty())
   {
-    throw std::string("Please provide path of a directory to save output");
+    throw std::runtime_error("Please provide path of a directory to save output");
     return;
   }
   if (!directoryExists(outputdirectory))
   {
     if (!QDir(QString::fromStdString(outputdirectory)).mkpath(QString::fromStdString(outputdirectory)))
     {
-      throw std::string("Unable to create the output directory");
+      throw std::runtime_error("Unable to create the output directory");
       return;
     }
   }
@@ -209,16 +224,14 @@ void SurvivalPredictionModuleAlgorithm::CallForNewSurvivalPredictionModel(const 
   std::vector<std::map<captk::ImageModalityType, std::string>> QualifiedSubjects = LoadQualifiedSubjectsFromGivenDirectory(inputdirectory);
   if (QualifiedSubjects.size() == 0)
   {
-    throw std::string("No patient inside the given input directory has required scans");
+    throw std::runtime_error("No patient inside the given input directory has required scans");
     return;
   }
 
 
   if (PrepareNewSurvivalPredictionModel(inputdirectory, QualifiedSubjects, outputdirectory) == false)
   {
-    std::string message;
-    message = "Survival Training did not finish as expected, please see log file for details. ";
-    throw std::string(message);
+    throw std::runtime_error("Survival Training did not finish as expected, please see log file for details. ");
   }
   else
   {
@@ -485,8 +498,8 @@ int SurvivalPredictionModuleAlgorithm::PrepareNewSurvivalPredictionModel(const s
   }
   catch (const std::exception& e1)
   {
-      MITK_ERROR << "Cannot find the file 'Survival_HMFeatures_Configuration.csv' in the ../data/survival directory. Error code : " + std::string(e1.what());
-      throw e1.what(); // propagate error message up to algorithm-running logic
+      MITK_ERROR << "Cannot find the file 'Survival_HMFeatures_Configuration.csv' in the ../models/survival_model directory.";
+      throw std::exception(e1); // propagate error message up to algorithm-running logic
   }
  //---------------------------------------------------------------------------
   FeaturesOfAllSubjects.SetSize(qualifiedsubjects.size(), 161);
@@ -538,7 +551,7 @@ int SurvivalPredictionModuleAlgorithm::PrepareNewSurvivalPredictionModel(const s
       catch (const std::exception& e1)
       {
           MITK_ERROR << "Error in calculating the features for patient ID = " + static_cast<std::string>(currentsubject[captk::ImageModalityType::IMAGE_TYPE_PSR]) + "Error code : " + std::string(e1.what());
-          throw e1.what(); // propagate error message up to algorithm-running logic
+          throw std::exception(e1); // propagate error message up to algorithm-running logic
       }
   }
   MITK_INFO << std::endl << "Building model.....";
@@ -584,7 +597,7 @@ int SurvivalPredictionModuleAlgorithm::PrepareNewSurvivalPredictionModel(const s
   catch (const std::exception& e1)
   {
       MITK_ERROR << "Error in writing output files to the output directory = " + outputdirectory + "Error code : " + std::string(e1.what());
-      throw e1.what(); // propagate error message up to algorithm-running logic
+      throw std::exception(e1); // propagate error message up to algorithm-running logic
   }
 
 //  //---------------------------------------------------------------------------
@@ -599,7 +612,7 @@ int SurvivalPredictionModuleAlgorithm::PrepareNewSurvivalPredictionModel(const s
    catch (const std::exception& e1)
    {
      MITK_ERROR << "Training on the given subjects failed. Error code : " + std::string(e1.what());
-     throw e1.what(); // propagate error message up to algorithm-running logic;
+     throw std::exception(e1); // propagate error message up to algorithm-running logic;
    }
    MITK_INFO << std::endl << "Model saved to the output directory.";
    return true;
@@ -631,7 +644,7 @@ VectorDouble SurvivalPredictionModuleAlgorithm::SurvivalPredictionOnExistingMode
     catch (const std::exception& e1)
     {
         MITK_ERROR << "Cannot find the file 'Survival_HMFeatures_Configuration.csv' in the ../data/survival directory. Error code : " + std::string(e1.what());
-        throw e1.what(); // propagate the error message to the algorithm-running logic
+        throw std::exception(e1); // propagate the error message to the algorithm-running logic
     }
 
     MatrixType meanMatrix;
@@ -653,7 +666,7 @@ VectorDouble SurvivalPredictionModuleAlgorithm::SurvivalPredictionOnExistingMode
     catch (const std::exception& e1)
     {
         MITK_ERROR << "Error in reading the file: " + modeldirectory + "/Survival_ZScore_Mean.csv. Error code : " + std::string(e1.what());
-        throw e1.what(); // propagate the error message to the algorithm-running logic
+        throw std::exception(e1); // propagate the error message to the algorithm-running logic
     }
     MatrixType stdMatrix;
     try
@@ -672,7 +685,7 @@ VectorDouble SurvivalPredictionModuleAlgorithm::SurvivalPredictionOnExistingMode
     catch (const std::exception& e1)
     {
         MITK_ERROR << "Error in reading the file: " + modeldirectory + "/Survival_ZScore_Std.csv. Error code : " + std::string(e1.what());
-        throw e1.what(); // propagate the error message to the algorithm-running logic
+        throw std::exception(e1); // propagate the error message to the algorithm-running logic
     }
     //----------------------------------------------------
     VariableSizeMatrixType FeaturesOfAllSubjects;
@@ -721,7 +734,7 @@ VectorDouble SurvivalPredictionModuleAlgorithm::SurvivalPredictionOnExistingMode
         catch (const std::exception& e1)
         {
             MITK_ERROR << "Error in calculating the features for patient ID = " + static_cast<std::string>(currentsubject[captk::ImageModalityType::IMAGE_TYPE_PSR]) + "Error code : " + std::string(e1.what());
-            throw e1.what(); // propagate the error message to the algorithm-running logic
+            throw std::exception(e1); // propagate the error message to the algorithm-running logic
         }
     }
     VariableSizeMatrixType ScaledTestingData = featureScalingLocalPtr.ScaleGivenTestingFeatures(FeaturesOfAllSubjects, mean, stddevition);
@@ -781,8 +794,7 @@ VectorDouble SurvivalPredictionModuleAlgorithm::SurvivalPredictionOnExistingMode
     catch (itk::ExceptionObject & excp)
     {
         MITK_ERROR << "Error caught during testing: " + std::string(excp.GetDescription());
-        throw excp.what(); // propagate error message up to algorithm-running logic
-        return results;
+        throw std::exception(excp); // propagate error message up to algorithm-running logic
     }
     return results;
 
