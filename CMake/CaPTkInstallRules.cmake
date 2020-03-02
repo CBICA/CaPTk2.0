@@ -1,13 +1,18 @@
 # Install CaPTk ico
 
 if( ${MITK_BUILD_APP_CaPTkApp} )
-  MITK_INSTALL(FILES
-    "${CMAKE_CURRENT_LIST_DIR}/../Application/CaPTkApp/icons/icon.ico"
+  get_filename_component(ABSOLUTE_PATH
+    "${CMAKE_CURRENT_LIST_DIR}/../Applications/CaPTkApp/icons/icon.ico"
+	ABSOLUTE
   )
 endif( ${MITK_BUILD_APP_CaPTkApp} )
 
 if( ${MITK_BUILD_APP_InciSe} )
-  MITK_INSTALL(FILES
-    "${CMAKE_CURRENT_LIST_DIR}/../Application/InciSe/icons/icon.ico"
+  get_filename_component(ABSOLUTE_PATH
+    "${CMAKE_CURRENT_LIST_DIR}/../Applications/InciSe/icons/icon.ico"
+	ABSOLUTE
   )
 endif( ${MITK_BUILD_APP_InciSe} )
+
+message("Path is ${ABSOLUTE_PATH}")
+MITK_INSTALL(FILES ${ABSOLUTE_PATH})
