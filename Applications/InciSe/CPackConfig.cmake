@@ -15,13 +15,13 @@ if(CPACK_GENERATOR MATCHES "NSIS")
     )
 
   # tell cpack the executables you want in the start menu as links
-  SET(CPACK_PACKAGE_EXECUTABLES "MitkInciSe;Start InciSe" CACHE INTERNAL "Collecting windows shortcuts to executables")
+  SET(CPACK_PACKAGE_EXECUTABLES "InciSe;Start InciSe" CACHE INTERNAL "Collecting windows shortcuts to executables")
 
   # tell cpack to create a desktop link to mitkDiffusion
   SET(CPACK_CREATE_DESKTOP_LINKS "InciSe")
   SET(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\icon.ico")
   SET(CPACK_NSIS_HELP_LINK "https:\\\\www.med.upenn.edu\\cbica\\captk")
-  SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\www.mitk.org")
+  SET(CPACK_NSIS_URL_INFO_ABOUT "https:\\\\www.med.upenn.edu\\cbica\\captk")
   SET(CPACK_NSIS_CONTACT software@cbica.upenn.edu)
   SET(CPACK_NSIS_MODIFY_PATH ON)
 

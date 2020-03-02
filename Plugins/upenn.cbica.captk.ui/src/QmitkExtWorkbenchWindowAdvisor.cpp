@@ -1193,24 +1193,17 @@ void QmitkExtWorkbenchWindowAdvisorHack::onHelpOpenHelpPerspective()
 
 void QmitkExtWorkbenchWindowAdvisorHack::onAbout()
 {
-  // auto   aboutDialog = new QmitkAboutDialog(QApplication::activeWindow(),nullptr);
-  // aboutDialog->open();
-    QMessageBox mb("CaPTk",
-    QString("\
-Cancer Imaging Phenomics Toolkit (CaPTk)<br><br>\
+    QMessageBox mb("About",
+          QString("\
 Contact: software@cbica.upenn.edu<br><br>\
-Disclaimer: CaPTk has been designed for non-commercial research purposes only and has not been reviewed or approved by the Food and Drug Administration (FDA). It is not intended or recommended for clinical application.<br><br>\
-Funding: This work was supported in part by NIH 1U24CA189523-01A1.<br><br>\
+Disclaimer: This application has been designed for non-commercial research purposes only and has not been reviewed or approved by the Food and Drug Administration (FDA). It is not intended or recommended for clinical application.<br><br>\
 Copyright (c) 2020 Center for Biomedical Image Computing and Analytics, University of Pennsylvania. All rights reserved<br><br>\
 LICENSE: <a href=\"https://www.med.upenn.edu/sbia/software-agreement.html\">https://www.med.upenn.edu/sbia/software-agreement.html</a><br><br>\
-    "),
-                //  QString("Cancer Imaging Phenomics Toolkit\n\n")
-                //     + QString("by CBICA (Center for Biomedical Image Computing & Analytics)\n\n")
-                //     + QString("University of Pennsylvania"),
-                QMessageBox::NoIcon,
-                QMessageBox::Ok | QMessageBox::Default,
-                QMessageBox::NoButton,
-                QMessageBox::NoButton);
+          "),
+          QMessageBox::NoIcon,
+          QMessageBox::Ok | QMessageBox::Default,
+          QMessageBox::NoButton,
+          QMessageBox::NoButton);
   mb.setTextFormat(Qt::RichText);
   QPixmap upennIcon(":/upenn.cbica.captk.ui/upenn.svg");
   upennIcon = upennIcon.scaled(125, 108);
@@ -1227,20 +1220,6 @@ void QmitkExtWorkbenchWindowAdvisor::HookTitleUpdateListeners(
   editorPropertyListener.reset(new berry::PropertyChangeIntAdapter<
     QmitkExtWorkbenchWindowAdvisor>(this,
     &QmitkExtWorkbenchWindowAdvisor::PropertyChange));
-
-  //    configurer.getWindow().addPageListener(new IPageListener() {
-  //      public void pageActivated(IWorkbenchPage page) {
-  //        updateTitle(false);
-  //      }
-  //
-  //      public void pageClosed(IWorkbenchPage page) {
-  //        updateTitle(false);
-  //      }
-  //
-  //      public void pageOpened(IWorkbenchPage page) {
-  //        // do nothing
-  //      }
-  //    });
 
   configurer->GetWindow()->AddPerspectiveListener(titlePerspectiveListener.data());
   configurer->GetWindow()->GetPartService()->AddPartListener(titlePartListener.data());
