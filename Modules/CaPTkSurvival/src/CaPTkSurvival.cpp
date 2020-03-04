@@ -120,6 +120,7 @@ void CaPTkSurvival::OnAlgorithmFinished()
 	}
 
 	m_IsRunning = false;
+    emit done(); // notify that the module is done all work
 }
 
 CaPTkSurvival::Result
