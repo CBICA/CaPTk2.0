@@ -8,9 +8,8 @@
 
 #include "CaPTkTrainingAlgorithm.h"
 
-captk::Training::Training(
-	QObject *parent)
-	: QObject(parent)
+captk::Training::Training(QObject *parent) : 
+	QObject(parent)
 {
 	connect(&m_Watcher, SIGNAL(finished()), this, SLOT(OnAlgorithmFinished()));
 }
@@ -96,6 +95,11 @@ void captk::Training::OnAlgorithmFinished()
 	if (m_FutureResult.result().ok)
 	{
 		// Execution finished successfully
+		QMessageBox msgSuccess;
+		msgSuccess.setText("Training Plugin finished successfully");
+		msgSuccess.setIcon(QMessageBox::Information);
+		msgSuccess.setWindowTitle("CaPTk Training Plugin!");
+		msgSuccess.exec();
 	}
 	else
 	{
@@ -103,7 +107,7 @@ void captk::Training::OnAlgorithmFinished()
 		QMessageBox msgError;
 		msgError.setText(m_FutureResult.result().errorMessage.c_str());
 		msgError.setIcon(QMessageBox::Critical);
-		msgError.setWindowTitle("CaPTk Training Module Error!");
+		msgError.setWindowTitle("CaPTk Training Plugin!");
 		msgError.exec();
 	}
 
@@ -133,8 +137,9 @@ captk::Training::RunThread(
 	{
 		configuration = 1;
 	}
-	else if (configurationStr.contains("Train/Test", Qt::CaseInsensitive))
-	{
+	else if (configurationStr.contains("Train", Qt::CaseInsensitive) &&
+			 configurationStr.contains("Test",  Qt::CaseInsensitive))
+	{ // For "Split Train/Test"
 		configuration = 2;
 	}
 	else if (configurationStr.contains("Train", Qt::CaseInsensitive))
@@ -163,6 +168,74 @@ captk::Training::RunThread(
 		runResult.errorMessage = "\"Samples\" need to be a positive number";
 		return runResult;
 	}
+
+	/*---- Check directories and files ----*/
+
+	if (outputDirPath == QString(""))
+	{
+		runResult.ok = false;
+		runResult.errorMessage = "Please set an output directory";
+		return runResult;
+	}
+
+	// Check for whitespace at the start and end
+	auto inputStrings = QStringList() << featuresCsvPath << responsesCsvPath << modelDirPath << outputDirPath ;
+	for (QString s : inputStrings)
+	{
+		if (s != s.trimmed())
+		{
+			std::cerr << "String trimmed mismatch: " << s.toStdString() << "\n";
+			QMessageBox msg;
+			msg.setText(QString("Your path for \"") 
+				+ s 
+				+ QString("\" has whitespace in the start or end. This is ok if it was intended."));
+			msg.setIcon(QMessageBox::Warning);
+			msg.setWindowTitle("CaPTk Training Plugin Warning");
+			msg.exec();
+		}
+
+		if (s.startsWith("file://"))
+		{
+			runResult.ok = false;
+			runResult.errorMessage = "Please remove \"file://\" from your paths";
+			return runResult;
+		}
+	}
+
+	// Check if files exist
+	if (!QFileInfo(featuresCsvPath).exists())
+	{
+		runResult.ok = false;
+		runResult.errorMessage = "Path to features csv doesn't exist";
+		return runResult;
+	}
+	if (configuration != 4 && !QFileInfo(featuresCsvPath).exists())
+	{
+		runResult.ok = false;
+		runResult.errorMessage = "Path to responses csv doesn't exist";
+		return runResult;
+	}
+	QDir modelDir(modelDirPath);
+	if (configuration == 4 && !modelDir.exists())
+	{
+		runResult.ok = false;
+		runResult.errorMessage = "Model directory doesn't exist";
+		return runResult;
+	}
+
+	QDir outputDir(outputDirPath);
+	if (!outputDir.exists())
+	{
+		// Create output dir if it doesn't exist
+		if (!QDir().mkdir(outputDirPath))
+		{
+			runResult.ok = false;
+			runResult.errorMessage = "Can not create output directory";
+			return runResult;
+		}
+	}
+
+	/*---- Run ----*/
 
 	captk::TrainingAlgorithm algorithm = captk::TrainingAlgorithm();
 	auto resAlgorithm = algorithm.Run(
