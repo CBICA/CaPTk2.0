@@ -96,9 +96,9 @@ void captk::Training::OnAlgorithmFinished()
 	{
 		// Execution finished successfully
 		QMessageBox msgSuccess;
-		msgSuccess.setText("Training Plugin finished successfully");
+		msgSuccess.setText("Training Plugin finished successfully!");
 		msgSuccess.setIcon(QMessageBox::Information);
-		msgSuccess.setWindowTitle("CaPTk Training Plugin!");
+		msgSuccess.setWindowTitle("CaPTk Training Plugin");
 		msgSuccess.exec();
 	}
 	else
@@ -184,14 +184,9 @@ captk::Training::RunThread(
 	{
 		if (s != s.trimmed())
 		{
-			std::cerr << "String trimmed mismatch: " << s.toStdString() << "\n";
-			QMessageBox msg;
-			msg.setText(QString("Your path for \"") 
-				+ s 
-				+ QString("\" has whitespace in the start or end. This is ok if it was intended."));
-			msg.setIcon(QMessageBox::Warning);
-			msg.setWindowTitle("CaPTk Training Plugin Warning");
-			msg.exec();
+			runResult.ok = false;
+			runResult.errorMessage = "Please remove whitespace from the start or the end of the paths provided";
+			return runResult;
 		}
 
 		if (s.startsWith("file://"))
@@ -237,19 +232,30 @@ captk::Training::RunThread(
 
 	/*---- Run ----*/
 
-	captk::TrainingAlgorithm algorithm = captk::TrainingAlgorithm();
-	auto resAlgorithm = algorithm.Run(
-		featuresCsvPath.toStdString(),
-		responsesCsvPath.toStdString(),
-		outputDirPath.toStdString(),
-		classificationKernel,
-		foldsOrSamples,
-		configuration,
-		modelDirPath.toStdString()
-	);
+	// This try catch may not be needed
+	try
+	{
+		captk::TrainingAlgorithm algorithm = captk::TrainingAlgorithm();
+		auto resAlgorithm = algorithm.Run(
+			featuresCsvPath.toStdString(),
+			responsesCsvPath.toStdString(),
+			outputDirPath.toStdString(),
+			classificationKernel,
+			foldsOrSamples,
+			configuration,
+			modelDirPath.toStdString());
 
-	runResult.ok = std::get<0>(resAlgorithm);
-	runResult.errorMessage = std::get<1>(resAlgorithm);
+		runResult.ok = std::get<0>(resAlgorithm);
+		runResult.errorMessage = std::get<1>(resAlgorithm);
+		return runResult;
+	}
+	catch(const std::exception& e)
+	{
+		runResult.ok = false;
+		runResult.errorMessage = 
+				std::string("Something went wrong when executing. This was probably because of bad supplied input data or models:\n\n")
+				+ e.what();
+		return runResult;
+	}
 
-	return runResult;
 }
