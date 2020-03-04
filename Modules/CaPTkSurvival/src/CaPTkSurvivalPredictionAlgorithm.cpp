@@ -107,6 +107,7 @@ SurvivalPredictionModuleAlgorithm::Run(
     catch (std::exception error) { // catch error strings thrown by underlying functions
         std::string errorMessage = error.what();
         res = std::make_tuple(false, errorMessage);
+        MITK_ERROR << errorMessage;
     }
     catch (...) {
         /* an uncaught exception in this background thread will terminate the thread
@@ -498,8 +499,10 @@ int SurvivalPredictionModuleAlgorithm::PrepareNewSurvivalPredictionModel(const s
   }
   catch (const std::exception& e1)
   {
-      MITK_ERROR << "Cannot find the file 'Survival_HMFeatures_Configuration.csv' in the ../models/survival_model directory.";
-      throw std::exception(e1); // propagate error message up to algorithm-running logic
+      throw std::runtime_error(
+                  std::string("Cannot find the file 'Survival_HMFeatures_Configuration.csv' in the ../models/survival_model directory.")
+                  + e1.what()
+                  ); // propagate error message up to algorithm-running logic
   }
  //---------------------------------------------------------------------------
   FeaturesOfAllSubjects.SetSize(qualifiedsubjects.size(), 161);
@@ -550,8 +553,11 @@ int SurvivalPredictionModuleAlgorithm::PrepareNewSurvivalPredictionModel(const s
       }
       catch (const std::exception& e1)
       {
-          MITK_ERROR << "Error in calculating the features for patient ID = " + static_cast<std::string>(currentsubject[captk::ImageModalityType::IMAGE_TYPE_PSR]) + "Error code : " + std::string(e1.what());
-          throw std::exception(e1); // propagate error message up to algorithm-running logic
+          throw std::runtime_error(
+                      "Error in calculating the features for patient ID = " +
+                      static_cast<std::string>(currentsubject[captk::ImageModalityType::IMAGE_TYPE_PSR]) +
+                      "Error code : " + std::string(e1.what())
+                      ); // propagate error message up to algorithm-running logic
       }
   }
   MITK_INFO << std::endl << "Building model.....";
@@ -596,8 +602,12 @@ int SurvivalPredictionModuleAlgorithm::PrepareNewSurvivalPredictionModel(const s
   }
   catch (const std::exception& e1)
   {
-      MITK_ERROR << "Error in writing output files to the output directory = " + outputdirectory + "Error code : " + std::string(e1.what());
-      throw std::exception(e1); // propagate error message up to algorithm-running logic
+
+      throw std::runtime_error(
+                  "Error in writing output files to the output directory = " +
+                  outputdirectory +
+                  "Error code : " + std::string(e1.what())
+                  );
   }
 
 //  //---------------------------------------------------------------------------
@@ -611,8 +621,10 @@ int SurvivalPredictionModuleAlgorithm::PrepareNewSurvivalPredictionModel(const s
    }
    catch (const std::exception& e1)
    {
-     MITK_ERROR << "Training on the given subjects failed. Error code : " + std::string(e1.what());
-     throw std::exception(e1); // propagate error message up to algorithm-running logic;
+     throw std::runtime_error(
+                 "Training on the given subjects failed. Error code : " +
+                 std::string(e1.what())
+                 ); // propagate error message up to algorithm-running logic;
    }
    MITK_INFO << std::endl << "Model saved to the output directory.";
    return true;
@@ -643,8 +655,10 @@ VectorDouble SurvivalPredictionModuleAlgorithm::SurvivalPredictionOnExistingMode
     }
     catch (const std::exception& e1)
     {
-        MITK_ERROR << "Cannot find the file 'Survival_HMFeatures_Configuration.csv' in the ../data/survival directory. Error code : " + std::string(e1.what());
-        throw std::exception(e1); // propagate the error message to the algorithm-running logic
+        throw std::runtime_error(
+                    "Cannot find the file 'Survival_HMFeatures_Configuration.csv' in the ../models/survival_model directory."
+                    "Error code : " + std::string(e1.what())
+                    );
     }
 
     MatrixType meanMatrix;
@@ -665,8 +679,12 @@ VectorDouble SurvivalPredictionModuleAlgorithm::SurvivalPredictionOnExistingMode
     }
     catch (const std::exception& e1)
     {
-        MITK_ERROR << "Error in reading the file: " + modeldirectory + "/Survival_ZScore_Mean.csv. Error code : " + std::string(e1.what());
-        throw std::exception(e1); // propagate the error message to the algorithm-running logic
+        throw std::runtime_error(
+                    "Error in reading the file: "
+                    + modeldirectory +
+                    "/Survival_ZScore_Mean.csv. Error code : " +
+                    std::string(e1.what())
+                    ); // propagate the error message to the algorithm-running logic
     }
     MatrixType stdMatrix;
     try
@@ -685,7 +703,11 @@ VectorDouble SurvivalPredictionModuleAlgorithm::SurvivalPredictionOnExistingMode
     catch (const std::exception& e1)
     {
         MITK_ERROR << "Error in reading the file: " + modeldirectory + "/Survival_ZScore_Std.csv. Error code : " + std::string(e1.what());
-        throw std::exception(e1); // propagate the error message to the algorithm-running logic
+        throw std::runtime_error(
+                    "Error in reading the file: " +
+                    modeldirectory + "/Survival_ZScore_Std.csv."
+                    "Error code : " + std::string(e1.what())
+                    );
     }
     //----------------------------------------------------
     VariableSizeMatrixType FeaturesOfAllSubjects;
@@ -715,6 +737,7 @@ VectorDouble SurvivalPredictionModuleAlgorithm::SurvivalPredictionOnExistingMode
             VectorDouble TestFeatures = LoadTestData<ImageType>(T1CEImagePointer, T2FlairImagePointer, T1ImagePointer, T2ImagePointer,
                 RCBVImagePointer, PSRImagePointer, PHImagePointer, AXImagePointer, FAImagePointer, RADImagePointer, TRImagePointer, LabelImagePointer, AtlasImagePointer, TemplateImagePointer, HistogramFeaturesConfigurations);
 
+            double age;
 
             reader->SetFileName(static_cast<std::string>(currentsubject[captk::ImageModalityType::IMAGE_TYPE_FEATURES]));
             reader->SetFieldDelimiterCharacter(',');
@@ -723,7 +746,6 @@ VectorDouble SurvivalPredictionModuleAlgorithm::SurvivalPredictionOnExistingMode
             reader->Parse();
             dataMatrix = reader->GetArray2DDataObject()->GetMatrix();
 
-            double age = 0;
             for (unsigned int i = 0; i < dataMatrix.rows(); i++)
                 age = dataMatrix(i, 0);
 
@@ -733,8 +755,10 @@ VectorDouble SurvivalPredictionModuleAlgorithm::SurvivalPredictionOnExistingMode
         }
         catch (const std::exception& e1)
         {
-            MITK_ERROR << "Error in calculating the features for patient ID = " + static_cast<std::string>(currentsubject[captk::ImageModalityType::IMAGE_TYPE_PSR]) + "Error code : " + std::string(e1.what());
-            throw std::exception(e1); // propagate the error message to the algorithm-running logic
+            throw std::runtime_error("Error in calculating the features for patient ID = "
+                                     + static_cast<std::string>(currentsubject[captk::ImageModalityType::IMAGE_TYPE_PSR]) +
+                                    "Error code : " + std::string(e1.what())
+                                    );
         }
     }
     VariableSizeMatrixType ScaledTestingData = featureScalingLocalPtr.ScaleGivenTestingFeatures(FeaturesOfAllSubjects, mean, stddevition);
@@ -793,8 +817,8 @@ VectorDouble SurvivalPredictionModuleAlgorithm::SurvivalPredictionOnExistingMode
     }
     catch (itk::ExceptionObject & excp)
     {
-        MITK_ERROR << "Error caught during testing: " + std::string(excp.GetDescription());
-        throw std::exception(excp); // propagate error message up to algorithm-running logic
+        // propagate error message
+        throw std::runtime_error("Error caught during testing: " + std::string(excp.GetDescription()));
     }
     return results;
 
