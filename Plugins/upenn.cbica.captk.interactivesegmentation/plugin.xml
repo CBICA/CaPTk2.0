@@ -5,7 +5,7 @@
   <extension point="org.blueberry.ui.views">
 
     <view id="upenn.cbica.captk.views.interactivesegmentation"
-      name="CaPTk Interactive Segmentation"
+      name="Interactive Segmentation"
       category="Segmentation"
       icon="resources/mll_icon2.svg"
       class="QmitkCaPTkInteractiveSegmentationView" />
