@@ -20,14 +20,14 @@ captk::Training::~Training()
 }
 
 void captk::Training::Run(
-	QString featuresCsvPath,
-	QString responsesCsvPath,
-	QString classificationKernelStr,
-	QString configurationStr,
-	int folds,
-	int samples,
-	QString modelDirPath,
-	QString outputDirPath)
+	const QString featuresCsvPath,
+	const QString responsesCsvPath,
+	const QString classificationKernelStr,
+	const QString configurationStr,
+	const int     folds,
+	const int     samples,
+	const QString modelDirPath,
+	const QString outputDirPath)
 {
 	std::cout << "[captk::Training::Run]\n";
 
@@ -97,14 +97,14 @@ void captk::Training::OnAlgorithmFinished()
 
 captk::Training::Result
 captk::Training::RunThread(
-	QString& featuresCsvPath,
-	QString& responsesCsvPath,
-	QString& classificationKernelStr,
-	QString& configurationStr,
-	int folds,
-	int samples,
-	QString& modelDirPath,
-	QString& outputDirPath)
+	const QString& featuresCsvPath,
+	const QString& responsesCsvPath,
+	const QString& classificationKernelStr,
+	const QString& configurationStr,
+	const int      folds,
+	const int      samples,
+	const QString& modelDirPath,
+	const QString& outputDirPath)
 {
 	std::cout << "[captk::Training::RunThread]\n";
 

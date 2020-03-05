@@ -39,14 +39,14 @@ public:
      * @param outputDirPath 
     */
     void Run(
-        QString featuresCsvPath,
-        QString responsesCsvPath,
-        QString classificationKernelStr,
-        QString configurationStr,
-        int folds,
-        int samples,
-        QString modelDirPath,
-        QString outputDirPath
+        const QString featuresCsvPath,
+        const QString responsesCsvPath,
+        const QString classificationKernelStr,
+        const QString configurationStr,
+        const int     folds,
+        const int     samples,
+        const QString modelDirPath,
+        const QString outputDirPath
     );
 
     void SetProgressBar(QProgressBar* progressBar);
@@ -80,14 +80,14 @@ protected:
      * @return the result struct (that contains the output or an errorMessage)
     */
     Result RunThread(
-        QString& featuresCsvPath,
-        QString& responsesCsvPath,
-        QString& classificationKernelStr,
-        QString& configurationStr,
-        int folds,
-        int samples,
-        QString& modelDirPath,
-        QString& outputDirPath
+        const QString& featuresCsvPath,
+        const QString& responsesCsvPath,
+        const QString& classificationKernelStr,
+        const QString& configurationStr,
+        const int      folds,
+        const int      samples,
+        const QString& modelDirPath,
+        const QString& outputDirPath
     );
 
     bool m_IsRunning = false;
