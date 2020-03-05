@@ -60,6 +60,9 @@ void QmitkCaPTkTrainingView::CreateQtPartControl(QWidget *parent)
 
   /**** Initialize widgets ****/
 
+  m_Controls.lineEdit_folds->setValidator( new QIntValidator(0, 100, this) );
+  m_Controls.lineEdit_samples->setValidator( new QIntValidator(0, 100000000, this) );
+
   // Hide progress bar until it's implemented
   // TODO: Implement progress updates are remove the hiding below
   m_Controls.progressBar->setVisible(false);
@@ -185,6 +188,8 @@ void QmitkCaPTkTrainingView::OnConfigurationComboBoxCurrentTextChanged(const QSt
   {
     m_Controls.lineEdit_folds->setVisible(true);
     m_Controls.label_folds->setVisible(true);
+    m_Controls.lineEdit_responses->setVisible(true);
+    m_Controls.pushButton_responses->setVisible(true);
     m_Controls.lineEdit_samples->setVisible(false);
     m_Controls.label_samples->setVisible(false);
     m_Controls.lineEdit_modeldir->setVisible(false);
@@ -194,6 +199,8 @@ void QmitkCaPTkTrainingView::OnConfigurationComboBoxCurrentTextChanged(const QSt
   {
     m_Controls.lineEdit_folds->setVisible(false);
     m_Controls.label_folds->setVisible(false);
+    m_Controls.lineEdit_responses->setVisible(true);
+    m_Controls.pushButton_responses->setVisible(true);
     m_Controls.lineEdit_samples->setVisible(true);
     m_Controls.label_samples->setVisible(true);
     m_Controls.lineEdit_modeldir->setVisible(false);
@@ -203,6 +210,8 @@ void QmitkCaPTkTrainingView::OnConfigurationComboBoxCurrentTextChanged(const QSt
   {
     m_Controls.lineEdit_folds->setVisible(false);
     m_Controls.label_folds->setVisible(false);
+    m_Controls.lineEdit_responses->setVisible(true);
+    m_Controls.pushButton_responses->setVisible(true);
     m_Controls.lineEdit_samples->setVisible(false);
     m_Controls.label_samples->setVisible(false);
     m_Controls.lineEdit_modeldir->setVisible(false);
@@ -212,6 +221,8 @@ void QmitkCaPTkTrainingView::OnConfigurationComboBoxCurrentTextChanged(const QSt
   {
     m_Controls.lineEdit_folds->setVisible(false);
     m_Controls.label_folds->setVisible(false);
+    m_Controls.lineEdit_responses->setVisible(false);
+    m_Controls.pushButton_responses->setVisible(false);
     m_Controls.lineEdit_samples->setVisible(false);
     m_Controls.label_samples->setVisible(false);
     m_Controls.lineEdit_modeldir->setVisible(true);
@@ -301,8 +312,8 @@ void QmitkCaPTkTrainingView::OnRunButtonPressed()
     responsesCsvPath,
     classificationKernelStr,
     configurationStr,
-    folds,
-    samples,
+    folds.toInt(),
+    samples.toInt(),
     modelDirPath,
     outputDirPath
   );

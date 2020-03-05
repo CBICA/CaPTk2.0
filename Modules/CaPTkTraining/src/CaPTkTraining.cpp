@@ -24,8 +24,8 @@ void captk::Training::Run(
 	QString responsesCsvPath,
 	QString classificationKernelStr,
 	QString configurationStr,
-	QString folds,
-	QString samples,
+	int folds,
+	int samples,
 	QString modelDirPath,
 	QString outputDirPath)
 {
@@ -45,25 +45,6 @@ void captk::Training::Run(
 		return;
 	}
 	m_IsRunning = true;
-
-	/* ---- Check requirements ---- */
-
-	bool ok = true;              // Becomes false if there is an issue
-	std::string problemStr = ""; // Populated if there is an issue
-
-	// TODO: Check requirements (now everything is assumed ok)
-
-	// Return if there is an issue
-	if (!ok)
-	{
-		QMessageBox msgError;
-		msgError.setText(problemStr.c_str());
-		msgError.setIcon(QMessageBox::Critical);
-		msgError.setWindowTitle("Incorrect state.");
-		msgError.exec();
-		m_IsRunning = false;
-		return;
-	}
 
 	/* ---- Run ---- */
 
@@ -107,7 +88,7 @@ void captk::Training::OnAlgorithmFinished()
 		QMessageBox msgError;
 		msgError.setText(m_FutureResult.result().errorMessage.c_str());
 		msgError.setIcon(QMessageBox::Critical);
-		msgError.setWindowTitle("CaPTk Training Plugin!");
+		msgError.setWindowTitle("CaPTk Training Plugin");
 		msgError.exec();
 	}
 
@@ -120,8 +101,8 @@ captk::Training::RunThread(
 	QString& responsesCsvPath,
 	QString& classificationKernelStr,
 	QString& configurationStr,
-	QString& folds,
-	QString& samples,
+	int folds,
+	int samples,
 	QString& modelDirPath,
 	QString& outputDirPath)
 {
@@ -129,9 +110,13 @@ captk::Training::RunThread(
 
 	captk::Training::Result runResult;
 
-	int classificationKernel = (classificationKernelStr.contains("Linear", Qt::CaseInsensitive)) ?
-		1 : 2;
+	/*---- Kernel and configuration are needed as integers from the algorithm ----*/
 
+	// Kernel (linear, RBF, etc)
+	int classificationKernel = 
+		(classificationKernelStr.contains("Linear", Qt::CaseInsensitive)) ? 1 : 2;
+
+	// Configuration (cross-validation, train, etc)
 	int configuration = 0;
 	if (configurationStr.contains("Cross", Qt::CaseInsensitive))
 	{
@@ -139,7 +124,8 @@ captk::Training::RunThread(
 	}
 	else if (configurationStr.contains("Train", Qt::CaseInsensitive) &&
 			 configurationStr.contains("Test",  Qt::CaseInsensitive))
-	{ // For "Split Train/Test"
+	{
+		// For "Split Train/Test"
 		configuration = 2;
 	}
 	else if (configurationStr.contains("Train", Qt::CaseInsensitive))
@@ -150,36 +136,37 @@ captk::Training::RunThread(
 	{
 		configuration = 4;
 	}
+	else
+	{
+		runResult.ok = false;
+		runResult.errorMessage = "Unknown configuration";
+		return runResult;
+	}
 
-	int foldsOrSamples = (configuration == 1) ?
-		folds.toInt() :
-		samples.toInt();
+	/*---- Check folds and samples. 
+	       They are set by the same variable to the algorithm ----*/
 
-	if (foldsOrSamples < 2 && configuration == 1)
+	if (folds < 2 && configuration == 1)
 	{
 		runResult.ok = false;
 		runResult.errorMessage = "\"Folds\" need to be at least 2";
 		return runResult;		
 	}
 
-	if (foldsOrSamples < 2 && configuration == 2)
+	if (samples < 1 && configuration == 2)
 	{
 		runResult.ok = false;
-		runResult.errorMessage = "\"Samples\" need to be a positive number";
+		runResult.errorMessage = "\"Samples\" need to be a positive non-zero number";
 		return runResult;
 	}
 
-	/*---- Check directories and files ----*/
+	int foldsOrSamples = (configuration == 1) ? folds : samples;
 
-	if (outputDirPath == QString(""))
-	{
-		runResult.ok = false;
-		runResult.errorMessage = "Please set an output directory";
-		return runResult;
-	}
+	/*---- Check paths for whitespace in start/end and other quirks ----*/
 
-	// Check for whitespace at the start and end
-	auto inputStrings = QStringList() << featuresCsvPath << responsesCsvPath << modelDirPath << outputDirPath ;
+	auto inputStrings = QStringList() << featuresCsvPath << responsesCsvPath 
+	                                  << modelDirPath << outputDirPath;
+
 	for (QString s : inputStrings)
 	{
 		if (s != s.trimmed())
@@ -197,27 +184,47 @@ captk::Training::RunThread(
 		}
 	}
 
-	// Check if files exist
-	if (!QFileInfo(featuresCsvPath).exists())
+	/*---- Check files (features and responses) ----*/
+
+	QFileInfo fiFeatures(featuresCsvPath);
+	QFileInfo fiResponses(responsesCsvPath);
+	if (!fiFeatures.exists() || fiFeatures.size() == 0 || 
+	    !featuresCsvPath.endsWith(".csv"))
 	{
+		// doesn't exist, or is empty, or not a csv
 		runResult.ok = false;
-		runResult.errorMessage = "Path to features csv doesn't exist";
+		runResult.errorMessage = "Features file doesn't exist, is empty, or is not csv";
 		return runResult;
 	}
-	if (configuration != 4 && !QFileInfo(featuresCsvPath).exists())
+	if (configuration != 4 && 
+		( !fiResponses.exists() || fiResponses.size() == 0 || 
+		  !responsesCsvPath.endsWith(".csv")) )
 	{
+		// If configuration != "Test" AND
+		// file doesn't exist, or is empty, or not a csv
 		runResult.ok = false;
-		runResult.errorMessage = "Path to responses csv doesn't exist";
-		return runResult;
+		runResult.errorMessage = "Responses file doesn't exist, is empty, or is not csv";
+		return runResult;		
 	}
+
+	/*---- Check directories (model and output) ----*/
+
+	// For model directory
 	QDir modelDir(modelDirPath);
-	if (configuration == 4 && !modelDir.exists())
+	if (configuration == 4 && (modelDirPath == "" || !modelDir.exists() || modelDir.isEmpty()))
 	{
 		runResult.ok = false;
-		runResult.errorMessage = "Model directory doesn't exist";
+		runResult.errorMessage = "Model directory doesn't exist or it doesn't contain files";
 		return runResult;
 	}
 
+	// For output directory
+	if (outputDirPath == QString(""))
+	{
+		runResult.ok = false;
+		runResult.errorMessage = "Please set an output directory";
+		return runResult;
+	}
 	QDir outputDir(outputDirPath);
 	if (!outputDir.exists())
 	{
@@ -232,7 +239,6 @@ captk::Training::RunThread(
 
 	/*---- Run ----*/
 
-	// This try catch may not be needed
 	try
 	{
 		captk::TrainingAlgorithm algorithm = captk::TrainingAlgorithm();
@@ -253,9 +259,17 @@ captk::Training::RunThread(
 	{
 		runResult.ok = false;
 		runResult.errorMessage = 
-				std::string("Something went wrong when executing. This was probably because of bad supplied input data or models:\n\n")
+				std::string("Something went wrong when executing. This was probably ")
+				+ std::string("because of bad supplied input data or models:\n\n")
 				+ e.what();
 		return runResult;
 	}
-
+	catch(...)
+	{
+		runResult.ok = false;
+		runResult.errorMessage = 
+				std::string("Unknown error. This was probably ")
+				+ std::string("because of bad supplied input data or models:\n\n");
+		return runResult;
+	}
 }
