@@ -23,12 +23,9 @@
 
 int main(int argc, char* argv[])
 {
+    QCoreApplication cmdapp(argc, argv); // needed for QCoreApplication::applicationDirPath() to work anywhere
     // consts placed here for now
-    QCoreApplication cmdapp(argc, argv);
-    const QString CBICA_MODEL_DIR = qApp->applicationDirPath() + QString("/models/survival_model");
-    const std::string MODE_TRAIN = "train";
-    const std::string MODE_PREDICT = "predict";
-
+    const QString CBICA_MODEL_DIR = QCoreApplication::applicationDirPath() + QString("/models/survival_model");
 
     mitkCommandLineParser parser;
 
@@ -52,7 +49,7 @@ int main(int argc, char* argv[])
                 "mo",
                 mitkCommandLineParser::String,
                 "Mode",
-                "Select which operation to perform. Modes: " + MODE_TRAIN + " or " + MODE_PREDICT,
+                "Select which operation to perform. Modes: train or predict",
                 us::Any(),
                 false);
 
@@ -111,11 +108,11 @@ int main(int argc, char* argv[])
 
 
     // Handle train/predict mode switching
-    if (us::any_cast<std::string>(parsedArgs["mode"]) == MODE_TRAIN)
+    if (us::any_cast<std::string>(parsedArgs["mode"]) == "train")
     {
         trainNewModel = true;
     }
-    else if (us::any_cast<std::string>(parsedArgs["mode"]) == MODE_PREDICT)
+    else if (us::any_cast<std::string>(parsedArgs["mode"]) == "predict")
     {
         trainNewModel = false;
     }

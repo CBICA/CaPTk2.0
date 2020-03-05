@@ -15,7 +15,7 @@ CaPTkSurvival::CaPTkSurvival(
 	: QObject(parent)
 {
 	connect(&m_Watcher, SIGNAL(finished()), this, SLOT(OnAlgorithmFinished()));
-    m_CbicaModelDir = qApp->applicationDirPath() + QString("/models/survival_model");
+    m_CbicaModelDir = QCoreApplication::applicationDirPath() + QString("/models/survival_model");
 }
 
 void CaPTkSurvival::Run(

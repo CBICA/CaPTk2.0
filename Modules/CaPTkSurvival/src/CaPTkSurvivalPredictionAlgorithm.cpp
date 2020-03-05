@@ -702,7 +702,6 @@ VectorDouble SurvivalPredictionModuleAlgorithm::SurvivalPredictionOnExistingMode
     }
     catch (const std::exception& e1)
     {
-        MITK_ERROR << "Error in reading the file: " + modeldirectory + "/Survival_ZScore_Std.csv. Error code : " + std::string(e1.what());
         throw std::runtime_error(
                     "Error in reading the file: " +
                     modeldirectory + "/Survival_ZScore_Std.csv."
