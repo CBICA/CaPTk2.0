@@ -60,6 +60,7 @@ void QmitkCaPTkTrainingView::CreateQtPartControl(QWidget *parent)
 
   /**** Initialize widgets ****/
 
+  // Make specified lineEdits accept only numbers in a range
   m_Controls.lineEdit_folds->setValidator( new QIntValidator(0, 100, this) );
   m_Controls.lineEdit_samples->setValidator( new QIntValidator(0, 100000000, this) );
 
