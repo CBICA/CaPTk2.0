@@ -13,7 +13,6 @@ set(MITK_InciSe_PROVISIONING_FILE "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/InciSe.prov
 set(_plugins
  org.mitk.gui.qt.stdmultiwidgeteditor
  org.mitk.gui.qt.datamanager
- org_mitk_planarfigure
  org.blueberry.ui.qt.help
 
  upenn.cbica.captk.ui
@@ -22,7 +21,6 @@ set(_plugins
  upenn.cbica.captk.interactivesegmentation
 
  org.mitk.gui.qt.imagenavigator
- org_mitk_gui_qt_imagenavigator
  org.mitk.gui.qt.measurementtoolbox
  org.mitk.gui.qt.segmentation
  org.mitk.gui.qt.multilabelsegmentation
