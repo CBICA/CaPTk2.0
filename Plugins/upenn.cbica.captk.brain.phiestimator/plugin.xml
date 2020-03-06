@@ -5,6 +5,6 @@
           name="PHI Estimator"
           class="QmitkPHIEstimatorView"
           category="Brain"
-          icon="resources/ExampleIcon.svg" />
+          icon="resources/icon.svg" />
   </extension>
 </plugin>
