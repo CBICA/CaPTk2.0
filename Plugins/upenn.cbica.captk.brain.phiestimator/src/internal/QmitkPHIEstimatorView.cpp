@@ -174,7 +174,6 @@ void QmitkPHIEstimatorView::OnSegmentationSelectionChanged(const mitk::DataNode 
 void QmitkPHIEstimatorView::ProcessSelectedImage()
 {
 	//typedef itk::Image<unsigned short, 3> MaskImageType;
-	typedef itk::Image<short, 4> PerfusionImageType;
 	typedef itk::Image<float, 4> Float4DImage;
 	//MaskImageType::Pointer maskimg;
 	Float4DImage::Pointer perfImg;
