@@ -30,23 +30,13 @@ public:
     using TImageType = itk::Image<TPixel, VImageDimension>;
     using TImageTypePointer = typename TImageType::Pointer;
 
-    ROIConstructionHelperItk(TImageTypePointer mask) 
-    {
-        m_Mask = mask;
-    }
+    ROIConstructionHelperItk(TImageTypePointer mask);
 
-    ~ROIConstructionHelperItk()
-    {
-
-    }
+    ~ROIConstructionHelperItk();
 
     void SetValuesAndNames(
         std::vector<int> values, 
-        std::vector<std::string> names) override
-    {
-        m_Values = values;
-        m_Names = names;
-    }
+        std::vector<std::string> names) override;
 
     /** \brief Find all the different lattice points
      * 
@@ -58,81 +48,15 @@ public:
         // bool  fluxNeumannCondition,
         // bool  patchConstructionROI,
         // bool  patchConstructionNone
-        ) override
-    {
-        m_CurrentIndex = 0;
+        ) override;
 
-        captk::ROIConstructionImplementation< TImageType > roiConstructorItk;
+    float PopulateMask(mitk::LabelSetImage::Pointer miniMask) override;
 
-        roiConstructorItk.SetInputMask(m_Mask);
-        roiConstructorItk.SetSelectedROIsAndLabels(m_Values, m_Names);
-        roiConstructorItk.SetLatticeGridStep(step);
-        roiConstructorItk.SetLatticeWindowSize(2.0 * radius);
-        // roiConstructorItk.SetBoundaryCondition(fluxNeumannCondition);
-        // roiConstructorItk.SetPatchConstructionConditionROI(patchConstructionROI);
-        // roiConstructorItk.SetPatchConstructionConditionNone(patchConstructionNone);
-        
-        roiConstructorItk.Update();
+    void GoToBegin() override;
 
-        // Show info
-        MITK_INFO << "\nNumber of valid lattice points: " 
-                  << roiConstructorItk.GetNumberOfValidLatticePoints()
-                  << std::endl;
+    bool IsAtEnd() override;
 
-        MITK_INFO << "Lattice radius: " 
-                  << roiConstructorItk.GetLatticeRadius()
-                  << std::endl;
-
-        m_Properties = roiConstructorItk.GetOutput();
-    }
-
-    float PopulateMask(mitk::LabelSetImage::Pointer miniMask) override
-    {
-        // Add label and label name
-        mitk::Label::Pointer label = mitk::Label::New();
-        label->SetName(m_Properties[m_CurrentIndex].label);
-        label->SetValue(m_Properties[m_CurrentIndex].value);
-        miniMask->GetActiveLabelSet()->AddLabel(label);
-        //miniMask->SetActiveLabel(label->GetValue());
-
-        // Convert mitk::LabelSetImage::Pointer to TImageType
-        using ImageToItkType = mitk::ImageToItk<TImageType>;
-        typename ImageToItkType::Pointer imagetoitk = ImageToItkType::New();
-        imagetoitk->SetInput(miniMask);
-        imagetoitk->Update();
-        TImageTypePointer miniMaskItk = imagetoitk->GetOutput();
-
-        using TIteratorType = itk::ImageRegionIteratorWithIndex<TImageType>;
-        TIteratorType iter_mm(
-            miniMaskItk, miniMaskItk->GetBufferedRegion()
-        );
-
-        // Patch: this->m_Properties[m_CurrentIndex]
-        // Patch is generally a collection of points
-        auto currentValue = this->m_Properties[m_CurrentIndex].value;
-        for (auto& index : this->m_Properties[m_CurrentIndex].nonZeroIndeces)
-        {
-            iter_mm.SetIndex(index);
-            iter_mm.Set(currentValue);
-        }
-
-        return this->m_Properties[m_CurrentIndex].weight;
-    }
-
-    virtual void GoToBegin()
-    {
-        m_CurrentIndex = 0;
-    }
-
-    virtual bool IsAtEnd()
-    {
-        return (m_CurrentIndex == m_Properties.size() - 1);
-    }
-
-    void OnIncrement() override
-    {
-        m_CurrentIndex++;
-    }
+    void OnIncrement() override;
 
 private:
 
@@ -147,5 +71,7 @@ private:
     size_t m_CurrentIndex = 0;
 };
 }
+
+#include "CaPTkROIConstructionHelperItk.hxx"
 
 #endif // ! CaPTkROIConstructionHelperItk_h
