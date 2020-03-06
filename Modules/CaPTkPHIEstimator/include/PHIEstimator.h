@@ -33,14 +33,14 @@ See LICENSE.txt or http://www.mitk.org for details.
 namespace captk
 {
 /** \brief Runs PHI Estimation algorithm 
- * \param inputItkImage the input ITK image
+ * \param imageItk the input ITK image
  * \param mask mitk mask image
  * \param verbose, parameter for logging
  * \param results, std::vector of results as double
  */
 template <class TPixel, unsigned int VDim>
 MITKCAPTKPHIESTIMATOR_EXPORT
-void RunPHIEstimation(itk::Image<TPixel, VDim>* inputItkImage, mitk::Image::Pointer& mask, bool& verbose)
+void RunPHIEstimation(itk::Image<TPixel, VDim>* imageItk, mitk::Image::Pointer& mask, bool& verbose)
 {
 	using ImageType     = itk::Image<TPixel, VDim>;
 	using MaskImageType = itk::Image<float, 3>;
