@@ -18,50 +18,54 @@
 
 namespace captk
 {
-/** \brief Implements an algorithm (in this case a negative filter)
- * 
- * This is a common way to call functions in mitk, meant to be 
- * accessed by AccessByItk_n(). AccessByItk_n always takes an 
- * mitk::Image::Pointer as the first parameter, and a function as the second.
- * You can follow with more parameters (like we do here with maximum and outputImage).
- * In this particular case, it would be called with the following two lines: 
- * mitk::Image::Pointer outputMitkImage = mitk::Image::New();
- * AccessByItk_n(mitkInputImagePointer, captk::ExampleAlgorithm, maximumVal, outputMitkImagePointer);
- * MITK takes care of converting the first parameter to the template of the function
- * and convert it to itk. Functions like this are always void, and return results
- * by parameters (reference or pointers).
- * \param inputItkImage the input ITK image
- * \param maximum int value, used by the invert intensity filter
- * \param outputImage the result will be written here (mitk image, not itk)
- */
-template <class TPixel, unsigned int VDim>
-void MITKCAPTKEXAMPLE_EXPORT 
-ExampleAlgorithm(
-    itk::Image<TPixel,VDim>* inputItkImage, 
-    int maximum, 
-    mitk::Image::Pointer& outputImage)
+class MITKCAPTKEXAMPLE_EXPORT ExampleAlgorithm
 {
-    MITK_INFO << "The maximum for the inverter is " << std::to_string(maximum);
+public:
+    /** \brief Implements an algorithm (in this case a negative filter)
+     * 
+     * This is a common way to call functions in mitk, meant to be 
+     * accessed by AccessByItk_n(). AccessByItk_n always takes an 
+     * mitk::Image::Pointer as the first parameter, and a function as the second.
+     * You can follow with more parameters (like we do here with maximum and outputImage).
+     * In this particular case, it would be called with the following two lines: 
+     * mitk::Image::Pointer outputMitkImage = mitk::Image::New();
+     * AccessByItk_n(mitkInputImagePointer, captk::ExampleAlgorithm, maximumVal, outputMitkImagePointer);
+     * MITK takes care of converting the first parameter to the template of the function
+     * and convert it to itk. Functions like this are always void, and return results
+     * by parameters (reference or pointers).
+     * Note: This has to be in a class, because templated exports don't work on Windows.
+     * \param inputItkImage the input ITK image
+     * \param maximum int value, used by the invert intensity filter
+     * \param outputImage the result will be written here (mitk image, not itk)
+     */
+    template <class TPixel, unsigned int VDim>
+    static void Run(
+        itk::Image<TPixel,VDim>* inputItkImage, 
+        int maximum, 
+        mitk::Image::Pointer& outputImage)
+    {
+        MITK_INFO << "The maximum for the inverter is " << std::to_string(maximum);
 
-    using ImageType = itk::Image< TPixel, VDim >;
-    using DuplicatorType = itk::ImageDuplicator< ImageType >;
-    using InvertType = itk::InvertIntensityImageFilter< ImageType, ImageType >;
+        using ImageType = itk::Image< TPixel, VDim >;
+        using DuplicatorType = itk::ImageDuplicator< ImageType >;
+        using InvertType = itk::InvertIntensityImageFilter< ImageType, ImageType >;
 
-    // ---- Duplicate the input image (we don't want to write on the input) ----
-    typename DuplicatorType::Pointer duplicator = DuplicatorType::New();
-    duplicator->SetInputImage(inputItkImage);
-    duplicator->Update();
+        // ---- Duplicate the input image (we don't want to write on the input) ----
+        typename DuplicatorType::Pointer duplicator = DuplicatorType::New();
+        duplicator->SetInputImage(inputItkImage);
+        duplicator->Update();
 
-    // ---- Invert the intensities of the image ----
-    typename InvertType::Pointer inverter = InvertType::New();
-    inverter->SetInput(duplicator->GetOutput());
-    inverter->SetMaximum(maximum);
-    inverter->Update();
+        // ---- Invert the intensities of the image ----
+        typename InvertType::Pointer inverter = InvertType::New();
+        inverter->SetInput(duplicator->GetOutput());
+        inverter->SetMaximum(maximum);
+        inverter->Update();
 
-    // ---- Cast image from itk to mitk ---- 
-    CastToMitkImage(inverter->GetOutput(), outputImage);
-}
+        // ---- Cast image from itk to mitk ---- 
+        CastToMitkImage(inverter->GetOutput(), outputImage);
+    }
 
+};
 }
 
 #endif // ! captkExampleAlgorithm_h
