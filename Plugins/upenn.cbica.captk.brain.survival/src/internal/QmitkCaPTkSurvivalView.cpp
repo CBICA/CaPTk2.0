@@ -87,6 +87,9 @@ void QmitkCaPTkSurvivalView::CreateQtPartControl(QWidget *parent)
   connect(m_Controls.pushButtonRun, SIGNAL(clicked()),
           this, SLOT(OnRunButtonPressed()));
 
+  connect(m_CaPTkSurvival, SIGNAL(done()),
+          this, SLOT(OnModuleDone()));
+
   /**** Initialize widgets ****/
 
   // Initialize the usage type combo box
@@ -303,7 +306,8 @@ void QmitkCaPTkSurvivalView::OnRunButtonPressed()
       }
 
   }
-
+  m_Controls.pushButtonRun->setDisabled(true);
+  m_Controls.pushButtonRun->setText("Running Survival Prediction...");
   m_CaPTkSurvival->Run(
    modelDirPath,
    subjectDirPath,
@@ -311,6 +315,12 @@ void QmitkCaPTkSurvivalView::OnRunButtonPressed()
    trainNewModel,
    useCustomModel
    );
+}
+
+void QmitkCaPTkSurvivalView::OnModuleDone()
+{
+    m_Controls.pushButtonRun->setEnabled(true);
+    m_Controls.pushButtonRun->setText("Run Survival Prediction");
 }
 
 /************************************************************************/
