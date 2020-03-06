@@ -26,6 +26,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <mitkImage.h>
 #include <mitkImageCast.h>
 #include <mitkLogMacros.h>
+#include <mitkLabelSetImageConverter.h>
 
 #include "itkImage.h"
 
@@ -42,7 +43,7 @@ class MITKCAPTKPHIESTIMATOR_EXPORT PhiEstimator
 public:
 	template <class TPixel, unsigned int VDim>
 	static void Run(itk::Image<TPixel, VDim>* imageItk, 
-		mitk::Image::Pointer& mask, 
+		mitk::LabelSetImage::Pointer& mask, 
 		std::vector<typename itk::Image<float, 3>::IndexType> &nearIndices,
 		std::vector<typename itk::Image<float, 3>::IndexType> &farIndices,
 	std::vector<double>& EGFRStatusParams)
@@ -55,11 +56,40 @@ public:
 		EGFRStatusPredictor EGFRPredictor;
 
 		std::vector<MaskImageType::Pointer> Perfusion_Registered; // don't know where this is used in the algo, although the algo needs it
-		//std::vector<MaskImageType::IndexType> nearIndices, farIndices;
+		
+		// Check if the seg has only label 1 & 2
+		bool found1 = false;
+		bool found2 = false;
+		int foundTotal = 0;
+		auto labelSet = mask->GetActiveLabelSet();
+		mitk::LabelSet::LabelContainerConstIteratorType it;
+		for (it = labelSet->IteratorConstBegin();
+			it != labelSet->IteratorConstEnd();
+			++it)
+		{
+			if (it->second->GetValue() == 1) { found1 = true; }
+			if (it->second->GetValue() == 2) { found2 = true; }
+			if (it->second->GetValue() != 0) { foundTotal++; }
+		}
+		if (!found1)
+		{
+			throw std::exception("Missing label 1");
+		}
+		if (!found2)
+		{
+			throw std::exception("Missing label 2");
+		}
+		if (foundTotal != 2)
+		{
+			throw std::exception("The mask should only have 2 labels");
+		}
 
 		// Make mask 3D itk
 		MaskImageType::Pointer maskimg;
-		mitk::CastToItkImage<MaskImageType>(mask, maskimg);
+		mitk::CastToItkImage<MaskImageType>(
+			mitk::ConvertLabelSetImageToImage(mask.GetPointer()).GetPointer(),
+			maskimg
+		);
 
 		//store near and far indices in vector to be passed to algo
 		itk::ImageRegionIteratorWithIndex< MaskImageType > maskIt(maskimg, maskimg->GetLargestPossibleRegion());

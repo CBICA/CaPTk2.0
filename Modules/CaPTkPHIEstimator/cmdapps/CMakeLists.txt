@@ -3,8 +3,8 @@ option(BUILD_CaPTkPHiEstimatorCmdApp "Build command-line apps for the PHI Estima
 if(BUILD_CaPTkPHiEstimatorCmdApp)
   mitkFunctionCreateCommandLineApp(
     NAME CaPTkPHIEstimatorCmdApp
-	CPP_FILES "${SRC_FILES}" CaPTkPHiEstimatorCmdApp.cpp
-    DEPENDS MitkCaPTkPHIEstimator
-	PACKAGE_DEPENDS PUBLIC ITK|ITKIOImageBase+ITKIONIFTI
+    CPP_FILES "${SRC_FILES}" CaPTkPHiEstimatorCmdApp.cpp
+    DEPENDS MitkCaPTkPHIEstimator MitkCore
+    PACKAGE_DEPENDS PUBLIC ITK|ITKIOImageBase+ITKIONIFTI
   )
 endif()

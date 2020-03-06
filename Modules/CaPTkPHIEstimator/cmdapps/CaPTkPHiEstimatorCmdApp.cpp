@@ -17,6 +17,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <mitkCommandLineParser.h>
 #include <mitkIOUtil.h>
 #include <mitkImageToItk.h>
+#include <mitkLabelSetImage.h>
 #include <mitkImageAccessByItk.h>
 
 #include <EGFRvIIISurrogateIndex.h>
@@ -117,7 +118,12 @@ int main(int argc, char* argv[])
 			MITK_INFO << "Read mask file";
 
 		// read near far mask
-		auto maskImage = mitk::IOUtil::Load<mitk::Image>(maskFilename);
+		mitk::LabelSetImage::Pointer maskImage = mitk::LabelSetImage::New();
+		{
+			mitk::Image::Pointer maskImageTmp =
+				mitk::IOUtil::Load<mitk::Image>(maskFilename);
+			maskImage->InitializeByLabeledImage(maskImageTmp);
+		}
 
 		// exit if mask could not be read
 		if (maskImage.IsNull())
