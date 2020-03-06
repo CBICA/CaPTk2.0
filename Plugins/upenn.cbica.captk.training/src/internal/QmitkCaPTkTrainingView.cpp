@@ -1,19 +1,3 @@
-/*===================================================================
-
-The Medical Imaging Interaction Toolkit (MITK)
-
-Copyright (c) German Cancer Research Center,
-Division of Medical and Biological Informatics.
-All rights reserved.
-
-This software is distributed WITHOUT ANY WARRANTY; without
-even the implied warranty of MERCHANTABILITY or FITNESS FOR
-A PARTICULAR PURPOSE.
-
-See LICENSE.txt or http://www.mitk.org for details.
-
-===================================================================*/
-
 #include "QmitkCaPTkTrainingView.h"
 
 // blueberry
@@ -76,6 +60,14 @@ void QmitkCaPTkTrainingView::CreateQtPartControl(QWidget *parent)
 
   /**** Initialize widgets ****/
 
+  // Make specified lineEdits accept only numbers in a range
+  m_Controls.lineEdit_folds->setValidator( new QIntValidator(0, 100, this) );
+  m_Controls.lineEdit_samples->setValidator( new QIntValidator(0, 100000000, this) );
+
+  // Hide progress bar until it's implemented
+  // TODO: Implement progress updates are remove the hiding below
+  m_Controls.progressBar->setVisible(false);
+
   // Initialize kernel combo box
   m_Controls.comboBox_kernel->addItems(QStringList() << "SVM: Linear" << "SVM: RBF");
   // Set combo box to the last user selected value
@@ -86,7 +78,7 @@ void QmitkCaPTkTrainingView::CreateQtPartControl(QWidget *parent)
   // Initialize kernel combo box
   m_Controls.comboBox_configuration->addItems(
     QStringList() << "Cross-validation" << "Split Train/Test" 
-                  << "Split Train" << "Split Test"
+                  << "Train" << "Test"
   );
   // Set combo box to the last user selected value
   auto prefConfigurationText = this->GetPreferences()->Get(
@@ -197,6 +189,8 @@ void QmitkCaPTkTrainingView::OnConfigurationComboBoxCurrentTextChanged(const QSt
   {
     m_Controls.lineEdit_folds->setVisible(true);
     m_Controls.label_folds->setVisible(true);
+    m_Controls.lineEdit_responses->setVisible(true);
+    m_Controls.pushButton_responses->setVisible(true);
     m_Controls.lineEdit_samples->setVisible(false);
     m_Controls.label_samples->setVisible(false);
     m_Controls.lineEdit_modeldir->setVisible(false);
@@ -206,24 +200,30 @@ void QmitkCaPTkTrainingView::OnConfigurationComboBoxCurrentTextChanged(const QSt
   {
     m_Controls.lineEdit_folds->setVisible(false);
     m_Controls.label_folds->setVisible(false);
+    m_Controls.lineEdit_responses->setVisible(true);
+    m_Controls.pushButton_responses->setVisible(true);
     m_Controls.lineEdit_samples->setVisible(true);
     m_Controls.label_samples->setVisible(true);
     m_Controls.lineEdit_modeldir->setVisible(false);
     m_Controls.pushButton_modeldir->setVisible(false);
   }
-  else if (text == "Split Train")
+  else if (text == "Train")
   {
     m_Controls.lineEdit_folds->setVisible(false);
     m_Controls.label_folds->setVisible(false);
+    m_Controls.lineEdit_responses->setVisible(true);
+    m_Controls.pushButton_responses->setVisible(true);
     m_Controls.lineEdit_samples->setVisible(false);
     m_Controls.label_samples->setVisible(false);
     m_Controls.lineEdit_modeldir->setVisible(false);
     m_Controls.pushButton_modeldir->setVisible(false);
   }
-  else if (text == "Split Test")
+  else if (text == "Test")
   {
     m_Controls.lineEdit_folds->setVisible(false);
     m_Controls.label_folds->setVisible(false);
+    m_Controls.lineEdit_responses->setVisible(false);
+    m_Controls.pushButton_responses->setVisible(false);
     m_Controls.lineEdit_samples->setVisible(false);
     m_Controls.label_samples->setVisible(false);
     m_Controls.lineEdit_modeldir->setVisible(true);
@@ -313,8 +313,8 @@ void QmitkCaPTkTrainingView::OnRunButtonPressed()
     responsesCsvPath,
     classificationKernelStr,
     configurationStr,
-    folds,
-    samples,
+    folds.toInt(),
+    samples.toInt(),
     modelDirPath,
     outputDirPath
   );

@@ -43,8 +43,7 @@ public:
   virtual int ComputePreferredSize(bool width,
                                    int /*availableParallel*/,
                                    int /*availablePerpendicular*/,
-                                   int preferredResult);
-
+                                   int preferredResult);  
 protected slots:
 
   void OnUsageComboBoxCurrentTextChanged(const QString& text);
@@ -56,6 +55,8 @@ protected slots:
   void OnCustomModelDirectoryButtonClicked();
 
   void OnOutputDirectoryButtonClicked();
+
+  void OnModuleDone();
 
   /** \brief CaPTk Survival Plugin Run Button clicked slot */
   void OnRunButtonPressed();

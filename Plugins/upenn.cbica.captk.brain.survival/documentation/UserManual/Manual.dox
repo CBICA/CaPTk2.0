@@ -1,0 +1,13 @@
+
+/**
+\page upenn_cbica_captk_brain_survival Survival Prediction
+
+This plugin offers a convenient way to directly train or run a survival prediction model on input subjects.
+Under the Brain category, click the Survival icon to open the plugin view. 
+Select whether you wish to use an existing model to make a prediction OR to train a new model on subjects.
+If using an existing model, select the source. The CBICA CaPTk model is included; you may also use a custom model by specifying the directory.
+Select a directory in which to place output. This directory will be populated with results (if running) or model files (if training).
+Click the Run Survival Prediction button. 
+When the survival prediction is finished, you will be notified that the output has been saved.
+
+*/

@@ -61,6 +61,13 @@ public slots:
     */
     void OnAlgorithmFinished();
 
+signals:
+    /** \brief This signal is emitted when the module is done
+     *  with all its operations, including any post-processing
+     *  done in OnAlgorithmFinished().
+     */
+    void done();
+
 protected:
     QString m_CbicaModelDir;
 
