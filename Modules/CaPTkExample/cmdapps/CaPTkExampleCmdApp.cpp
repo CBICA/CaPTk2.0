@@ -125,7 +125,7 @@ int main(int argc, char* argv[])
 
     // Call inverter (notice the parenthesis in the extra parameters)
     mitk::Image::Pointer output = mitk::Image::New();
-    AccessByItk_n(input, captk::ExampleAlgorithm, (maximum, output));
+    AccessByItk_n(input, captk::ExampleAlgorithm::Run, (maximum, output));
 
     // Save result
     mitk::IOUtil::Save(output, outputPath);

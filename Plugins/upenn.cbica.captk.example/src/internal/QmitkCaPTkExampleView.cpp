@@ -170,7 +170,7 @@ void QmitkCaPTkExampleView::OnRunButtonPressed()
 
   // ---- Call module ----
   mitk::Image::Pointer output = mitk::Image::New();
-  AccessByItk_n(input, captk::ExampleAlgorithm, (maximum, output));
+  AccessByItk_n(input, captk::ExampleAlgorithm::Run, (maximum, output));
 
   // ---- Load it ----
   mitk::DataNode::Pointer node = mitk::DataNode::New();
