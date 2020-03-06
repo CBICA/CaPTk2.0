@@ -13,6 +13,7 @@
 #include <itkExtractImageFilter.h>
 #include <mitkImageAccessByItk.h>
 #include <mitkITKImageImport.h>
+#include <mitkLogMacros.h>
 
 #include "itkImageRegionIteratorWithIndex.h"
 
@@ -74,11 +75,11 @@ public:
         roiConstructorItk.Update();
 
         // Show info
-        std::cout << "\nNumber of valid lattice points: " 
+        MITK_INFO << "\nNumber of valid lattice points: " 
                   << roiConstructorItk.GetNumberOfValidLatticePoints()
                   << std::endl;
 
-        std::cout << "Lattice radius: " 
+        MITK_INFO << "Lattice radius: " 
                   << roiConstructorItk.GetLatticeRadius()
                   << std::endl;
 
