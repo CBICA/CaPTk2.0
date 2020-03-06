@@ -9,6 +9,8 @@
 #include <mitkIOUtil.h>
 #include <mitkImageAccessByItk.h>
 
+#include <QString>
+
 #include "CaPTkTraining.h"
 
 
@@ -37,7 +39,7 @@ int main(int argc, char* argv[])
   parser.addArgument(
     "configuration",
     "c",
-    mitkCommandLineParser::Bool,
+    mitkCommandLineParser::String,
     "Configuration",
     "Configuration (\"crossvalidation\" or \"splittraintest\" or \"train\" or \"test\"",
     us::Any(),
@@ -73,7 +75,7 @@ int main(int argc, char* argv[])
   parser.addArgument(
     "folds",
     "f",
-    mitkCommandLineParser::String,
+    mitkCommandLineParser::Int,
     "Folds",
     "Folds (for crossvalidation configuration)",
     us::Any(),
@@ -82,7 +84,7 @@ int main(int argc, char* argv[])
   parser.addArgument(
     "samples",
     "s",
-    mitkCommandLineParser::String,
+    mitkCommandLineParser::Int,
     "Samples",
     "Samples (for splittraintest configuration)",
     us::Any(),
@@ -130,47 +132,126 @@ int main(int argc, char* argv[])
     return EXIT_FAILURE;
   }
 
-  auto configuration     = us::any_cast<std::string>(parsedArgs["configuration"]);
-  auto inputfeatures     = us::any_cast<std::string>(parsedArgs["inputfeatures"]);
+  QString configuration = us::any_cast<std::string>(parsedArgs["configuration"]).c_str();
+
+  if (QString::compare(configuration, "train", Qt::CaseInsensitive) == 0)
+  {
+    configuration = "Train";
+  }
+  else if (QString::compare(configuration, "test", Qt::CaseInsensitive) == 0)
+  {
+    configuration = "Test";
+  }
+  else if (QString::compare(configuration, "splittraintest", Qt::CaseInsensitive) == 0)
+  {
+    configuration = "Split Train/Test";
+  }
+  else if (QString::compare(configuration, "crossvalidation", Qt::CaseInsensitive) == 0)
+  {
+    configuration = "Cross-validation";
+  }
+  else
+  {
+    MITK_ERROR << "Unknown configuration";
+    return EXIT_FAILURE; 
+  }
+
+  QString inputfeatures = us::any_cast<std::string>(parsedArgs["inputfeatures"]).c_str();
 
   /*---- Optional parameters ----*/
 
-  int  maximum    = 100;
-  bool randomFlag = false;
+  QString inputresponses = "";
+  QString classificationKernelStr = "svmlinear";
+  int folds = 0;
+  int samples = 0;
+  QString modeldir = "";
+  QString outputdir = "";
 
-  if (parsedArgs.end() != parsedArgs.find("maximum"))
+  if (parsedArgs.end() != parsedArgs.find("inputresponses"))
   {
-    maximum = us::any_cast<int>(parsedArgs["maximum"]);
+    inputresponses = us::any_cast<std::string>(parsedArgs["inputresponses"]).c_str();
   }
 
-  if (parsedArgs.end() != parsedArgs.find("randomflag"))
+  if (parsedArgs.end() != parsedArgs.find("kernel"))
   {
-    randomFlag = true;
+    classificationKernelStr = us::any_cast<std::string>(parsedArgs["kernel"]).c_str();
+    if (QString::compare(classificationKernelStr, "svmlinear", Qt::CaseInsensitive) == 0)
+    {
+      classificationKernelStr = "SVM: Linear";
+    }
+    else if (QString::compare(classificationKernelStr, "svmrbf", Qt::CaseInsensitive) == 0)
+    {
+      classificationKernelStr = "SVM: RBF";
+    }
+    else
+    {
+      MITK_ERROR << "Unknown kernel";
+      return EXIT_FAILURE;
+    }
+    
   }
 
-  if (randomFlag) { MITK_INFO << "Random flag was true"; }
+  if (parsedArgs.end() != parsedArgs.find("folds"))
+  {
+    folds = us::any_cast<int>(parsedArgs["folds"]);
+  }
+
+  if (parsedArgs.end() != parsedArgs.find("samples"))
+  {
+    samples = us::any_cast<int>(parsedArgs["samples"]);
+  }
+
+  if (parsedArgs.end() != parsedArgs.find("modeldir"))
+  {
+    modeldir = us::any_cast<std::string>(parsedArgs["modeldir"]).c_str();
+  }
+
+  if (parsedArgs.end() != parsedArgs.find("outputdir"))
+  {
+    outputdir = us::any_cast<std::string>(parsedArgs["outputdir"]).c_str();
+  }
 
   /*---- Run ----*/
 
   try
   {
-    // Read input
-    mitk::Image::Pointer input = mitk::IOUtil::Load<mitk::Image>(inputPath);
+    captk::Training training;
+    auto result = training.RunThread(
+      inputfeatures,
+      inputresponses,
+      classificationKernelStr,
+      configuration,
+      folds,
+      samples,
+      modeldir,
+      outputdir
+    );
 
-    // Call inverter (notice the parenthesis in the extra parameters)
-    mitk::Image::Pointer output = mitk::Image::New();
-    AccessByItk_n(input, captk::ExampleAlgorithm::Run, (maximum, output));
-
-    // Save result
-    mitk::IOUtil::Save(output, outputPath);
+    if (result.ok)
+    {
+      MITK_INFO << "Finished successfully.";
+    }
+    else
+    {
+      MITK_ERROR << result.errorMessage;
+      return EXIT_FAILURE;
+    }
   }
   catch (const mitk::Exception& e)
   {
     MITK_ERROR << "MITK Exception: " << e.what();
+    return EXIT_FAILURE;
+  }
+  catch (const std::exception& e)
+  {
+    MITK_ERROR << "Exception: " << e.what();
+    return EXIT_FAILURE;
   }
   catch (...)
   {
     std::cerr << "Unexpected error!\n";
     return EXIT_FAILURE;
   }
+
+  return EXIT_SUCCESS;
 }
