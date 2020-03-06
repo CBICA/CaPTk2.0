@@ -1,8 +1,10 @@
-option(BUILD_ExtPHiEstimatorCmdApps "Build command-line apps for the PHI Estimator module" ON)
+option(BUILD_CaPTkPHiEstimatorCmdApp "Build command-line apps for the PHI Estimator module" ON)
 
-if(BUILD_ExtPHIEstCmdApps)
+if(BUILD_CaPTkPHiEstimatorCmdApp)
   mitkFunctionCreateCommandLineApp(
-    NAME ExtPHIEstimatorCmdApp
-    DEPENDS PHIEstimator
+    NAME CaPTkPHIEstimatorCmdApp
+	CPP_FILES "${SRC_FILES}" CaPTkPHiEstimatorCmdApp.cpp
+    DEPENDS MitkCaPTkPHIEstimator
+	PACKAGE_DEPENDS PUBLIC ITK|ITKIOImageBase+ITKIONIFTI
   )
 endif()

@@ -20,6 +20,7 @@ set(MOC_H_FILES
   include/CaPTkDefines.h
   include/CaPTkEnums.h
   include/EGFRStatusPredictor.h
+  include/PHIEstimator.h
 )
 
 set(RESOURCE_FILES
