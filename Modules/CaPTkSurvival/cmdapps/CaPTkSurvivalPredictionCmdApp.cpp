@@ -44,20 +44,30 @@ int main(int argc, char* argv[])
     /**** Add arguments. Unless specified otherwise, each argument is optional.
             See mitkCommandLineParser::addArgument() for more information. ****/
 
-    parser.addArgument(
-                "mode",
-                "mo",
-                mitkCommandLineParser::String,
-                "Mode",
-                "Select which operation to perform. Modes: train or predict",
-                us::Any(),
-                false);
 
     parser.addArgument(
-                "subjects",
-                "s",
+                "usage",
+                "u",
+                mitkCommandLineParser::Bool,
+                "Usage",
+                "Show the usage menu and ignore all other input.",
+                us::Any(),
+                true); // optional
+
+    parser.addArgument(
+                "train",
+                "t",
+                mitkCommandLineParser::Bool,
+                "Enable training",
+                "Pass this parameter to train a new model using the input data. By default, testing will be performed.",
+                us::Any(),
+                true); // optional
+
+    parser.addArgument(
+                "input",
+                "i",
                 mitkCommandLineParser::String,
-                "Subjects",
+                "Input subjects",
                 "Path to the directory containing all subjects as subdirectories",
                 us::Any(),
                 false);
@@ -73,7 +83,7 @@ int main(int argc, char* argv[])
 
     parser.addArgument(
                 "model",
-                "md",
+                "m",
                 mitkCommandLineParser::String,
                 "Custom Model",
                 "Path to the directory containing the model to use. By default, the CBICA CaPTk Model is used.",
@@ -82,6 +92,11 @@ int main(int argc, char* argv[])
     bool parseSuccess;
     std::map<std::string, us::Any> parsedArgs = parser.parseArguments(argc, argv, &parseSuccess);
 
+    if (parser.argumentParsed("u"))
+    {
+        MITK_INFO << parser.helpText();
+        return EXIT_SUCCESS;
+    }
     if (!parseSuccess)
     {
         MITK_INFO << "Failed to parse command-line parameters.";
@@ -99,7 +114,7 @@ int main(int argc, char* argv[])
         return EXIT_FAILURE; // Exit, usage information is already displayed
     }
 
-    if (parsedArgs["subjects"].Empty() || parsedArgs["output"].Empty() || parsedArgs["mode"].Empty())
+    if (parsedArgs["input"].Empty() || parsedArgs["output"].Empty())
     {
         MITK_INFO << "Missing a required parameter.";
         MITK_INFO << parser.helpText();
@@ -108,23 +123,18 @@ int main(int argc, char* argv[])
 
 
     // Handle train/predict mode switching
-    if (us::any_cast<std::string>(parsedArgs["mode"]) == "train")
+    if (parser.argumentParsed("train"))
     {
         trainNewModel = true;
-    }
-    else if (us::any_cast<std::string>(parsedArgs["mode"]) == "predict")
-    {
-        trainNewModel = false;
+        MITK_INFO << "operation type: train";
     }
     else
     {
-        MITK_INFO << parser.helpText();
-        MITK_ERROR << "Provided an invalid mode. See the help text for valid options.";
-        return EXIT_FAILURE;
+        trainNewModel = false;
+        MITK_INFO << "operation type: test";
     }
 
-    MITK_INFO << "mode: " << parsedArgs["mode"].ToString();
-    MITK_INFO << "subjects: " << parsedArgs["subjects"].ToString();
+    MITK_INFO << "subjects: " << parsedArgs["input"].ToString();
     MITK_INFO << "output: " << parsedArgs["output"].ToString();
 
     if (parser.argumentParsed("model"))
@@ -153,7 +163,7 @@ int main(int argc, char* argv[])
             );
 
     QString subjectDir = QString::fromStdString(
-                parsedArgs["subjects"].ToString()
+                parsedArgs["input"].ToString()
             );
 
 
