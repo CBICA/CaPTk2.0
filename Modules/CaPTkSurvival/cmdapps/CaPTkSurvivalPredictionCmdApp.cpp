@@ -44,14 +44,24 @@ int main(int argc, char* argv[])
     /**** Add arguments. Unless specified otherwise, each argument is optional.
             See mitkCommandLineParser::addArgument() for more information. ****/
 
+
     parser.addArgument(
-                "type",
+                "usage",
+                "u",
+                mitkCommandLineParser::Bool,
+                "Usage",
+                "Show the usage menu and ignore all other input.",
+                us::Any(),
+                true); // optional
+
+    parser.addArgument(
+                "train",
                 "t",
                 mitkCommandLineParser::Bool,
-                "Operation type",
-                "Select which operation to perform: 0 (train) or 1 (test)",
+                "Enable training",
+                "Pass this parameter to train a new model using the input data. By default, testing will be performed.",
                 us::Any(),
-                false);
+                true); // optional
 
     parser.addArgument(
                 "input",
@@ -82,6 +92,11 @@ int main(int argc, char* argv[])
     bool parseSuccess;
     std::map<std::string, us::Any> parsedArgs = parser.parseArguments(argc, argv, &parseSuccess);
 
+    if (parser.argumentParsed("u"))
+    {
+        MITK_INFO << parser.helpText();
+        return EXIT_SUCCESS;
+    }
     if (!parseSuccess)
     {
         MITK_INFO << "Failed to parse command-line parameters.";
@@ -99,7 +114,7 @@ int main(int argc, char* argv[])
         return EXIT_FAILURE; // Exit, usage information is already displayed
     }
 
-    if (parsedArgs["input"].Empty() || parsedArgs["output"].Empty() || parsedArgs["type"].Empty())
+    if (parsedArgs["input"].Empty() || parsedArgs["output"].Empty())
     {
         MITK_INFO << "Missing a required parameter.";
         MITK_INFO << parser.helpText();
@@ -108,23 +123,17 @@ int main(int argc, char* argv[])
 
 
     // Handle train/predict mode switching
-    if (us::any_cast<bool>(parsedArgs["type"]) == 0)
+    if (parser.argumentParsed("train"))
     {
         trainNewModel = true;
-    }
-    else if (us::any_cast<bool>(parsedArgs["type"]) == 1)
-    {
-        trainNewModel = false;
-    }
-
-    if (us::any_cast<bool>(parsedArgs["type"]))
-    {
-        MITK_INFO << "operation type: test";
-    }
-    else // 0 was passed
-    {
         MITK_INFO << "operation type: train";
     }
+    else
+    {
+        trainNewModel = false;
+        MITK_INFO << "operation type: test";
+    }
+
     MITK_INFO << "subjects: " << parsedArgs["input"].ToString();
     MITK_INFO << "output: " << parsedArgs["output"].ToString();
 
