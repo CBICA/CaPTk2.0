@@ -41,8 +41,10 @@ class MITKCAPTKPHIESTIMATOR_EXPORT PhiEstimator
 {
 public:
 	template <class TPixel, unsigned int VDim>
-	static void RunPHIEstimation(itk::Image<TPixel, VDim>* imageItk, 
+	static void Run(itk::Image<TPixel, VDim>* imageItk, 
 		mitk::Image::Pointer& mask, 
+		std::vector<typename itk::Image<float, 3>::IndexType> &nearIndices,
+		std::vector<typename itk::Image<float, 3>::IndexType> &farIndices,
 	std::vector<double>& EGFRStatusParams)
 	{
 		using ImageType = itk::Image<TPixel, VDim>;
@@ -53,7 +55,7 @@ public:
 		EGFRStatusPredictor EGFRPredictor;
 
 		std::vector<MaskImageType::Pointer> Perfusion_Registered; // don't know where this is used in the algo, although the algo needs it
-		std::vector<MaskImageType::IndexType> nearIndices, farIndices;
+		//std::vector<MaskImageType::IndexType> nearIndices, farIndices;
 
 		// Make mask 3D itk
 		MaskImageType::Pointer maskimg;
@@ -81,7 +83,6 @@ public:
 			MITK_ERROR << "PHI Estimation failed!";
 			throw("PHI Estimation failed!");
 		}
-
 	}
 
 };//class

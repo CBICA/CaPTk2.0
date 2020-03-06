@@ -29,63 +29,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <algorithm>
 #include <string>
 
-//template <class TPixel, unsigned int VDim>
-//void Run(itk::Image<TPixel, VDim>* imageItk, mitk::Image::Pointer& mask, bool& verbose)
-//{
-//	using ImageType     = itk::Image<TPixel, VDim>;
-//	using MaskImageType = itk::Image<float, 3>;
-//
-//	// PHI Estimation starts from here
-//
-//	// TODO: some cleanup could be done below
-//	// TODO: it should handle all image types
-//	std::vector<double> EGFRStatusParams;
-//	EGFRStatusPredictor EGFRPredictor;
-//
-//	std::vector<MaskImageType::Pointer> Perfusion_Registered; // don't know where this is used in the algo, although the algo needs it
-//	std::vector<MaskImageType::IndexType> nearIndices, farIndices;
-//
-//	// Make mask 3D itk
-//	MaskImageType::Pointer maskimg;
-//	mitk::CastToItkImage<MaskImageType>(mask, maskimg);
-//
-//	//store near and far indices in vector to be passed to algo
-//	itk::ImageRegionIteratorWithIndex< MaskImageType > maskIt(maskimg, maskimg->GetLargestPossibleRegion());
-//	for (maskIt.GoToBegin(); !maskIt.IsAtEnd(); ++maskIt)
-//	{
-//		if (maskIt.Get() == 1)
-//		{
-//			nearIndices.push_back(maskIt.GetIndex());
-//		}
-//		else if (maskIt.Get() == 2)
-//			farIndices.push_back(maskIt.GetIndex());
-//	}
-//
-//	//// pass the arguments to algo, this does the actual calculation
-//	EGFRStatusParams = EGFRPredictor.PredictEGFRStatus<MaskImageType, ImageType>
-//		(imageItk, Perfusion_Registered, nearIndices, farIndices, CAPTK::ImageExtension::NIfTI);
-//
-//	// exit if results are empty
-//	if (EGFRStatusParams.empty())
-//	{
-//		MITK_ERROR << "PHI Estimation failed!";
-//		//return EXIT_FAILURE;
-//	}
-//
-//	if (verbose)
-//		MITK_INFO << "printing output";
-//
-//	// print output
-//	std::cout << " PHI Value = " << EGFRStatusParams[0] << std::endl;
-//	std::cout << " Peak Height Ratio = " << EGFRStatusParams[1] / EGFRStatusParams[2] << std::endl;
-//	std::cout << " # Near Voxels = " << EGFRStatusParams[3] << std::endl;
-//	std::cout << " # far voxels = " << EGFRStatusParams[4] << std::endl;
-//}
-
-/** \brief Example command-line app that demonstrates the example image filter
- *
- * This command-line app will take the first given image and add the
- * provided offset to each voxel.
+/** \brief PHI Estimator command-line app
  */
 
 int main(int argc, char* argv[])
@@ -204,16 +148,37 @@ int main(int argc, char* argv[])
 		}
 
 		std::vector<double> EGFRStatusParams;
-		AccessFixedDimensionByItk_n(inImage.GetPointer(), captk::PhiEstimator::RunPHIEstimation, 4, (maskImage, EGFRStatusParams));
+		using MaskImageType = itk::Image<float, 3>;
+		std::vector<MaskImageType::IndexType> nearIndices, farIndices;
+		AccessFixedDimensionByItk_n(inImage.GetPointer(), captk::PhiEstimator::Run, 4, (maskImage, nearIndices, farIndices, EGFRStatusParams));
 
 		if (verbose)
 			MITK_INFO << "printing output";
 
+		float phiThreshold = 0.1377;//this is a hard value
+
+		std::string tumorType;
+		//! if phi value less than threshold, then tumor type is mutant else wildtype
+		if (EGFRStatusParams[0] < phiThreshold) // threshold = 0.1377 
+			tumorType = "EGFRvIII-Mutant";
+		else
+			tumorType = "EGFRvIII-Wildtype";
+		
 		// print output
 		std::cout << " PHI Value = " << EGFRStatusParams[0] << std::endl;
-		std::cout << " Peak Height Ratio = " << EGFRStatusParams[1] / EGFRStatusParams[2] << std::endl;
-		std::cout << " # Near Voxels = " << EGFRStatusParams[3] << std::endl;
-		std::cout << " # far voxels = " << EGFRStatusParams[4] << std::endl;
+		std::cout << " (Near:Far)Peak Height Ratio = " << EGFRStatusParams[1] / EGFRStatusParams[2] << std::endl;
+		std::cout << " # Near Voxels Used = " << EGFRStatusParams[3] << "/" << nearIndices.size() << std::endl;
+		std::cout << " # far voxels Used = " << EGFRStatusParams[4] << "/" << farIndices.size() << std::endl;
+		std::cout << " PHI Threshold(based on 142 UPenn brain tumor scans) = " << std::fixed << setprecision(4) << phiThreshold << std::endl;
+		std::cout << "Based on this threshold and resulting PHI value the tumor type is = " << tumorType << std::endl;
+
+		//log output
+		MITK_INFO << " PHI Value = " << EGFRStatusParams[0] << std::endl;
+		MITK_INFO << " (Near:Far)Peak Height Ratio = " << EGFRStatusParams[1] / EGFRStatusParams[2] << std::endl;
+		MITK_INFO << " # Near Voxels Used = " << EGFRStatusParams[3] << "/" << nearIndices.size() << std::endl;
+		MITK_INFO << " # far voxels Used = " << EGFRStatusParams[4] << "/" << farIndices.size() << std::endl;
+		MITK_INFO << " PHI Threshold(based on 142 UPenn brain tumor scans) = " << std::fixed << setprecision(4) << phiThreshold << std::endl;
+		MITK_INFO << "Based on this threshold and resulting PHI value the tumor type is = " << tumorType << std::endl;
 	}
 	catch (const std::exception &e)
 	{
@@ -225,5 +190,7 @@ int main(int argc, char* argv[])
 		MITK_ERROR << "Unexpected error!";
 		return EXIT_FAILURE;
 	}
+
+	MITK_INFO << "Done";
 	return EXIT_SUCCESS;
 }
