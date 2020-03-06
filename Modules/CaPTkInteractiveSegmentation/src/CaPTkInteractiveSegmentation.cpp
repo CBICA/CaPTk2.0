@@ -254,6 +254,10 @@ void CaPTkInteractiveSegmentation::OnAlgorithmFinished()
 				{
 					it->Value()->SetVisibility(false);
 				}
+				else if (name.rfind("Segmentation", 0) == 0) // Starts with
+				{
+					it->Value()->SetVisibility(false);
+				}
 			}
 		}
 
