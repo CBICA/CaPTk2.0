@@ -16,10 +16,10 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 #include <mitkCommandLineParser.h>
 #include <mitkIOUtil.h>
+#include <mitkImageToItk.h>
 
 #include <EGFRvIIISurrogateIndex.h>
 #include <EGFRStatusPredictor.h>
-#include <mitkImageToItk.h>
 
 #include "itkCastImageFilter.h"
 
@@ -129,11 +129,29 @@ int main(int argc, char* argv[])
 		if (verbose)
 			MITK_INFO << "Run PHI Estimation";
 
+		if (verbose)
+			MITK_INFO << "Check input image dimensions";
+		
+		if (inImage->GetDimension() != 4)
+		{
+			MITK_ERROR << "Input Image must be 4D only" << "\"!";
+			return EXIT_FAILURE;
+		}
+
+		if (verbose)
+			MITK_INFO << "Check input mask dimensions";
+		
+		if (maskImage->GetDimension() != 3)
+		{
+			MITK_ERROR << "Mask Image must be 3D only" << "\"!";
+			return EXIT_FAILURE;
+		}
+
 		// PHI Estimation starts from here
 
 		// TODO: some cleanup could be done below
 		// TODO: it should handle all image types
-		VectorDouble EGFRStatusParams;
+		std::vector<double> EGFRStatusParams;
 		EGFRStatusPredictor EGFRPredictor;
 		using ImageType = itk::Image<float, 3>;
 		typedef itk::Image<unsigned short, 3> MaskImageType;
@@ -141,13 +159,20 @@ int main(int argc, char* argv[])
 		typedef itk::Image<short, 4> PerfusionImageType;
 		MaskImageType::Pointer maskimg;
 		Float4DImage::Pointer perfImg;
-		std::vector<ImageType::Pointer> Perfusion_Registered;
+		std::vector<ImageType::Pointer> Perfusion_Registered; // don't know where this is used in the algo, although the algo needs it
 		std::vector<ImageType::IndexType> nearIndices, farIndices;
 
 		// cast from mitk to itk image
 		maskimg = mitk::ImageToItkImage<unsigned short, 3>(maskImage);
-		PerfusionImageType::Pointer pimg = mitk::ImageToItkImage<short, 4>(inImage);
 
+		// we first convert the input image to short 4D ITK image, because direct conversion to float 4D
+		// with MITK seems tricky. This works in case of sample data because sample data is of type 'short'
+		// but may give wrong results for other images
+
+		//TODO: needs deeper look to directly convert to float 4D and to handle all input image types
+	    PerfusionImageType::Pointer pimg = mitk::ImageToItkImage<short, 4>(inImage);
+
+		// we then cast this short 4D image to float 4d as the algo needs this
 		// cast to float 4D image(algo needs this)
 		typedef itk::CastImageFilter<PerfusionImageType, Float4DImage> CastFilterType;
 		auto castFilter = CastFilterType::New();
@@ -199,4 +224,5 @@ int main(int argc, char* argv[])
 		MITK_ERROR << "Unexpected error!";
 		return EXIT_FAILURE;
 	}
+	return EXIT_SUCCESS;
 }
