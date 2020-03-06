@@ -5,7 +5,7 @@
   <extension point="org.blueberry.ui.views">
 
     <view id="upenn.cbica.captk.views.training"
-      name="CaPTk Training Plugin"
+      name="Training Plugin"
       category="Radiomics"
       icon="resources/training_plugin.svg"
       class="QmitkCaPTkTrainingView" />

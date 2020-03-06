@@ -104,7 +104,7 @@ SurvivalPredictionModuleAlgorithm::Run(
         res = std::make_tuple(true, ""); // if nothing was thrown, we succeeded
 
     }
-    catch (std::exception error) { // catch error strings thrown by underlying functions
+    catch (const std::exception& error) { // catch error strings thrown by underlying functions
         std::string errorMessage = error.what();
         res = std::make_tuple(false, errorMessage);
         MITK_ERROR << errorMessage;
