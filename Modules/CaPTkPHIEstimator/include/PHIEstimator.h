@@ -35,62 +35,56 @@ namespace captk
 /** \brief Runs PHI Estimation algorithm 
  * \param imageItk the input ITK image
  * \param mask mitk mask image
- * \param verbose, parameter for logging
- * \param results, std::vector of results as double
+ * \param EGFRStatusParams, std::vector of results as double
  */
-template <class TPixel, unsigned int VDim>
-MITKCAPTKPHIESTIMATOR_EXPORT
-void RunPHIEstimation(itk::Image<TPixel, VDim>* imageItk, mitk::Image::Pointer& mask, bool& verbose)
+class MITKCAPTKPHIESTIMATOR_EXPORT PhiEstimator
 {
-	using ImageType     = itk::Image<TPixel, VDim>;
-	using MaskImageType = itk::Image<float, 3>;
-
-	// PHI Estimation starts from here
-
-	// TODO: some cleanup could be done below
-	// TODO: it should handle all image types
-	std::vector<double> EGFRStatusParams;
-	EGFRStatusPredictor EGFRPredictor;
-
-	std::vector<MaskImageType::Pointer> Perfusion_Registered; // don't know where this is used in the algo, although the algo needs it
-	std::vector<MaskImageType::IndexType> nearIndices, farIndices;
-
-	// Make mask 3D itk
-	MaskImageType::Pointer maskimg;
-	mitk::CastToItkImage<MaskImageType>(mask, maskimg);
-
-	//store near and far indices in vector to be passed to algo
-	itk::ImageRegionIteratorWithIndex< MaskImageType > maskIt(maskimg, maskimg->GetLargestPossibleRegion());
-	for (maskIt.GoToBegin(); !maskIt.IsAtEnd(); ++maskIt)
+public:
+	template <class TPixel, unsigned int VDim>
+	static void RunPHIEstimation(itk::Image<TPixel, VDim>* imageItk, 
+		mitk::Image::Pointer& mask, 
+	std::vector<double>& EGFRStatusParams)
 	{
-		if (maskIt.Get() == 1)
+		using ImageType = itk::Image<TPixel, VDim>;
+		using MaskImageType = itk::Image<float, 3>;
+
+		// PHI Estimation starts from here
+
+		EGFRStatusPredictor EGFRPredictor;
+
+		std::vector<MaskImageType::Pointer> Perfusion_Registered; // don't know where this is used in the algo, although the algo needs it
+		std::vector<MaskImageType::IndexType> nearIndices, farIndices;
+
+		// Make mask 3D itk
+		MaskImageType::Pointer maskimg;
+		mitk::CastToItkImage<MaskImageType>(mask, maskimg);
+
+		//store near and far indices in vector to be passed to algo
+		itk::ImageRegionIteratorWithIndex< MaskImageType > maskIt(maskimg, maskimg->GetLargestPossibleRegion());
+		for (maskIt.GoToBegin(); !maskIt.IsAtEnd(); ++maskIt)
 		{
-			nearIndices.push_back(maskIt.GetIndex());
+			if (maskIt.Get() == 1)
+			{
+				nearIndices.push_back(maskIt.GetIndex());
+			}
+			else if (maskIt.Get() == 2)
+				farIndices.push_back(maskIt.GetIndex());
 		}
-		else if (maskIt.Get() == 2)
-			farIndices.push_back(maskIt.GetIndex());
+
+		// pass the arguments to algo, this does the actual calculation
+		EGFRStatusParams = EGFRPredictor.PredictEGFRStatus<MaskImageType, ImageType>
+			(imageItk, Perfusion_Registered, nearIndices, farIndices, CAPTK::ImageExtension::NIfTI);
+
+		// exit if results are empty
+		if (EGFRStatusParams.empty())
+		{
+			MITK_ERROR << "PHI Estimation failed!";
+			throw("PHI Estimation failed!");
+		}
+
 	}
 
-	//// pass the arguments to algo, this does the actual calculation
-	EGFRStatusParams = EGFRPredictor.PredictEGFRStatus<MaskImageType, ImageType>
-		(imageItk, Perfusion_Registered, nearIndices, farIndices, CAPTK::ImageExtension::NIfTI);
+};//class
 
-	// exit if results are empty
-	if (EGFRStatusParams.empty())
-	{
-		MITK_ERROR << "PHI Estimation failed!";
-		//return EXIT_FAILURE;
-	}
-
-	if (verbose)
-		MITK_INFO << "printing output";
-
-	// print output
-	std::cout << " PHI Value = " << EGFRStatusParams[0] << std::endl;
-	std::cout << " Peak Height Ratio = " << EGFRStatusParams[1] / EGFRStatusParams[2] << std::endl;
-	std::cout << " # Near Voxels = " << EGFRStatusParams[3] << std::endl;
-	std::cout << " # far voxels = " << EGFRStatusParams[4] << std::endl;
-}
-
-}
+}//namespace
 #endif//PhiEstimator_h

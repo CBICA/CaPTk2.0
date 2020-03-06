@@ -203,7 +203,17 @@ int main(int argc, char* argv[])
 			return EXIT_FAILURE;
 		}
 
-		AccessFixedDimensionByItk_n(inImage.GetPointer(), captk::RunPHIEstimation, 4, (maskImage, verbose));
+		std::vector<double> EGFRStatusParams;
+		AccessFixedDimensionByItk_n(inImage.GetPointer(), captk::PhiEstimator::RunPHIEstimation, 4, (maskImage, EGFRStatusParams));
+
+		if (verbose)
+			MITK_INFO << "printing output";
+
+		// print output
+		std::cout << " PHI Value = " << EGFRStatusParams[0] << std::endl;
+		std::cout << " Peak Height Ratio = " << EGFRStatusParams[1] / EGFRStatusParams[2] << std::endl;
+		std::cout << " # Near Voxels = " << EGFRStatusParams[3] << std::endl;
+		std::cout << " # far voxels = " << EGFRStatusParams[4] << std::endl;
 	}
 	catch (const std::exception &e)
 	{
