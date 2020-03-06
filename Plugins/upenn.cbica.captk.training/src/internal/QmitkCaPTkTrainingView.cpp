@@ -57,7 +57,7 @@ const std::string QmitkCaPTkTrainingView::VIEW_ID = "upenn.cbica.captk.views.tra
 QmitkCaPTkTrainingView::QmitkCaPTkTrainingView()
   : m_Parent(nullptr)
 {
-  m_CaPTkTraining = new CaPTkTraining(this);
+  m_CaPTkTraining = new captk::Training(this);
 }
 
 QmitkCaPTkTrainingView::~QmitkCaPTkTrainingView()

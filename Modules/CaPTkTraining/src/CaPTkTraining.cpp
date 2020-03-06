@@ -8,14 +8,19 @@
 
 #include "CaPTkTrainingAlgorithm.h"
 
-CaPTkTraining::CaPTkTraining(
+captk::Training::Training(
 	QObject *parent)
 	: QObject(parent)
 {
 	connect(&m_Watcher, SIGNAL(finished()), this, SLOT(OnAlgorithmFinished()));
 }
 
-void CaPTkTraining::Run(
+captk::Training::~Training()
+{
+	
+}
+
+void captk::Training::Run(
 	QString featuresCsvPath,
 	QString responsesCsvPath,
 	QString classificationKernelStr,
@@ -25,7 +30,7 @@ void CaPTkTraining::Run(
 	QString modelDirPath,
 	QString outputDirPath)
 {
-	std::cout << "[CaPTkTraining::Run]\n";
+	std::cout << "[captk::Training::Run]\n";
 
 	/* ---- Check if it's already running ---- */
 
@@ -66,7 +71,7 @@ void CaPTkTraining::Run(
 	// std::bind is used because normally
 	// QtConcurrent::run accepts max=5 function arguments
 	m_FutureResult = QtConcurrent::run(std::bind(
-		&CaPTkTraining::RunThread, this,
+		&captk::Training::RunThread, this,
 		featuresCsvPath,
 		responsesCsvPath,
 		classificationKernelStr,
@@ -79,14 +84,14 @@ void CaPTkTraining::Run(
 	m_Watcher.setFuture(m_FutureResult);
 }
 
-void CaPTkTraining::SetProgressBar(QProgressBar* progressBar)
+void captk::Training::SetProgressBar(QProgressBar* progressBar)
 {
 	m_ProgressBar = progressBar;
 }
 
-void CaPTkTraining::OnAlgorithmFinished()
+void captk::Training::OnAlgorithmFinished()
 {
-	std::cout << "[CaPTkTraining::OnAlgorithmFinished]\n";
+	std::cout << "[captk::Training::OnAlgorithmFinished]\n";
 
 	if (m_FutureResult.result().ok)
 	{
@@ -105,8 +110,8 @@ void CaPTkTraining::OnAlgorithmFinished()
 	m_IsRunning = false;
 }
 
-CaPTkTraining::Result
-CaPTkTraining::RunThread(
+captk::Training::Result
+captk::Training::RunThread(
 	QString& featuresCsvPath,
 	QString& responsesCsvPath,
 	QString& classificationKernelStr,
@@ -116,14 +121,14 @@ CaPTkTraining::RunThread(
 	QString& modelDirPath,
 	QString& outputDirPath)
 {
-	std::cout << "[CaPTkTraining::RunThread]\n";
+	std::cout << "[captk::Training::RunThread]\n";
 
-	CaPTkTraining::Result runResult;
+	captk::Training::Result runResult;
 
 	int classificationKernel = (classificationKernelStr.contains("Linear", Qt::CaseInsensitive)) ?
 		1 : 2;
 
-	int configuration;
+	int configuration = 0;
 	if (configurationStr.contains("Cross", Qt::CaseInsensitive))
 	{
 		configuration = 1;
@@ -159,7 +164,7 @@ CaPTkTraining::RunThread(
 		return runResult;
 	}
 
-	captk::TrainingModuleAlgorithm algorithm = captk::TrainingModuleAlgorithm();
+	captk::TrainingAlgorithm algorithm = captk::TrainingAlgorithm();
 	auto resAlgorithm = algorithm.Run(
 		featuresCsvPath.toStdString(),
 		responsesCsvPath.toStdString(),
