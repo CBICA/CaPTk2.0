@@ -17,6 +17,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <mitkCommandLineParser.h>
 #include <mitkIOUtil.h>
 #include <mitkImageToItk.h>
+#include <mitkImageAccessByItk.h>
 
 #include <EGFRvIIISurrogateIndex.h>
 #include <EGFRStatusPredictor.h>
@@ -25,6 +26,18 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 #include <algorithm>
 #include <string>
+
+template <class TPixel, unsigned int VDim>
+void Run(itk::Image<TPixel,VDim>* imageItk, mitk::Image::Pointer& mask, bool& verbose)
+{
+	imageItk = imageItk;
+	mask = mask;
+	verbose = verbose;
+	std::cout << "Hello\n";
+
+	itk::Image<unsigned short, 3>::Pointer maskItk;
+	maskItk = mitk::ImageToItkImage<unsigned short, 3>(mask);
+}
 
 /** \brief Example command-line app that demonstrates the example image filter
  *
@@ -147,70 +160,73 @@ int main(int argc, char* argv[])
 			return EXIT_FAILURE;
 		}
 
-		// PHI Estimation starts from here
+		AccessByItk_n(inImage, Run, (maskImage, verbose));
+		// AccessByItk(inImage, Run);
 
-		// TODO: some cleanup could be done below
-		// TODO: it should handle all image types
-		std::vector<double> EGFRStatusParams;
-		EGFRStatusPredictor EGFRPredictor;
-		using ImageType = itk::Image<float, 3>;
-		typedef itk::Image<unsigned short, 3> MaskImageType;
-		typedef itk::Image<float, 4> Float4DImage;
-		typedef itk::Image<short, 4> PerfusionImageType;
-		MaskImageType::Pointer maskimg;
-		Float4DImage::Pointer perfImg;
-		std::vector<ImageType::Pointer> Perfusion_Registered; // don't know where this is used in the algo, although the algo needs it
-		std::vector<ImageType::IndexType> nearIndices, farIndices;
+		// // PHI Estimation starts from here
 
-		// cast from mitk to itk image
-		maskimg = mitk::ImageToItkImage<unsigned short, 3>(maskImage);
+		// // TODO: some cleanup could be done below
+		// // TODO: it should handle all image types
+		// std::vector<double> EGFRStatusParams;
+		// EGFRStatusPredictor EGFRPredictor;
+		// using ImageType = itk::Image<float, 3>;
+		// typedef itk::Image<unsigned short, 3> MaskImageType;
+		// typedef itk::Image<float, 4> Float4DImage;
+		// typedef itk::Image<short, 4> PerfusionImageType;
+		// MaskImageType::Pointer maskimg;
+		// Float4DImage::Pointer perfImg;
+		// std::vector<ImageType::Pointer> Perfusion_Registered; // don't know where this is used in the algo, although the algo needs it
+		// std::vector<ImageType::IndexType> nearIndices, farIndices;
 
-		// we first convert the input image to short 4D ITK image, because direct conversion to float 4D
-		// with MITK seems tricky. This works in case of sample data because sample data is of type 'short'
-		// but may give wrong results for other images
+		// // cast from mitk to itk image
+		// maskimg = mitk::ImageToItkImage<unsigned short, 3>(maskImage);
 
-		//TODO: needs deeper look to directly convert to float 4D and to handle all input image types
-	    PerfusionImageType::Pointer pimg = mitk::ImageToItkImage<short, 4>(inImage);
+		// // we first convert the input image to short 4D ITK image, because direct conversion to float 4D
+		// // with MITK seems tricky. This works in case of sample data because sample data is of type 'short'
+		// // but may give wrong results for other images
 
-		// we then cast this short 4D image to float 4d as the algo needs this
-		// cast to float 4D image(algo needs this)
-		typedef itk::CastImageFilter<PerfusionImageType, Float4DImage> CastFilterType;
-		auto castFilter = CastFilterType::New();
-		castFilter->SetInput(pimg);
-		castFilter->Update();
-		perfImg = castFilter->GetOutput();
+		// //TODO: needs deeper look to directly convert to float 4D and to handle all input image types
+	    // PerfusionImageType::Pointer pimg = mitk::ImageToItkImage<short, 4>(inImage);
 
-		//store near and far indices in vector to be passed to algo
-		itk::ImageRegionIteratorWithIndex< MaskImageType > maskIt(maskimg, maskimg->GetLargestPossibleRegion());
-		for (maskIt.GoToBegin(); !maskIt.IsAtEnd(); ++maskIt)
-		{
-			if (maskIt.Get() == 1)
-			{
-				nearIndices.push_back(maskIt.GetIndex());
-			}
-			else if (maskIt.Get() == 2)
-				farIndices.push_back(maskIt.GetIndex());
-		}
+		// // we then cast this short 4D image to float 4d as the algo needs this
+		// // cast to float 4D image(algo needs this)
+		// typedef itk::CastImageFilter<PerfusionImageType, Float4DImage> CastFilterType;
+		// auto castFilter = CastFilterType::New();
+		// castFilter->SetInput(pimg);
+		// castFilter->Update();
+		// perfImg = castFilter->GetOutput();
 
-		// pass the arguments to algo, this does the actual calculation
-		EGFRStatusParams = EGFRPredictor.PredictEGFRStatus<ImageTypeFloat3D, Float4DImage>
-			(perfImg, Perfusion_Registered, nearIndices, farIndices, CAPTK::ImageExtension::NIfTI);
+		// //store near and far indices in vector to be passed to algo
+		// itk::ImageRegionIteratorWithIndex< MaskImageType > maskIt(maskimg, maskimg->GetLargestPossibleRegion());
+		// for (maskIt.GoToBegin(); !maskIt.IsAtEnd(); ++maskIt)
+		// {
+		// 	if (maskIt.Get() == 1)
+		// 	{
+		// 		nearIndices.push_back(maskIt.GetIndex());
+		// 	}
+		// 	else if (maskIt.Get() == 2)
+		// 		farIndices.push_back(maskIt.GetIndex());
+		// }
 
-		// exit if results are empty
-		if (EGFRStatusParams.empty())
-		{
-			MITK_ERROR << "PHI Estimation failed!";
-			return EXIT_FAILURE;
-		}
+		// // pass the arguments to algo, this does the actual calculation
+		// EGFRStatusParams = EGFRPredictor.PredictEGFRStatus<ImageTypeFloat3D, Float4DImage>
+		// 	(perfImg, Perfusion_Registered, nearIndices, farIndices, CAPTK::ImageExtension::NIfTI);
 
-		if (verbose)
-			MITK_INFO << "printing output";
+		// // exit if results are empty
+		// if (EGFRStatusParams.empty())
+		// {
+		// 	MITK_ERROR << "PHI Estimation failed!";
+		// 	return EXIT_FAILURE;
+		// }
 
-		// print output
-		std::cout << " PHI Value = " << EGFRStatusParams[0] << std::endl;
-		std::cout << " Peak Height Ratio = " << EGFRStatusParams[1] / EGFRStatusParams[2] << std::endl;
-		std::cout << " # Near Voxels = " << EGFRStatusParams[3] << std::endl;
-		std::cout << " # far voxels = " << EGFRStatusParams[4] << std::endl;
+		// if (verbose)
+		// 	MITK_INFO << "printing output";
+
+		// // print output
+		// std::cout << " PHI Value = " << EGFRStatusParams[0] << std::endl;
+		// std::cout << " Peak Height Ratio = " << EGFRStatusParams[1] / EGFRStatusParams[2] << std::endl;
+		// std::cout << " # Near Voxels = " << EGFRStatusParams[3] << std::endl;
+		// std::cout << " # far voxels = " << EGFRStatusParams[4] << std::endl;
 
 		return EXIT_SUCCESS;
 	}
