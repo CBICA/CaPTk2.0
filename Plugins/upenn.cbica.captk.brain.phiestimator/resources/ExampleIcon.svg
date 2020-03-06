@@ -9,13 +9,13 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="256"
-   height="256"
-   viewBox="0 0 67.733332 67.733335"
+   width="1024"
+   height="1024"
+   viewBox="0 0 270.93333 270.93334"
    version="1.1"
    id="svg8"
-   inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
-   sodipodi:docname="ExampleIcon.svg">
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="icon.svg">
   <defs
      id="defs2" />
   <sodipodi:namedview
@@ -25,17 +25,17 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.4"
-     inkscape:cx="-175.33741"
-     inkscape:cy="25.672415"
+     inkscape:zoom="0.35"
+     inkscape:cx="539.42857"
+     inkscape:cy="537.14286"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="layer1-3"
      showgrid="false"
      units="px"
-     inkscape:window-width="2560"
-     inkscape:window-height="1377"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
+     inkscape:window-width="1366"
+     inkscape:window-height="702"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
      inkscape:window-maximized="1" />
   <metadata
      id="metadata5">
@@ -53,21 +53,28 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0,-229.26665)">
-    <rect
-       style="fill:#00ff00;fill-opacity:1;stroke:none;stroke-width:3.17499995;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect815"
-       width="66.675003"
-       height="66.675003"
-       x="0.52916664"
-       y="229.79581"
-       rx="4.2333331"
-       ry="4.2333331" />
-    <circle
-       style="fill:#ff00ff;fill-opacity:1;stroke:none;stroke-width:3.17499995;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="path823"
-       cx="33.866665"
-       cy="263.13333"
-       r="25.4" />
+     transform="translate(0,-26.06665)">
+    <g
+       transform="translate(7.9374869,-7.9374851)"
+       id="layer1-3"
+       inkscape:label="Layer 1">
+      <circle
+         r="121.33036"
+         style="fill:#e4c480;stroke-width:0.46923336"
+         cy="169.62201"
+         cx="128.13394"
+         id="path3721" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:13.36369705px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#009100;fill-opacity:1;stroke:none;stroke-width:0.33409244;"
+         x="49.934597"
+         y="220.30495"
+         id="text28"><tspan
+           sodipodi:role="line"
+           id="tspan26"
+           x="49.934597"
+           y="220.30495"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:245.00111389px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#009100;stroke-width:0.33409244;">φ</tspan></text>
+    </g>
   </g>
 </svg>
