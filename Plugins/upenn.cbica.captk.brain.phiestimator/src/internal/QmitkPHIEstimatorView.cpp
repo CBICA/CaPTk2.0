@@ -22,6 +22,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <mitkNodePredicateProperty.h>
 #include <mitkNodePredicateOr.h>
 #include <mitkImageAccessByItk.h>
+#include <mitkLabelSetImage.h>
 
 #include <usModuleRegistry.h>
 
@@ -96,6 +97,8 @@ QmitkPHIEstimatorView::~QmitkPHIEstimatorView()
 
 void QmitkPHIEstimatorView::CreateQtPartControl(QWidget* parent)
 {
+	m_Parent = parent;
+
 	// Setting up the UI is a true pleasure when using .ui files, isn't it?
 	m_Controls.setupUi(parent);
 	m_Controls.groupBox_Result->hide();
@@ -220,7 +223,7 @@ void QmitkPHIEstimatorView::ProcessSelectedImage()
 	}
 
 	// Something is selected and it contains data, but is it an image?
-	mitk::Image::Pointer maskimage = dynamic_cast<mitk::Image*>(wdata.GetPointer());
+	mitk::LabelSetImage::Pointer maskimage = dynamic_cast<mitk::LabelSetImage*>(wdata.GetPointer());
 	if (maskimage.IsNull())
 	{
 		QMessageBox::information(nullptr, "New PHI Estimator Session", "Please load a seed image before starting some action.");
@@ -230,7 +233,19 @@ void QmitkPHIEstimatorView::ProcessSelectedImage()
 	std::vector<double> EGFRStatusParams;
 	using MaskImageType = itk::Image<float, 3>;
 	std::vector<MaskImageType::IndexType> nearIndices, farIndices;
-	AccessFixedDimensionByItk_n(rimage.GetPointer(), captk::PhiEstimator::Run, 4, (maskimage, nearIndices, farIndices, EGFRStatusParams));
+	
+	try
+	{
+		AccessFixedDimensionByItk_n(rimage.GetPointer(), captk::PhiEstimator::Run, 4, 
+			(maskimage, nearIndices, farIndices, EGFRStatusParams)
+		);
+	}
+	catch (const std::exception& e)
+	{
+		QMessageBox::critical(
+			m_Parent, "Problems during execution of PHI Estimator", e.what());
+		return;
+	}
 
 	float phiThreshold = 0.1377;//this is a hard value
 

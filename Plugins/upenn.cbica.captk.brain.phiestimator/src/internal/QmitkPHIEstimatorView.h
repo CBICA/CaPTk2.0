@@ -82,6 +82,8 @@ private:
   // of our view.
   Ui::PHIEstimatorViewControls m_Controls;
 
+  QWidget* m_Parent;
+
   mitk::DataNode::Pointer m_ReferenceNode;
   mitk::DataNode::Pointer m_WorkingNode;
 
