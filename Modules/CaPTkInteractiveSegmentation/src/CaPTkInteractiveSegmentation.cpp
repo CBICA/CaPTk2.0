@@ -3,6 +3,7 @@
 #include <mitkImageCast.h>
 #include <mitkConvert2Dto3DImageFilter.h>
 #include <mitkDataStorage.h>
+#include <mitkRenderingManager.h>
 #include <mitkNodePredicateAnd.h>
 #include <mitkNodePredicateDataType.h>
 #include <mitkNodePredicateNot.h>
@@ -236,6 +237,8 @@ void CaPTkInteractiveSegmentation::OnAlgorithmFinished()
 {
 	std::cout << "[CaPTkInteractiveSegmentation::OnAlgorithmFinished]\n";
 
+	mitk::DataNode::Pointer node;
+
 	if (m_FutureResult.result().ok)
 	{
 		/* ---- Make seeds invisible ---- */
@@ -255,11 +258,12 @@ void CaPTkInteractiveSegmentation::OnAlgorithmFinished()
 		}
 
 		/* ---- Add segmentation ---- */
-		mitk::DataNode::Pointer node = mitk::DataNode::New();
+		node = mitk::DataNode::New();
 		node->SetData(m_FutureResult.result().segmentation);
 		node->SetName(FindNextAvailableSegmentationName());
 		node->SetBoolProperty("captk.interactive.segmentation.output", true);
 		m_DataStorage->Add(node);
+		node->SetVisibility(true);
 	}
 	else
 	{
@@ -270,6 +274,35 @@ void CaPTkInteractiveSegmentation::OnAlgorithmFinished()
 		msgError.setWindowTitle("CaPTk Interactive Segmentation Error!");
 		msgError.exec();
 	}
+
+	m_FutureResult = QFuture<Result>(); // Don't keep the results indefinitely
+
+	// Change the layer of every image to 1
+	auto predicateIsImage = // Predicate to find if node is mitk::Image
+		mitk::TNodePredicateDataType<mitk::Image>::New();
+	auto predicatePropertyIsHelper = // Predicate property to find if node is a helper object
+		mitk::NodePredicateProperty::New("helper object");
+	auto predicateFinal = mitk::NodePredicateAnd::New();
+	predicateFinal->AddPredicate(predicateIsImage);
+	predicateFinal->AddPredicate(
+		mitk::NodePredicateNot::New(predicatePropertyIsHelper));
+	mitk::DataStorage::SetOfObjects::ConstPointer all =
+		m_DataStorage->GetSubset(predicateFinal);
+	for (mitk::DataStorage::SetOfObjects::ConstIterator it = all->Begin();
+		 it != all->End(); 
+		 ++it)
+	{
+		if (it->Value().IsNotNull())
+		{
+			it->Value()->SetProperty("layer", mitk::IntProperty::New(1));
+		}
+	}
+
+	mitk::RenderingManager::GetInstance()->RequestUpdateAll();
+	mitk::RenderingManager::GetInstance()->ForceImmediateUpdateAll();
+
+	node->SetProperty("layer", mitk::IntProperty::New(10));
+	mitk::RenderingManager::GetInstance()->RequestUpdateAll();
 
 	m_IsRunning = false;
 }
@@ -330,6 +363,7 @@ CaPTkInteractiveSegmentation::RunThread(std::vector<mitk::Image::Pointer> &image
 			runResult.segmentation = segm;
 		}
 
+		delete algorithm;
 		runResult.ok = result->ok;
 		runResult.errorMessage = result->errorMessage;
 	}
@@ -425,6 +459,7 @@ CaPTkInteractiveSegmentation::RunThread(std::vector<mitk::Image::Pointer> &image
 			runResult.segmentation = segm;
 		}
 
+		delete algorithm;
 		runResult.ok = result->ok;
 		runResult.errorMessage = result->errorMessage;
 	}
@@ -449,6 +484,8 @@ CaPTkInteractiveSegmentation::RunThread(std::vector<mitk::Image::Pointer> &image
 				{
 					it->second->SetColor(itR->second->GetColor());
 					it->second->SetName(itR->second->GetName());
+
+					segm->GetActiveLabelSet()->UpdateLookupTable(it->second->GetValue()); // Update it
 				}
 			}
 		}

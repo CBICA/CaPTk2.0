@@ -108,25 +108,25 @@ int main(int argc, char* argv[])
 
   if (parsedArgs["input"].Empty())
   {
-    std::cerr << parser.helpText();
+    MITK_ERROR << parser.helpText();
     return EXIT_FAILURE;
   }
 
   if (parsedArgs["radius"].Empty())
   {
-    std::cerr << parser.helpText();
+    MITK_ERROR << parser.helpText();
     return EXIT_FAILURE;
   }
 
   if (parsedArgs["step"].Empty())
   {
-    std::cerr << parser.helpText();
+    MITK_ERROR << parser.helpText();
     return EXIT_FAILURE;
   }
 
   if (parsedArgs["output-dir"].Empty())
   {
-    std::cerr << parser.helpText();
+    MITK_ERROR << parser.helpText();
     return EXIT_FAILURE;
   }
 
@@ -162,7 +162,7 @@ int main(int argc, char* argv[])
       mitk::LabelSetImage::Pointer rMask = mitk::LabelSetImage::New();
 
       // Each time rMask gets populated with one patch (containing one label)
-      std::cout << "Populating mask...\n";
+      MITK_INFO << "Populating mask...\n";
       float weight = constructor.PopulateMask(rMask);
 
       // Get the info of this mask and create the output path
@@ -177,7 +177,7 @@ int main(int argc, char* argv[])
                         QString(".nrrd");
 
       // Save image
-      std::cout << ">Saving ROI to: "
+      MITK_INFO << ">Saving ROI to: "
                 << outputPath.toStdString() << "\n";
       mitk::IOUtil::Save(rMask, outputPath.toStdString());
     }
@@ -188,7 +188,7 @@ int main(int argc, char* argv[])
   }
   catch (...)
   {
-    std::cerr << "Unexpected error!";
+    MITK_ERROR << "Unexpected error!";
    return EXIT_FAILURE;
   }
 }

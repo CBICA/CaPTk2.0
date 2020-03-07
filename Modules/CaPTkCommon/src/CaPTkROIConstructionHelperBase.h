@@ -19,59 +19,35 @@ namespace captk
 class MITKCAPTKCOMMON_EXPORT ROIConstructionHelperBase
 {
 public:
-    ROIConstructionHelperBase() {}
+    ROIConstructionHelperBase();
 
-    virtual ~ROIConstructionHelperBase() {}
+    virtual ~ROIConstructionHelperBase();
 
     virtual void Update(
-        float /*radius*/,
-        float /*step*/)
-    {
-        // Cannot have pure virtual because we want to use the base class
-    }
+        float radius,
+        float step
+    );
 
-    virtual void GoToBegin()
-    {
+    virtual void GoToBegin();
 
-    }
-
-    virtual bool IsAtEnd()
-    {
-        return true; // Return is required and we don't want this to be pure virtual
-    }
+    virtual bool IsAtEnd();
 
     virtual void SetValuesAndNames(
-        std::vector<int>         /*values*/,
-        std::vector<std::string> /*names*/)
-    {
-        
-    }
+        std::vector<int>         values,
+        std::vector<std::string> names
+    );
 
     /** \brief ++ overloading to go to the next lattice */
-    ROIConstructionHelperBase &operator++() // prefix
-    {
-        this->OnIncrement(); // call actual operation function
-        return *this;
-    }
+    ROIConstructionHelperBase& operator++(); // prefix
 
     /** \brief ++ overloading to go to the next lattice */
-    ROIConstructionHelperBase operator++(int) // postfix (calls suffix)
-    {
-        ROIConstructionHelperBase tmp(*this);
-        ++*this; // call suffix
-        return tmp;
-    }
+    ROIConstructionHelperBase operator++(int); // suffix (calls prefix)
 
-    virtual float PopulateMask(mitk::LabelSetImage::Pointer /*rMask*/)
-    {
-        return 0.0f; // Return is required and we don't want this to be pure virtual
-    }
+    virtual float PopulateMask(mitk::LabelSetImage::Pointer rMask);
 
 protected:
-    virtual void OnIncrement()
-    {
+    virtual void OnIncrement();
 
-    }
 };
 } // namespace captk
 
