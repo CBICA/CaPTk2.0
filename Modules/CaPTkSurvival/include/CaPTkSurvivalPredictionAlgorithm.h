@@ -241,8 +241,10 @@ protected:
       }
       catch (const std::exception& e1)
       {
-          MITK_ERROR << "Cannot find the file 'Survival_HMFeatures_Configuration.csv' in the input directory. Error code : " + std::string(e1.what());
-          throw std::string(e1.what()); // propagate error string to algorithm-running logic
+          throw std::runtime_error(
+                      "Cannot find the file 'Survival_HMFeatures_Configuration.csv' in the input directory. "
+                      "Error code : " + std::string(e1.what())
+                      ); // propagate error string to algorithm-running logic
       }
       MatrixType meanMatrix;
       VariableLengthVectorType mean;
@@ -262,8 +264,10 @@ protected:
       }
       catch (const std::exception& e1)
       {
-          MITK_ERROR << "Cannot find the file 'mean.csv' in the model directory. Error code : " + std::string(e1.what());
-          throw std::string(e1.what()); // propagate error string to algorithm-running logic
+          throw std::runtime_error(
+                      "Cannot find the file 'mean.csv' in the model directory. "
+                      "Error code : " + std::string(e1.what())
+                  );
       }
       MatrixType stdMatrix;
       try
@@ -282,7 +286,10 @@ protected:
       catch (const std::exception& e1)
       {
           MITK_ERROR << "Cannot find the file 'std.csv' in the model directory. Error code : " + std::string(e1.what());
-          throw std::string(e1.what()); // propagate error string to algorithm-running logic
+          throw std::runtime_error(
+                      "Cannot find the file 'std.csv' in the model directory. "
+                      "Error code : " + std::string(e1.what())
+                                  ); // propagate error string to algorithm-running logic
       }
       //----------------------------------------------------
       VariableSizeMatrixType FeaturesOfAllSubjects;
@@ -330,8 +337,7 @@ protected:
           }
           else
           {
-              MITK_ERROR<< "Error caught during testing: There is no existing model file in the model directory: " + modeldirectory;
-              throw std::string("No existing model file in directory " + modeldirectory); // propagate error message
+              throw std::runtime_error("No existing model file in directory " + modeldirectory); // propagate error message
           }
 
           results = CombineEstimates(result_6, result_18);
@@ -339,8 +345,11 @@ protected:
       }
       catch (itk::ExceptionObject & excp)
       {
-          MITK_ERROR << "Error caught during testing: " + std::string(excp.GetDescription());
-          throw std::string(excp.what()); // propagate error string to algorithm-running logic
+          throw std::runtime_error(
+                      "Error caught during testing: " +
+                      std::string(excp.GetDescription()) +
+                      excp.what()
+                      );
       }
       return results[0];
   }
@@ -761,8 +770,10 @@ protected:
       }
       catch (itk::ExceptionObject& e)
       {
-          MITK_ERROR << "Error caught while reading image: " << e.GetDescription();
-          throw std::string(e.what()); // propagate error string to the algorithm-running logic for catching
+          throw std::runtime_error(
+                      "Error caught while reading image: " +
+                      std::string(e.what())
+                      ); // propagate error string to the algorithm-running logic for catching
       }
 
 

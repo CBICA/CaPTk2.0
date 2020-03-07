@@ -5,7 +5,7 @@
   <extension point="org.blueberry.ui.views">
 
     <view id="upenn.cbica.captk.brain.survival"
-      name="CaPTk Survival Prediction Index"
+      name="Survival Prediction Index"
       category="Brain"
       icon="resources/icon.svg"
       class="QmitkCaPTkSurvivalView" />

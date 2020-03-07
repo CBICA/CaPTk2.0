@@ -21,6 +21,8 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <mitkNodePredicateNot.h>
 #include <mitkNodePredicateProperty.h>
 #include <mitkNodePredicateOr.h>
+#include <mitkImageAccessByItk.h>
+#include <mitkLabelSetImage.h>
 
 #include <usModuleRegistry.h>
 
@@ -30,6 +32,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 #include <EGFRvIIISurrogateIndex.h>
 #include <EGFRStatusPredictor.h>
+#include <PHIEstimator.h>
 
 #include "QmitkPHIEstimatorView.h"
 
@@ -47,28 +50,6 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include "CaPTkDefines.h"
 #include "itkImageDuplicator.h"
 #include "itkCastImageFilter.h"
-
-// namespace
-// {
-//   // Helper function to create a fully set up instance of our
-//   // ExampleImageInteractor, based on the state machine specified in Paint.xml
-//   // as well as its configuration in PaintConfig.xml. Both files are compiled
-//   // into ExtPHIEstimatorModule as resources.
-//   static ExampleImageInteractor::Pointer CreateExampleImageInteractor()
-//   {
-//     auto PHIEstimatorModule = us::ModuleRegistry::GetModule("MitkCaPTkPHIEstimator");
-
-//     if (nullptr != PHIEstimatorModule)
-//     {
-//       auto interactor = ExampleImageInteractor::New();
-//       interactor->LoadStateMachine("Paint.xml", PHIEstimatorModule);
-//       interactor->SetEventConfig("PaintConfig.xml", PHIEstimatorModule);
-//       return interactor;
-//     }
-
-//     return nullptr;
-//   }
-// }
 
 // Don't forget to initialize the VIEW_ID.
 const std::string QmitkPHIEstimatorView::VIEW_ID = "upenn.cbica.captk.views.phiestimator";
@@ -116,35 +97,37 @@ QmitkPHIEstimatorView::~QmitkPHIEstimatorView()
 
 void QmitkPHIEstimatorView::CreateQtPartControl(QWidget* parent)
 {
-  // Setting up the UI is a true pleasure when using .ui files, isn't it?
-  m_Controls.setupUi(parent);
-  m_Controls.groupBox_Result->hide();
+	m_Parent = parent;
 
-  // *------------------------
-  // * DATA SELECTION WIDGETS
-  // *------------------------
+	// Setting up the UI is a true pleasure when using .ui files, isn't it?
+	m_Controls.setupUi(parent);
+	m_Controls.groupBox_Result->hide();
 
-  m_Controls.m_cbReferenceNodeSelector->SetAutoSelectNewItems(true);
-  m_Controls.m_cbReferenceNodeSelector->SetPredicate(m_ReferencePredicate);
-  m_Controls.m_cbReferenceNodeSelector->SetDataStorage(this->GetDataStorage());
+	// *------------------------
+	// * DATA SELECTION WIDGETS
+	// *------------------------
 
-  m_Controls.m_cbWorkingNodeSelector->SetAutoSelectNewItems(true);
-  m_Controls.m_cbWorkingNodeSelector->SetPredicate(m_SegmentationPredicate);
-  m_Controls.m_cbWorkingNodeSelector->SetDataStorage(this->GetDataStorage());
+	m_Controls.m_cbReferenceNodeSelector->SetAutoSelectNewItems(true);
+	m_Controls.m_cbReferenceNodeSelector->SetPredicate(m_ReferencePredicate);
+	m_Controls.m_cbReferenceNodeSelector->SetDataStorage(this->GetDataStorage());
 
-  // signals/slots connections
-  connect(m_Controls.m_cbReferenceNodeSelector,
-	  SIGNAL(OnSelectionChanged(const mitk::DataNode *)),
-	  this,
-	  SLOT(OnReferenceSelectionChanged(const mitk::DataNode *)));
+	m_Controls.m_cbWorkingNodeSelector->SetAutoSelectNewItems(true);
+	m_Controls.m_cbWorkingNodeSelector->SetPredicate(m_SegmentationPredicate);
+	m_Controls.m_cbWorkingNodeSelector->SetDataStorage(this->GetDataStorage());
 
-  connect(m_Controls.m_cbWorkingNodeSelector,
-	  SIGNAL(OnSelectionChanged(const mitk::DataNode *)),
-	  this,
-	  SLOT(OnSegmentationSelectionChanged(const mitk::DataNode *)));
+	// signals/slots connections
+	connect(m_Controls.m_cbReferenceNodeSelector,
+		SIGNAL(OnSelectionChanged(const mitk::DataNode *)),
+		this,
+		SLOT(OnReferenceSelectionChanged(const mitk::DataNode *)));
 
-  // Wire up the UI widgets with our functionality.
-  connect(m_Controls.processImageButton, SIGNAL(clicked()), this, SLOT(ProcessSelectedImage()));
+	connect(m_Controls.m_cbWorkingNodeSelector,
+		SIGNAL(OnSelectionChanged(const mitk::DataNode *)),
+		this,
+		SLOT(OnSegmentationSelectionChanged(const mitk::DataNode *)));
+
+	// Wire up the UI widgets with our functionality.
+	connect(m_Controls.processImageButton, SIGNAL(clicked()), this, SLOT(ProcessSelectedImage()));
 }
 
 void QmitkPHIEstimatorView::ResetResults()
@@ -161,21 +144,21 @@ void QmitkPHIEstimatorView::ResetResults()
 
 void QmitkPHIEstimatorView::SetFocus()
 {
-  m_Controls.processImageButton->setFocus();
+	m_Controls.processImageButton->setFocus();
 }
 
 void QmitkPHIEstimatorView::OnSelectionChanged(berry::IWorkbenchPart::Pointer, const QList<mitk::DataNode::Pointer>& dataNodes)
 {
-  for (const auto& dataNode : dataNodes)
-  {
-    // Write robust code. Always check pointers before using them. If the
-    // data node pointer is null, the second half of our condition isn't
-    // even evaluated and we're safe (C++ short-circuit evaluation).
-    if (dataNode.IsNotNull() && nullptr != dynamic_cast<mitk::Image*>(dataNode->GetData()))
-    {
-      return;
-    }
-  }
+	for (const auto& dataNode : dataNodes)
+	{
+		// Write robust code. Always check pointers before using them. If the
+		// data node pointer is null, the second half of our condition isn't
+		// even evaluated and we're safe (C++ short-circuit evaluation).
+		if (dataNode.IsNotNull() && nullptr != dynamic_cast<mitk::Image*>(dataNode->GetData()))
+		{
+			return;
+		}
+	}
 
 }
 
@@ -193,10 +176,9 @@ void QmitkPHIEstimatorView::OnSegmentationSelectionChanged(const mitk::DataNode 
 
 void QmitkPHIEstimatorView::ProcessSelectedImage()
 {
-	typedef itk::Image<unsigned short, 3> MaskImageType;
-	typedef itk::Image<short, 4> PerfusionImageType;
+	//typedef itk::Image<unsigned short, 3> MaskImageType;
 	typedef itk::Image<float, 4> Float4DImage;
-	MaskImageType::Pointer maskimg;
+	//MaskImageType::Pointer maskimg;
 	Float4DImage::Pointer perfImg;
 
 	mitk::DataNode::Pointer referenceNode = m_Controls.m_cbReferenceNodeSelector->GetSelectedNode();
@@ -241,89 +223,57 @@ void QmitkPHIEstimatorView::ProcessSelectedImage()
 	}
 
 	// Something is selected and it contains data, but is it an image?
-	mitk::Image::Pointer maskimage = dynamic_cast<mitk::Image*>(wdata.GetPointer());
+	mitk::LabelSetImage::Pointer maskimage = dynamic_cast<mitk::LabelSetImage*>(wdata.GetPointer());
 	if (maskimage.IsNull())
 	{
 		QMessageBox::information(nullptr, "New PHI Estimator Session", "Please load a seed image before starting some action.");
 		return;
 	}
 
-		//typename PerfusionImageType::Pointer pimg = PerfusionImageType::New();
-		//mitk::CastToItkImage(image, pimg);
-		maskimg = mitk::ImageToItkImage<unsigned short, 3>(maskimage);
+	std::vector<double> EGFRStatusParams;
+	using MaskImageType = itk::Image<float, 3>;
+	std::vector<MaskImageType::IndexType> nearIndices, farIndices;
+	
+	try
+	{
+		AccessFixedDimensionByItk_n(rimage.GetPointer(), captk::PhiEstimator::Run, 4, 
+			(maskimage, nearIndices, farIndices, EGFRStatusParams)
+		);
+	}
+	catch (const std::exception& e)
+	{
+		QMessageBox::critical(
+			m_Parent, "Problems during execution of PHI Estimator", e.what());
+		return;
+	}
 
-		//auto writer1 = itk::ImageFileWriter<MaskImageType>::New();
-		//writer1->SetImageIO(itk::NiftiImageIO::New());
-		//writer1->SetInput(maskimg);
-		//writer1->SetFileName("imageMask.nii.gz");
-		//writer1->Write();
+	float phiThreshold = 0.1377;//this is a hard value
 
-      // We're finally using the ExampleImageFilter
- 
-	  //typename PerfusionImageType::Pointer pimg = PerfusionImageType::New();
-	  //mitk::CastToItkImage(image, pimg);
-	  PerfusionImageType::Pointer pimg = mitk::ImageToItkImage<short,4>(rimage);
+	QString tumorType;
+	//! if phi value less than threshold, then tumor type is mutant else wildtype
+	if (EGFRStatusParams[0] < phiThreshold) // threshold = 0.1377 
+		tumorType = "EGFRvIII-Mutant";
+	else
+		tumorType = "EGFRvIII-Wildtype";
 
-	  typedef itk::ImageDuplicator<PerfusionImageType> ImgDuplicator;
-	  ImgDuplicator::Pointer d = ImgDuplicator::New();
-	  d->SetInputImage(pimg);
-	  d->Update();
+	//log results
+	MITK_INFO << " PHI Value = " << EGFRStatusParams[0];
+	MITK_INFO << " (Near:Far)Peak Height Ratio = " << EGFRStatusParams[1] / EGFRStatusParams[2];
+	MITK_INFO << " # Near Voxels Used = " << EGFRStatusParams[3] << "/" << nearIndices.size() << std::endl;
+	MITK_INFO << " # far voxels Used = " << EGFRStatusParams[4] << "/" << farIndices.size() << std::endl;
+	MITK_INFO << " PHI Threshold(based on 142 UPenn brain tumor scans) = " << std::fixed << setprecision(4) << phiThreshold << std::endl;
+	MITK_INFO << " Based on this threshold and resulting PHI value the tumor type is = " << tumorType << std::endl;
 
-	  typedef itk::CastImageFilter<PerfusionImageType, Float4DImage> CastFilterType;
-	  auto castFilter = CastFilterType::New();
-	  castFilter->SetInput(d->GetOutput());
-	  castFilter->Update();
+	// update results to be shown in UI
+	m_Controls.PhiValue->setText(QString::number(EGFRStatusParams[0]));
+	m_Controls.PhiRatioValue->setText(QString::number(EGFRStatusParams[1] / EGFRStatusParams[2]));
+	m_Controls.NearROIVoxelsUsedValue->setText(QString::number(EGFRStatusParams[3]) + "/" + QString::number(nearIndices.size()));
+	m_Controls.FarROIVoxelsUsedValue->setText(QString::number(EGFRStatusParams[4]) + "/" + QString::number(farIndices.size()));
+	m_Controls.PHIThresholdValue->setText(QString::number(phiThreshold));
+	m_Controls.TumorTypeValue->setText(tumorType);
 
-	  perfImg = castFilter->GetOutput();
+	//make the results visible
+	m_Controls.groupBox_Result->show();
 
-	  //auto writer = itk::ImageFileWriter<Float4DImage>::New();
-	  //writer->SetImageIO(itk::NiftiImageIO::New());
-	  //writer->SetInput(perfImg);
-	  //writer->SetFileName("image4d.nii.gz");
-	  //writer->Write();
-	  
-	  VectorDouble EGFRStatusParams;
-	  EGFRStatusPredictor EGFRPredictor;
-	  using ImageType = itk::Image<float, 3>;
-	  std::vector<ImageType::Pointer> Perfusion_Registered;
-	  std::vector<ImageType::IndexType> nearIndices, farIndices;
-
-	  itk::ImageRegionIteratorWithIndex< MaskImageType > maskIt(maskimg, maskimg->GetLargestPossibleRegion());
-	  for (maskIt.GoToBegin(); !maskIt.IsAtEnd(); ++maskIt)
-	  {
-		  if (maskIt.Get() == 1)
-		  {
-			  nearIndices.push_back(maskIt.GetIndex());
-		  }
-		  else if (maskIt.Get() == 2)
-			  farIndices.push_back(maskIt.GetIndex());
-	  }
-	  //EGFRPredictor.SetInputImage(image);
-	  EGFRStatusParams = EGFRPredictor.PredictEGFRStatus<ImageTypeFloat3D, Float4DImage>
-		  (perfImg, Perfusion_Registered, nearIndices, farIndices, CAPTK::ImageExtension::NIfTI);
-
-	  MITK_INFO << " PHI Value = " << EGFRStatusParams[0];
-	  MITK_INFO << " Peak Height Ratio = " << EGFRStatusParams[1]/EGFRStatusParams[2];
-	  MITK_INFO << " # Near Voxels = " << EGFRStatusParams[3];
-	  MITK_INFO << " # far voxels = " << EGFRStatusParams[4];
-
-	  // update results to be shown in UI
-	  m_Controls.PhiValue->setText(QString::number(EGFRStatusParams[0]));
-	  m_Controls.PhiRatioValue->setText(QString::number(EGFRStatusParams[1] / EGFRStatusParams[2]));
-	  m_Controls.NearROIVoxelsUsedValue->setText(QString::number(EGFRStatusParams[3]) + "/" + QString::number(nearIndices.size()));
-	  m_Controls.FarROIVoxelsUsedValue->setText(QString::number(EGFRStatusParams[4]) + "/" + QString::number(farIndices.size()));
-	  m_Controls.PHIThresholdValue->setText(QString::number(0.1377));
-
-	  QString tumorType;
-	  //! if phi value less than threshold, then tumor type is mutant else wildtype
-	  if (EGFRStatusParams[0] < 0.1377) // threshold = 0.1377 
-		  tumorType = "EGFRvIII-Mutant";
-	  else
-		  tumorType = "EGFRvIII-Wildtype";
-
-	  m_Controls.TumorTypeValue->setText(tumorType);
-
-	  m_Controls.groupBox_Result->show();
-
-      MITK_INFO << "  done";
+	MITK_INFO << "Done";
 }
