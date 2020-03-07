@@ -21,7 +21,6 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <mitkImageAccessByItk.h>
 
 #include <EGFRvIIISurrogateIndex.h>
-#include <EGFRStatusPredictor.h>
 #include <PHIEstimator.h>
 
 #include "itkCastImageFilter.h"

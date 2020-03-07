@@ -23,22 +23,18 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <mitkNodePredicateOr.h>
 #include <mitkImageAccessByItk.h>
 #include <mitkLabelSetImage.h>
+#include <mitkImageCast.h>
+#include <mitkImageToItk.h>
+#include "mitkLabelSetImage.h"
 
 #include <usModuleRegistry.h>
 
 #include <QMessageBox>
 
-#include <ExampleImageInteractor.h>
-
 #include <EGFRvIIISurrogateIndex.h>
-#include <EGFRStatusPredictor.h>
 #include <PHIEstimator.h>
-
 #include "QmitkPHIEstimatorView.h"
-
-#include <mitkImageCast.h>
-#include <mitkImageToItk.h>
-#include "mitkLabelSetImage.h"
+#include "CaPTkDefines.h"
 
 #include <itkSmartPointer.h>
 #include <itkImage.h>
@@ -47,7 +43,6 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <itkImageFileWriter.h>
 #include <itkNiftiImageIO.h>
 #include <itkNiftiImageIOFactory.h>
-#include "CaPTkDefines.h"
 #include "itkImageDuplicator.h"
 #include "itkCastImageFilter.h"
 
