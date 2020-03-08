@@ -41,19 +41,21 @@ int main(int argc, char* argv[])
 	parser.setTitle("CaPTk PHI Estimator Cmd App");
 	parser.setContributor("CBICA");
 	parser.setDescription(
-		"This command-line app takes the given perfusion image and a near_far mask and calculates the PHI Value.");
+		"This command-line app takes the given perfusion image and a near_far mask and calculates the PHI Value.\n \
+Example Usage : CaPTkPHiEstimatorCmdApp.exe - i C:/DSC-MRI_data.nii.gz -m C:/Near_Far_masks.nii.gz -v");
 
 	// How should arguments be prefixed
 	parser.setArgumentPrefix("--", "-");
 
 	// Add arguments. Unless specified otherwise, each argument is optional.
 	// See mitkCommandLineParser::addArgument() for more information.
+	parser.beginGroup("Required parameters"); // required parameters
 	parser.addArgument(
 		"input",
 		"i",
 		mitkCommandLineParser::String,
 		"Input Perfusion image path",
-		"Path to the input perfusion image",
+		"Path to the input perfusion image.",
 		us::Any(),
 		false); // false -> required parameter
 
@@ -62,16 +64,19 @@ int main(int argc, char* argv[])
 		"m",
 		mitkCommandLineParser::String,
 		"Near Far Mask Image",
-		"Path to mask image.",
+		"Path to mask image, with near(1) and far(2) label.",
 		us::Any(),
 		false);
+	parser.endGroup();
 
+	parser.beginGroup("Optional parameters"); // optional parameters
 	parser.addArgument( // optional
 		"verbose",
 		"v",
 		mitkCommandLineParser::Bool,
 		"Verbose Output",
-		"Whether to produce verbose output");
+		"Whether to produce verbose output.");
+	parser.endGroup();
 
 	// Parse arguments. This method returns a mapping of long argument names to
 	// their values.
@@ -160,7 +165,14 @@ int main(int argc, char* argv[])
 		std::vector<double> EGFRStatusParams;
 		using MaskImageType = itk::Image<float, 3>;
 		std::vector<MaskImageType::IndexType> nearIndices, farIndices;
-		AccessFixedDimensionByItk_n(inImage.GetPointer(), captk::PhiEstimator::Run, 4, (maskImage, nearIndices, farIndices, EGFRStatusParams));
+		AccessFixedDimensionByItk_n(inImage.GetPointer(), //input perfusion image
+			captk::PhiEstimator::Run, //templated function to call
+			4,						  //templated function handles fixed dimension(4) images
+			(maskImage,				  //mask image passed to called function as parameter
+				nearIndices,		  //indices returned as reference from called function
+				farIndices,			  //indices returned as reference from called function
+				EGFRStatusParams)	  //result of PHI Estimation returned from called function
+		);
 
 		if (verbose)
 			MITK_INFO << "printing output";

@@ -231,8 +231,13 @@ void QmitkPHIEstimatorView::ProcessSelectedImage()
 	
 	try
 	{
-		AccessFixedDimensionByItk_n(rimage.GetPointer(), captk::PhiEstimator::Run, 4, 
-			(maskimage, nearIndices, farIndices, EGFRStatusParams)
+		AccessFixedDimensionByItk_n(rimage.GetPointer(), //input perfusion image
+			captk::PhiEstimator::Run, //templated function to call
+			4,						  //templated function handles fixed dimension(4) images
+			(maskimage,				  //mask image passed to called function as parameter
+				nearIndices,		  //indices returned as reference from called function
+				farIndices,			  //indices returned as reference from called function
+				EGFRStatusParams)	  //result of PHI Estimation returned from called function
 		);
 	}
 	catch (const std::exception& e)
