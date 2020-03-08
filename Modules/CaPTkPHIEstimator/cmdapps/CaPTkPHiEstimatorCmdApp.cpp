@@ -169,21 +169,13 @@ int main(int argc, char* argv[])
 		else
 			tumorType = "EGFRvIII-Wildtype";
 		
-		// print output
-		std::cout << " PHI Value = " << EGFRStatusParams[0] << std::endl;
-		std::cout << " (Near:Far)Peak Height Ratio = " << EGFRStatusParams[1] / EGFRStatusParams[2] << std::endl;
-		std::cout << " # Near Voxels Used = " << EGFRStatusParams[3] << "/" << nearIndices.size() << std::endl;
-		std::cout << " # far voxels Used = " << EGFRStatusParams[4] << "/" << farIndices.size() << std::endl;
-		std::cout << " PHI Threshold(based on 142 UPenn brain tumor scans) = " << std::fixed << setprecision(4) << phiThreshold << std::endl;
-		std::cout << "Based on this threshold and resulting PHI value the tumor type is = " << tumorType << std::endl;
-
 		//log output
 		MITK_INFO << " PHI Value = " << EGFRStatusParams[0] << std::endl;
 		MITK_INFO << " (Near:Far)Peak Height Ratio = " << EGFRStatusParams[1] / EGFRStatusParams[2] << std::endl;
 		MITK_INFO << " # Near Voxels Used = " << EGFRStatusParams[3] << "/" << nearIndices.size() << std::endl;
 		MITK_INFO << " # far voxels Used = " << EGFRStatusParams[4] << "/" << farIndices.size() << std::endl;
 		MITK_INFO << " PHI Threshold(based on 142 UPenn brain tumor scans) = " << std::fixed << setprecision(4) << phiThreshold << std::endl;
-		MITK_INFO << "Based on this threshold and resulting PHI value the tumor type is = " << tumorType << std::endl;
+		MITK_INFO << " Based on this threshold and resulting PHI value the tumor type is = " << tumorType << std::endl;
 	}
 	catch (const std::exception &e)
 	{
