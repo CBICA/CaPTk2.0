@@ -118,11 +118,16 @@ int main(int argc, char* argv[])
 
 		// read near far mask
 		mitk::LabelSetImage::Pointer maskImage = mitk::LabelSetImage::New();
-		{
-			mitk::Image::Pointer maskImageTmp =
-				mitk::IOUtil::Load<mitk::Image>(maskFilename);
-			maskImage->InitializeByLabeledImage(maskImageTmp);
-		}
+
+		// read mask image - this is temporary needed to initialize the label set image
+		mitk::Image::Pointer maskImageTmp =	mitk::IOUtil::Load<mitk::Image>(maskFilename);
+
+		// initialize labelset image by read mask image
+		maskImage->InitializeByLabeledImage(maskImageTmp); 
+
+		// we no longer need the mask image as we have converted it to
+		// label set image
+		maskImageTmp->Delete();
 
 		// exit if mask could not be read
 		if (maskImage.IsNull())
