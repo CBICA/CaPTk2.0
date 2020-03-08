@@ -30,6 +30,7 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 #include "itkImage.h"
 
+#include <exception>
 
 namespace captk
 {
@@ -73,15 +74,15 @@ public:
 		}
 		if (!found1)
 		{
-			throw std::exception("Missing label 1");
+			throw std::invalid_argument("Missing label 1");
 		}
 		if (!found2)
 		{
-			throw std::exception("Missing label 2");
+			throw std::invalid_argument("Missing label 2");
 		}
 		if (foundTotal != 2)
 		{
-			throw std::exception("The mask should only have 2 labels");
+			throw std::invalid_argument("The mask should only have 2 labels");
 		}
 
 		// Make mask 3D itk

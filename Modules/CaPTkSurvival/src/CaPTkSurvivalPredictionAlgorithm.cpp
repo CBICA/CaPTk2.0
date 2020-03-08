@@ -736,7 +736,7 @@ VectorDouble SurvivalPredictionModuleAlgorithm::SurvivalPredictionOnExistingMode
             VectorDouble TestFeatures = LoadTestData<ImageType>(T1CEImagePointer, T2FlairImagePointer, T1ImagePointer, T2ImagePointer,
                 RCBVImagePointer, PSRImagePointer, PHImagePointer, AXImagePointer, FAImagePointer, RADImagePointer, TRImagePointer, LabelImagePointer, AtlasImagePointer, TemplateImagePointer, HistogramFeaturesConfigurations);
 
-            double age;
+            double age = 0;
 
             reader->SetFileName(static_cast<std::string>(currentsubject[captk::ImageModalityType::IMAGE_TYPE_FEATURES]));
             reader->SetFieldDelimiterCharacter(',');

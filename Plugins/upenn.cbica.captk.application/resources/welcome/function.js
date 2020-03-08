@@ -3,16 +3,19 @@
 // The buttons will be generated in order to the array's index. e.g. data at array's index '0' will generate the first button.
 
 // enter the name of your module here
-var moduleNames = new Array("MITK Website",
+var moduleNames = new Array("CBICA Website",
+                            "MITK Website",
                             "Tutorials Website");
 
 // add the MITK-link to your module
-var moduleLinks = new Array("http://www.mitk.org/",
+var moduleLinks = new Array("https://www.med.upenn.edu/cbica/",
+                            "http://www.mitk.org/",
                             "http://mitk.org/wiki/Tutorials");
 
 // add the filename of your icon for the module. Place the picture in subdirectory "pics".
 // The picture's width should be 136 pixel; the height 123 pixel.
-var picFilenames = new Array("button_mitk.png",
+var picFilenames = new Array("button_cbica.png",
+                             "button_mitk.png",
                              "button_mitk.png");
 
 // if your module is not stable, you can mark it as experimental.
@@ -21,7 +24,8 @@ var experimental = new Array(false,
                              false);
 
 // add the description for your module. The description is displayed in a PopUp-window.
-var moduleDescriptions = new Array("Open the MITK website in an external browser.",
+var moduleDescriptions = new Array("Open the CBICA - UPenn website in an external browser.",
+                                   "Open the MITK website in an external browser.",
                                    "Open the MITK tutorials overview in an external browser.");
 
 var bttns = new Array();
