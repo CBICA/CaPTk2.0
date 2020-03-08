@@ -64,8 +64,10 @@ float ROIConstructionHelperItk<TPixel,VDim>::PopulateMask(mitk::LabelSetImage::P
 {
     // Add label and label name
     mitk::Label::Pointer label = mitk::Label::New();
-    label->SetName(m_Properties[m_CurrentIndex].label);
-    label->SetValue(m_Properties[m_CurrentIndex].value);
+    label->SetName(m_Properties[m_CurrentIndex].label 
+            + std::string("_") 
+            + std::to_string(m_Properties[m_CurrentIndex].value));
+    label->SetValue(1);
     miniMask->GetActiveLabelSet()->AddLabel(label);
     //miniMask->SetActiveLabel(label->GetValue());
 
@@ -83,11 +85,11 @@ float ROIConstructionHelperItk<TPixel,VDim>::PopulateMask(mitk::LabelSetImage::P
 
     // Patch: this->m_Properties[m_CurrentIndex]
     // Patch is generally a collection of points
-    auto currentValue = this->m_Properties[m_CurrentIndex].value;
+    // auto currentValue = this->m_Properties[m_CurrentIndex].value;
     for (auto& index : this->m_Properties[m_CurrentIndex].nonZeroIndeces)
     {
         iter_mm.SetIndex(index);
-        iter_mm.Set(currentValue);
+        iter_mm.Set(1); // MITK FE needs strictly binary images
     }
 
     return this->m_Properties[m_CurrentIndex].weight;
