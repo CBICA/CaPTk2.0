@@ -4,16 +4,6 @@
 #include "itkCSVNumericObjectFileWriter.h"
 #include "itkCovarianceSampleFilter.h"
 #include "itkMeanSampleFilter.h"
-
-//#include <mitkImageCast.h>
-
-//#include <itkSmartPointer.h>
-//#include <itkImage.h>
-//#include <itkImageIOBase.h>
-//#include <itkImageIOFactory.h>
-//#include <itkImageFileWriter.h>
-//#include <itkNiftiImageIO.h>
-//#include <itkNiftiImageIOFactory.h>
 //#include "CAPTk.h"
 //#include "cbicaLogging.h"
 
@@ -245,15 +235,3 @@ double EGFRStatusPredictor::CalculateBhattacharyaCoefficient(const VectorVectorD
   return bDistance;
 }
 
-//void EGFRStatusPredictor::SetInputImage(mitk::Image::Pointer image)
-//{
-//	typedef itk::Image<float, 3> PerfusionImageType;
-//	typename PerfusionImageType::Pointer perfusionImg = PerfusionImageType::New();
-//	mitk::CastToItkImage(image, perfusionImg);
-//
-//	auto writer = itk::ImageFileWriter<PerfusionImageType>::New();
-//	writer->SetImageIO(itk::NiftiImageIO::New());
-//	writer->SetInput(perfusionImg);
-//	writer->SetFileName("image4d.nii.gz");
-//	writer->Write();
-//}

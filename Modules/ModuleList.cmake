@@ -5,6 +5,7 @@
 
 set(MITK_MODULES
   CaPTkCommon
+  CaPTkLegacyCommon
   CaPTkPHIEstimator
   CaPTkTraining
   CaPTkInteractiveSegmentation

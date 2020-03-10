@@ -23,22 +23,18 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <mitkNodePredicateOr.h>
 #include <mitkImageAccessByItk.h>
 #include <mitkLabelSetImage.h>
+#include <mitkImageCast.h>
+#include <mitkImageToItk.h>
+#include "mitkLabelSetImage.h"
 
 #include <usModuleRegistry.h>
 
 #include <QMessageBox>
 
-#include <ExampleImageInteractor.h>
-
 #include <EGFRvIIISurrogateIndex.h>
-#include <EGFRStatusPredictor.h>
 #include <PHIEstimator.h>
-
 #include "QmitkPHIEstimatorView.h"
-
-#include <mitkImageCast.h>
-#include <mitkImageToItk.h>
-#include "mitkLabelSetImage.h"
+#include "CaPTkDefines.h"
 
 #include <itkSmartPointer.h>
 #include <itkImage.h>
@@ -47,7 +43,6 @@ See LICENSE.txt or http://www.mitk.org for details.
 #include <itkImageFileWriter.h>
 #include <itkNiftiImageIO.h>
 #include <itkNiftiImageIOFactory.h>
-#include "CaPTkDefines.h"
 #include "itkImageDuplicator.h"
 #include "itkCastImageFilter.h"
 
@@ -236,8 +231,13 @@ void QmitkPHIEstimatorView::ProcessSelectedImage()
 	
 	try
 	{
-		AccessFixedDimensionByItk_n(rimage.GetPointer(), captk::PhiEstimator::Run, 4, 
-			(maskimage, nearIndices, farIndices, EGFRStatusParams)
+		AccessFixedDimensionByItk_n(rimage.GetPointer(), //input perfusion image
+			captk::PhiEstimator::Run, //templated function to call
+			4,						  //templated function handles fixed dimension(4) images
+			(maskimage,				  //mask image passed to called function as parameter
+				nearIndices,		  //indices returned as reference from called function
+				farIndices,			  //indices returned as reference from called function
+				EGFRStatusParams)	  //result of PHI Estimation returned from called function
 		);
 	}
 	catch (const std::exception& e)
