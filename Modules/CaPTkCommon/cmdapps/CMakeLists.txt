@@ -8,3 +8,15 @@ if(BUILD_CaPTkCohortJsonOperationsCmdApp)
     DEPENDS MitkCaPTkCommon
   )
 endif()
+
+
+option(BUILD_CaPTkROIConstructionCmdApp "Build command-line app for lattice CaPTkROIConstruction" OFF)
+
+if(BUILD_CaPTkROIConstructionCmdApp)
+  mitkFunctionCreateCommandLineApp(
+    NAME CaPTkROIConstructionCmdApp
+    CPP_FILES CaPTkROIConstructionCmdApp.cpp
+    PACKAGE_DEPENDS ITK Qt5|Core
+    DEPENDS MitkCaPTkCommon
+  )
+endif()
