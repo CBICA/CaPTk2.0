@@ -69,8 +69,6 @@ public slots:
     */
     void OnAlgorithmFinished();
 
-protected:
-
     /** \brief Runs the algorithm after the operations in Run
      * 
      * This can serve as a background thread. When the
@@ -89,6 +87,8 @@ protected:
         const QString& modelDirPath,
         const QString& outputDirPath
     );
+
+protected:
 
     bool m_IsRunning = false;
     QFutureWatcher<Result> m_Watcher;
