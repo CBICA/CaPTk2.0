@@ -1,0 +1,18 @@
+MITK_CREATE_MODULE_TESTS()
+
+if("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
+
+mitkAddCustomModuleTest(mitkFiberBundleReaderWriterTest mitkFiberBundleReaderWriterTest)
+
+mitkAddCustomModuleTest(mitkFiberTransformationTest mitkFiberTransformationTest ${MITK_DATA_DIR}/DiffusionImaging/fiberBundleX.fib ${MITK_DATA_DIR}/DiffusionImaging/fiberBundleX_transformed.fib)
+mitkAddCustomModuleTest(mitkFiberExtractionTest mitkFiberExtractionTest ${MITK_DATA_DIR}/DiffusionImaging/fiberBundleX.fib ${MITK_DATA_DIR}/DiffusionImaging/fiberBundleX_extracted.fib ${MITK_DATA_DIR}/DiffusionImaging/ROI1.pf ${MITK_DATA_DIR}/DiffusionImaging/ROI2.pf ${MITK_DATA_DIR}/DiffusionImaging/ROI3.pf ${MITK_DATA_DIR}/DiffusionImaging/ROIIMAGE.nrrd ${MITK_DATA_DIR}/DiffusionImaging/fiberBundleX_inside.fib ${MITK_DATA_DIR}/DiffusionImaging/fiberBundleX_outside.fib ${MITK_DATA_DIR}/DiffusionImaging/fiberBundleX_passing-mask.fib ${MITK_DATA_DIR}/DiffusionImaging/fiberBundleX_ending-in-mask.fib ${MITK_DATA_DIR}/DiffusionImaging/fiberBundleX_subtracted.fib ${MITK_DATA_DIR}/DiffusionImaging/fiberBundleX_added.fib)
+
+mitkAddCustomModuleTest(mitkMachineLearningTrackingTest mitkMachineLearningTrackingTest)
+
+### ---- Advanced test (with real images) ----
+
+#if(CAPTK_ADVANCED_TESTING)
+#mitkAddCustomModuleTest(... ...)
+#ENDIF()
+
+ENDIF()
