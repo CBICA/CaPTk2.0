@@ -127,7 +127,7 @@ vtkSmartPointer< vtkTable >  FeatureReductionClass::GetDiscerningPerfusionTimePo
   pcaStatistics->SetInputData(vtkStatisticsAlgorithm::INPUT_DATA, datasetTable);
 #endif
 
-for (int i = 0; i < NumberOfFeatures; i++)
+for (size_t i = 0; i < NumberOfFeatures; i++)
 {
     vtkSmartPointer<vtkDoubleArray> CurrentVariable = vtkSmartPointer<vtkDoubleArray>::New();
     CurrentVariable->SetNumberOfComponents(1);
