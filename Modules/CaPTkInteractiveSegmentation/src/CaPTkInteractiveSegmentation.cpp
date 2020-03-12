@@ -361,9 +361,10 @@ CaPTkInteractiveSegmentation::RunThread(std::vector<mitk::Image::Pointer> &image
 
 		if (result->ok)
 		{
-			mitk::Image::Pointer segmNormal;
+			mitk::Image::Pointer segmNormal = mitk::Image::New();
 			mitk::CastToMitkImage(result->labelsImage, segmNormal);
 			segm->InitializeByLabeledImage(segmNormal);
+			segm->CopyInformation(seeds);
 			runResult.segmentation = segm;
 		}
 
@@ -449,7 +450,7 @@ CaPTkInteractiveSegmentation::RunThread(std::vector<mitk::Image::Pointer> &image
 
 		if (result->ok)
 		{
-			mitk::Image::Pointer segmNormal;
+			mitk::Image::Pointer segmNormal = mitk::Image::New();
 
 			// Convert to 3D
 			mitk::CastToMitkImage(result->labelsImage, segmNormal);
@@ -460,6 +461,7 @@ CaPTkInteractiveSegmentation::RunThread(std::vector<mitk::Image::Pointer> &image
 			segmNormal = filter->GetOutput();
 
 			segm->InitializeByLabeledImage(segmNormal);
+			segm->CopyInformation(seeds);
 			runResult.segmentation = segm;
 		}
 
