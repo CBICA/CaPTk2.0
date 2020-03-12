@@ -3,5 +3,3 @@ mitk_create_module(
   PACKAGE_DEPENDS ITK Qt5|Core PRIVATE yaml-cpp
   DEPENDS PUBLIC MitkCore MitkMultilabel #MitkCaPTkCommon
 )
-
-add_subdirectory(cmdapps)
