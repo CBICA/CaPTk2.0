@@ -33,7 +33,7 @@ public:
      * algorithm finishes, OnAlgorithmFinished() is called.
      * 
      * @param images a list of the co-registered input images
-     * @param labels label image that contains the user drawn seeds
+     * @param seeds labels image that contains the user drawn seeds
     */
     void Run(std::vector<mitk::Image::Pointer>& images, 
              mitk::LabelSetImage::Pointer& seeds);
