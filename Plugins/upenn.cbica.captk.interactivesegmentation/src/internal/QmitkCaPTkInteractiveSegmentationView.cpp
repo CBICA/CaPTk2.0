@@ -208,45 +208,45 @@ void QmitkCaPTkInteractiveSegmentationView::OnModuleFinished(
 {
   if (!ok)
   {
-		// Something went wrong
-		QMessageBox msgError;
-		msgError.setText(errorMessage.c_str());
-		msgError.setIcon(QMessageBox::Critical);
-		msgError.setWindowTitle("Interactive Segmentation Error!");
-		msgError.exec();
+    // Something went wrong
+    QMessageBox msgError;
+    msgError.setText(errorMessage.c_str());
+    msgError.setIcon(QMessageBox::Critical);
+    msgError.setWindowTitle("Interactive Segmentation Error!");
+    msgError.exec();
     m_Controls.progressBar->setValue(0);
   }
   else
   {
-		/* ---- Make seeds invisible ---- */
+    /* ---- Make seeds invisible ---- */
 
-		mitk::DataStorage::SetOfObjects::ConstPointer all = GetDataStorage()->GetAll();
-		for (mitk::DataStorage::SetOfObjects::ConstIterator it = all->Begin();
-		     it != all->End(); 
+    mitk::DataStorage::SetOfObjects::ConstPointer all = GetDataStorage()->GetAll();
+    for (mitk::DataStorage::SetOfObjects::ConstIterator it = all->Begin();
+         it != all->End(); 
          ++it)
-		{
-			if (it->Value().IsNotNull())
-			{
-				std::string name = it->Value()->GetName();
-				if (name.rfind("Seeds", 0) == 0) // Starts with
-				{
-					it->Value()->SetVisibility(false);
-				}
-				else if (name.rfind("Segmentation", 0) == 0) // Starts with
-				{
-					it->Value()->SetVisibility(false);
-				}
-			}
-		}
+    {
+      if (it->Value().IsNotNull())
+      {
+        std::string name = it->Value()->GetName();
+        if (name.rfind("Seeds", 0) == 0) // Starts with
+        {
+          it->Value()->SetVisibility(false);
+        }
+        else if (name.rfind("Segmentation", 0) == 0) // Starts with
+        {
+          it->Value()->SetVisibility(false);
+        }
+      }
+    }
 
-		/* ---- Add segmentation ---- */
+    /* ---- Add segmentation ---- */
 
-		mitk::DataNode::Pointer node = mitk::DataNode::New();
-		node->SetData(result);
-		node->SetName(FindNextAvailableSegmentationName());
+    mitk::DataNode::Pointer node = mitk::DataNode::New();
+    node->SetData(result);
+    node->SetName(FindNextAvailableSegmentationName());
     node->SetBoolProperty("captk.interactive.segmentation.output", true);
-		GetDataStorage()->Add(node);
-		node->SetVisibility(true);
+    GetDataStorage()->Add(node);
+    node->SetVisibility(true);
 
     /* ---- Change the layer of every image to 1 ---- */
 
