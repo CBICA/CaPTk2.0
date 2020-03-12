@@ -6,12 +6,8 @@
 // that you want to be part of the public interface of your module.
 #include <MitkCaPTkInteractiveSegmentationExports.h>
 
-#include "CaPTkInteractiveSegmentationAdapter.h"
-#include "GeodesicTrainingSegmentation.h"
-
 #include "mitkImage.h"
 #include "mitkLabelSetImage.h"
-#include "mitkDataStorage.h"
 
 #include <QObject>
 #include <QFuture>
