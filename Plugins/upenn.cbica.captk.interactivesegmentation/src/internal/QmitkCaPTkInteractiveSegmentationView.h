@@ -43,6 +43,17 @@ public:
                                    int /*availablePerpendicular*/,
                                    int preferredResult);
 
+public slots:
+  /** \brief This function is called with the async execution in the module finishes. 
+   * \param ok whether the execution was successful
+   * \param errorMessage if (!ok), what went wrong?
+   * \param result the output segmentation, if ok == true
+  */
+  void OnModuleFinished(bool ok, std::string errorMessage, mitk::LabelSetImage::Pointer result);
+
+  /** \brief This function is called when the module wants to update the progress */
+  void OnModuleProgressUpdate(int progress);
+
 protected slots:
 
   /** \brief CaPTk Interactive Segmentation Run Button clicked slot */
@@ -92,6 +103,13 @@ protected:
 
   std::string FindNextAvailableSeedsName();
 
+  /** \brief Used to give the appropriate name to the output segmentation. 
+   * 
+   * The first one is called "Segmentation". Subsequent ones "Segmentation-2" etc 
+   */
+  std::string FindNextAvailableSegmentationName();
+
+  /** \brief Helper function to identify if a string is a number */
   bool IsNumber(const std::string &s);
 
   /// \brief the Qt parent of our GUI (NOT of this object)
@@ -119,6 +137,8 @@ protected:
 
   /** The algorithm */
   CaPTkInteractiveSegmentation* m_CaPTkInteractiveSegmentation;
+
+  bool m_IsAlgorithmRunning;
 };
 
 #endif // QmitkCaPTkInteractiveSegmentationView_h

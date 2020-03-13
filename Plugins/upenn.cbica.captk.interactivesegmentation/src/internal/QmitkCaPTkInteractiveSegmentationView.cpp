@@ -46,10 +46,24 @@ QmitkCaPTkInteractiveSegmentationView::QmitkCaPTkInteractiveSegmentationView()
     m_ReferenceNode(nullptr),
     m_WorkingNode(nullptr),
     m_AutoSelectionEnabled(false),
-    m_MouseCursorSet(false)
+    m_MouseCursorSet(false),
+    m_IsAlgorithmRunning(false)
 {
-  m_CaPTkInteractiveSegmentation = 
-      new CaPTkInteractiveSegmentation(GetDataStorage(), this);
+  m_CaPTkInteractiveSegmentation = new CaPTkInteractiveSegmentation(this);
+
+  connect(
+    m_CaPTkInteractiveSegmentation, 
+    SIGNAL(finished(bool, std::string, mitk::LabelSetImage::Pointer)),
+    this,
+    SLOT(OnModuleFinished(bool, std::string, mitk::LabelSetImage::Pointer))
+  );
+
+  connect(
+    m_CaPTkInteractiveSegmentation,
+    SIGNAL(progressUpdate(int)),
+    this,
+    SLOT(OnModuleProgressUpdate(int))
+  );
 
   m_SegmentationPredicate = mitk::NodePredicateAnd::New();
   m_SegmentationPredicate->AddPredicate(
@@ -99,8 +113,6 @@ void QmitkCaPTkInteractiveSegmentationView::CreateQtPartControl(QWidget *parent)
   // setup the basic GUI of this view
   m_Parent = parent;
   m_Controls.setupUi(parent);
-
-  m_CaPTkInteractiveSegmentation->SetProgressBar(m_Controls.progressBar);
 
   // *------------------------
   // * DATA SELECTION WIDGETS
@@ -188,6 +200,92 @@ int QmitkCaPTkInteractiveSegmentationView::ComputePreferredSize(bool width,
 }
 
 /************************************************************************/
+/* public slots                                                         */
+/************************************************************************/
+
+void QmitkCaPTkInteractiveSegmentationView::OnModuleFinished(
+          bool ok, std::string errorMessage, mitk::LabelSetImage::Pointer result)
+{
+  if (!ok)
+  {
+    // Something went wrong
+    QMessageBox msgError;
+    msgError.setText(errorMessage.c_str());
+    msgError.setIcon(QMessageBox::Critical);
+    msgError.setWindowTitle("Interactive Segmentation Error!");
+    msgError.exec();
+    m_Controls.progressBar->setValue(0);
+  }
+  else
+  {
+    /* ---- Make seeds invisible ---- */
+
+    mitk::DataStorage::SetOfObjects::ConstPointer all = GetDataStorage()->GetAll();
+    for (mitk::DataStorage::SetOfObjects::ConstIterator it = all->Begin();
+         it != all->End(); 
+         ++it)
+    {
+      if (it->Value().IsNotNull())
+      {
+        std::string name = it->Value()->GetName();
+        if (name.rfind("Seeds", 0) == 0) // Starts with
+        {
+          it->Value()->SetVisibility(false);
+        }
+        else if (name.rfind("Segmentation", 0) == 0) // Starts with
+        {
+          it->Value()->SetVisibility(false);
+        }
+      }
+    }
+
+    /* ---- Add segmentation ---- */
+
+    mitk::DataNode::Pointer node = mitk::DataNode::New();
+    node->SetData(result);
+    node->SetName(FindNextAvailableSegmentationName());
+    node->SetBoolProperty("captk.interactive.segmentation.output", true);
+    GetDataStorage()->Add(node);
+    node->SetVisibility(true);
+
+    /* ---- Change the layer of every image to 1 ---- */
+
+    auto predicateIsImage = // Predicate to find if node is mitk::Image
+      mitk::TNodePredicateDataType<mitk::Image>::New();
+    auto predicatePropertyIsHelper = // Predicate property to find if node is a helper object
+      mitk::NodePredicateProperty::New("helper object");
+    auto predicateFinal = mitk::NodePredicateAnd::New();
+    predicateFinal->AddPredicate(predicateIsImage);
+    predicateFinal->AddPredicate(
+      mitk::NodePredicateNot::New(predicatePropertyIsHelper));
+    mitk::DataStorage::SetOfObjects::ConstPointer all2 =
+      GetDataStorage()->GetSubset(predicateFinal);
+    for (mitk::DataStorage::SetOfObjects::ConstIterator it = all2->Begin();
+      it != all2->End(); 
+      ++it)
+    {
+      if (it->Value().IsNotNull())
+      {
+        it->Value()->SetProperty("layer", mitk::IntProperty::New(1));
+      }
+    }
+    mitk::RenderingManager::GetInstance()->RequestUpdateAll();
+    mitk::RenderingManager::GetInstance()->ForceImmediateUpdateAll();
+    node->SetProperty("layer", mitk::IntProperty::New(10));
+    mitk::RenderingManager::GetInstance()->RequestUpdateAll();
+  }
+
+  m_IsAlgorithmRunning = false;
+  m_Controls.pushButtonRun->setEnabled(true);
+  m_Controls.pushButtonRun->setText("Run");
+}
+
+void QmitkCaPTkInteractiveSegmentationView::OnModuleProgressUpdate(int progress)
+{
+  m_Controls.progressBar->setValue(progress);
+}
+
+/************************************************************************/
 /* protected slots                                                      */
 /************************************************************************/
 
@@ -240,6 +338,10 @@ void QmitkCaPTkInteractiveSegmentationView::OnRunButtonPressed()
 			images.push_back( dynamic_cast<mitk::Image*>(it->Value()->GetData()) );
 		}
 	}
+
+  m_Controls.pushButtonRun->setDisabled(true);
+  m_Controls.pushButtonRun->setText("Running..");
+  m_IsAlgorithmRunning = true;
 
   // ---- Call module ----
   m_CaPTkInteractiveSegmentation->Run(images, seeds);
@@ -533,13 +635,33 @@ void QmitkCaPTkInteractiveSegmentationView::OnPreferencesChanged(const berry::IB
 
 }
 
-void QmitkCaPTkInteractiveSegmentationView::NodeAdded(const mitk::DataNode *)
+void QmitkCaPTkInteractiveSegmentationView::NodeAdded(const mitk::DataNode* node)
 {
-
+  // Reset progress if potential input image set changed
+  if(m_ReferencePredicate->CheckNode(node) && !m_IsAlgorithmRunning)
+  {
+    m_Controls.progressBar->setValue(0);
+  }
+  
+  // Make m_IsAlgorithmRunning false if we have the output
+  bool isFromInteractiveSeg(false);
+  node->GetBoolProperty("captk.interactive.segmentation.output", isFromInteractiveSeg);
+  if (isFromInteractiveSeg)
+  {
+    m_Controls.pushButtonRun->setDisabled(false);
+    m_Controls.pushButtonRun->setText("Run");
+    m_IsAlgorithmRunning = false;
+  }
 }
 
-void QmitkCaPTkInteractiveSegmentationView::NodeRemoved(const mitk::DataNode *node)
+void QmitkCaPTkInteractiveSegmentationView::NodeRemoved(const mitk::DataNode* node)
 {
+  // Reset progress if potential input image set changed
+  if(m_ReferencePredicate->CheckNode(node) && !m_IsAlgorithmRunning)
+  {
+    m_Controls.progressBar->setValue(0);
+  }
+
   bool isHelperObject(false);
   node->GetBoolProperty("helper object", isHelperObject);
   if (isHelperObject)
@@ -729,6 +851,76 @@ std::string QmitkCaPTkInteractiveSegmentationView::FindNextAvailableSeedsName()
     {
         return std::string("Seeds-") + std::to_string(lastFound + 1);
     }
+}
+
+std::string QmitkCaPTkInteractiveSegmentationView::FindNextAvailableSegmentationName()
+{
+	// Predicate to find if node is mitk::LabelSetImage
+	auto predicateIsLabelSetImage =
+		mitk::TNodePredicateDataType<mitk::LabelSetImage>::New();
+
+	// Predicate property to find if node is a helper object
+	auto predicatePropertyIsHelper =
+		mitk::NodePredicateProperty::New("helper object");
+
+	// The images we want are but mitk::LabelSetImage and not helper obj
+	auto predicateFinal = mitk::NodePredicateAnd::New();
+	predicateFinal->AddPredicate(predicateIsLabelSetImage);
+	predicateFinal->AddPredicate(
+		mitk::NodePredicateNot::New(predicatePropertyIsHelper)
+	);
+
+	int lastFound = 0;
+
+	// Get those images
+	mitk::DataStorage::SetOfObjects::ConstPointer all =
+		GetDataStorage()->GetSubset(predicateFinal);
+	for (mitk::DataStorage::SetOfObjects::ConstIterator it = all->Begin();
+		 it != all->End(); ++it)
+	{
+		if (it->Value().IsNotNull())
+		{
+			std::string name = it->Value()->GetName();
+			if (name.rfind("Segmentation", 0) == 0) // Starts with
+			{
+				if (name.length() == std::string("Segmentation").length())
+				{
+					// Special case
+					if (lastFound < 1)
+					{
+						lastFound = 1;
+					}
+				}
+				else
+				{
+					if (name.rfind("Segmentation-", 0) == 0) // Starts with
+					{
+						std::string numStr = name.erase(
+							0, std::string("Segmentation-").length()
+						);
+						if (IsNumber(numStr))
+						{
+							int num = std::stoi(numStr);
+							if (lastFound < num)
+							{
+								lastFound = num;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// Construct and return the correct string
+	if (lastFound == 0)
+	{
+		return "Segmentation";
+	}
+	else
+	{
+		return std::string("Segmentation-") + std::to_string(lastFound + 1);
+	}
 }
 
 bool QmitkCaPTkInteractiveSegmentationView::IsNumber(const std::string &s)

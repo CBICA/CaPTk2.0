@@ -6,31 +6,24 @@
 // that you want to be part of the public interface of your module.
 #include <MitkCaPTkInteractiveSegmentationExports.h>
 
-#include "CaPTkInteractiveSegmentationAdapter.h"
-#include "GeodesicTrainingSegmentation.h"
-
 #include "mitkImage.h"
 #include "mitkLabelSetImage.h"
-#include "mitkDataStorage.h"
 
 #include <QObject>
 #include <QFuture>
 #include <QFutureWatcher>
-#include <QProgressBar>
 
 /** \class CaPTkInteractiveSegmentation
  *  \brief Singleton class that runs the interactive segmentation 
  * algorithm and adds the result to the data storage
  */
-class MITKCAPTKINTERACTIVESEGMENTATION_EXPORT CaPTkInteractiveSegmentation /*final*/ : 
+class MITKCAPTKINTERACTIVESEGMENTATION_EXPORT CaPTkInteractiveSegmentation : 
                                                     public QObject
 {
     Q_OBJECT
 
 public:
-    CaPTkInteractiveSegmentation(
-            mitk::DataStorage::Pointer dataStorage,
-            QObject *parent = 0);
+    CaPTkInteractiveSegmentation(QObject *parent = 0);
 
     ~CaPTkInteractiveSegmentation() {}
 
@@ -40,16 +33,26 @@ public:
      * algorithm finishes, OnAlgorithmFinished() is called.
      * 
      * @param images a list of the co-registered input images
-     * @param labels label image that contains the user drawn seeds
+     * @param seeds labels image that contains the user drawn seeds
     */
     void Run(std::vector<mitk::Image::Pointer>& images, 
              mitk::LabelSetImage::Pointer& seeds);
 
-    // void Run(Json::Value& task_json, Json::Value& cohort_json);
+signals:
+    /** \brief This gets emitted when the async execution finishes */
+    void finished(bool ok, std::string errorMessage, mitk::LabelSetImage::Pointer result);
 
-    // void Run(std::string task_json_path, std::string cohort_json_path);
+    void progressUpdate(int progress);
 
-    void SetProgressBar(QProgressBar* progressBar);
+protected slots:
+    /** \brief This function runs in the main thread when 
+     * the algorithm is finished to add the result to the data storage
+    */
+    void OnAlgorithmFinished();
+
+    void OnProgressUpdateInternalReceived(int progress);
+
+protected:
 
     /** \struct Result
      *  \brief result of the execution of the algorithm
@@ -59,19 +62,10 @@ public:
     */
     typedef struct Result 
     {
-        mitk::LabelSetImage::Pointer seeds;
         mitk::LabelSetImage::Pointer segmentation;
         bool ok = true;
         std::string errorMessage = "";
     } Result;
-
-public slots:
-    /** \brief This function runs in the main thread when 
-     * the algorithm is finished to add the result to the data storage
-    */
-    void OnAlgorithmFinished();
-
-protected:
 
     /** \brief Runs the algorithm after the operations in Run
      * 
@@ -84,25 +78,10 @@ protected:
     */
     Result RunThread(std::vector<mitk::Image::Pointer>& images, 
                      mitk::LabelSetImage::Pointer& seeds);
-    
-    /** \brief Used to give the appropriate name to the output segmentation. 
-     * 
-     * The first one is called "Segmentation". Subsequent ones "Segmentation-2" etc 
-    */
-    std::string FindNextAvailableSegmentationName();
-
-    /** \brief Helper function to identify if a string is a number 
-     * 
-    */
-    bool IsNumber(const std::string& s);
 
     bool m_IsRunning = false;
     QFutureWatcher<Result> m_Watcher;
     QFuture<Result> m_FutureResult;
-
-    mitk::DataStorage::Pointer m_DataStorage;
-
-    QProgressBar* m_ProgressBar;
 };
 
 #endif // ! CaPTkInteractiveSegmentation_h
