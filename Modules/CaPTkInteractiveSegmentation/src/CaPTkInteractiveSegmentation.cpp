@@ -364,7 +364,9 @@ CaPTkInteractiveSegmentation::RunThread(std::vector<mitk::Image::Pointer> &image
 			mitk::Image::Pointer segmNormal = mitk::Image::New();
 			mitk::CastToMitkImage(result->labelsImage, segmNormal);
 			segm->InitializeByLabeledImage(segmNormal);
-			segm->CopyInformation(seeds);
+			segm->CopyInformation(seeds); // This copies metadata to the output segmentation
+			                              // It is particularly useful, because it allows
+			                              // to save the segmentation as dicom if input is dicom
 			runResult.segmentation = segm;
 		}
 
@@ -461,7 +463,9 @@ CaPTkInteractiveSegmentation::RunThread(std::vector<mitk::Image::Pointer> &image
 			segmNormal = filter->GetOutput();
 
 			segm->InitializeByLabeledImage(segmNormal);
-			segm->CopyInformation(seeds);
+			segm->CopyInformation(seeds); // This copies metadata to the output segmentation
+			                              // It is particularly useful, because it allows
+			                              // to save the segmentation as dicom if input is dicom
 			runResult.segmentation = segm;
 		}
 
