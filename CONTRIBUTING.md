@@ -43,6 +43,7 @@ The following guidelines will help keep CaPTk maintainable and useful. We unders
 - If you develop the class ```captk::ExampleAlgorithm```, it should be defined in a file called CaPTkExampleAlgorithm.h
 - Separate implementations from definitions.
 - Don't include new dependencies unless they are absolutely needed.
+- All test names should start with "CaPTk". That way, if ```BUILD_TESTING``` is enabled in CMake, it is possible to run only CaPTk tests, and not MITK (superbuild) ones, by running ```make test ARGS="-R CaPTk"``` in the build directory on Linux (for other platforms there would be similar ways to pass arguments to CTest). ```-R``` matches with regex the test names. You can use it to run even a smaller subset of the tests. If a test fails, the message and details about the assertion that failed are available in your build directory, file ```./Testing/Temporary/LastTest.log```.
 
 ## Pull requests
 

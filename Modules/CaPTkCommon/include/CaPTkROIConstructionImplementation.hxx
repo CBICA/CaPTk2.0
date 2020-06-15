@@ -1,6 +1,8 @@
 #ifndef CaPTkROIConstructionImplementationHXX_h
 #define CaPTkROIConstructionImplementationHXX_h
 
+#include <mitkLogMacros.h>
+
 #include <iostream>
 
 template< class TImage >
@@ -193,7 +195,7 @@ void captk::ROIConstructionImplementation< TImage >::ROIComputation(std::vector<
   } // end of m_roi.empty() check
   else
   {
-    std::cerr << ("m_roi is empty in captk::ROIConstructionImplementation::NonLatticeComputation");
+    MITK_ERROR << ("m_roi is empty in captk::ROIConstructionImplementation::NonLatticeComputation");
   }
 }
 
@@ -205,7 +207,7 @@ void captk::ROIConstructionImplementation< TImage >::Update()
     // auto t1 = std::chrono::high_resolution_clock::now();
     if (m_mask.IsNull())
     {
-      std::cerr << ("The mask image is not defined or has not been read properly.");
+      MITK_ERROR << ("The mask image is not defined or has not been read properly.");
       exit(EXIT_FAILURE);
     }
     // compute the physical coordinate where the image ends 
@@ -233,14 +235,14 @@ void captk::ROIConstructionImplementation< TImage >::Update()
       {
         if (m_latticeWindow >= distances[i])
         {
-          std::cerr << ("LatticeWindow is greater than or equal to the image size in world coordinates along the axis '" + std::to_string(i) + "', so lattice has been disabled");
+          MITK_ERROR << ("LatticeWindow is greater than or equal to the image size in world coordinates along the axis '" + std::to_string(i) + "', so lattice has been disabled");
           m_latticeEnabled = false;
         }
 
         // check for latticeStep
         if (m_latticeStep >= distances[i])
         {
-          std::cerr << ("LatticeStep is greater than or equal to the image size in world coordinates along the axis '" + std::to_string(i) + "', so lattice has been disabled");
+          MITK_ERROR << ("LatticeStep is greater than or equal to the image size in world coordinates along the axis '" + std::to_string(i) + "', so lattice has been disabled");
           m_latticeEnabled = false;
         }
 
@@ -257,20 +259,20 @@ void captk::ROIConstructionImplementation< TImage >::Update()
 
         if (m_latticeRadius[i] == 0)
         {
-          std::cerr << ("LatticeWindow in the image space along the axis '" + std::to_string(i) + "' has been computed to '0', so lattice has been disabled");
+          MITK_ERROR << ("LatticeWindow in the image space along the axis '" + std::to_string(i) + "' has been computed to '0', so lattice has been disabled");
           m_latticeEnabled = false;
         }
       }
     }
     else if (m_latticeStep > 0)
     {
-      std::cerr << ("LatticeStep has been initialized but not LatticeWindow, so lattice has been disabled");
+      MITK_ERROR << ("LatticeStep has been initialized but not LatticeWindow, so lattice has been disabled");
     }
 
     // if both the latticeWindow and latticeStep are valid sizes, proceed with grid construction
     if (m_latticeEnabled)
     {
-      std::cerr << ("Found valid latticeStep and latticeWindowSize; lattice-based computation has been enabled");
+      MITK_INFO << "Found valid latticeStep and latticeWindowSize; lattice-based computation has been enabled\n";
       //totalROIsToCompute *= numberOfSteps;
 
       ///
@@ -383,7 +385,7 @@ void captk::ROIConstructionImplementation< TImage >::Update()
 
     m_algorithmDone = true;
     // auto t2 = std::chrono::high_resolution_clock::now();
-    // std::cout << "ROI Construction took " << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count() << " milliseconds\n";
+    // MITK_INFO << "ROI Construction took " << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count() << " milliseconds\n";
   } // m_algorithmDone check
 }
 
