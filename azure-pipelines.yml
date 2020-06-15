@@ -6,6 +6,16 @@
 #trigger:
 #- master
 
+schedules:
+- cron: "0 0 * * *"
+  displayName: Daily midnight build
+  branches:
+    include:
+    - master
+    # - releases/*
+    #exclude:
+    #- releases/ancient/*
+
 trigger:
   batch: true
   branches:
@@ -20,7 +30,7 @@ jobs:
 - job: "Ubuntu_1804_SelfHost"
   displayName: "Self-hosted Ubuntu 18.04 build & package"
   timeoutInMinutes: 0
-  cancelTimeoutInMinutes: 300
+  cancelTimeoutInMinutes: 90
 
   pool: 'Ubuntu_18.04'
 
@@ -34,11 +44,8 @@ jobs:
       cd /home/cbica-devs/Workspace/MITK/SuperBuild/MITK-build
 
       # Invoke cmake here to make any configuration changes
-      ## We can set/change the extension dirs explicitly:
-      # cmake -DMITK_EXTENSION_DIRS="$(Build.SourcesDirectory)"
-
       # For right now just configure to pick up any new modules/plugins/cmdapps, then build
-      cmake .
+      cmake -DMITK_EXTENSION_DIRS="$(Build.SourcesDirectory) .
       make -j2
     
     # 
@@ -58,6 +65,7 @@ jobs:
       mv *.tar.gz $(Build.ArtifactStagingDirectory) 
 
     displayName: 'Create package'
+    condition: or( eq(variables['Build.Reason'], 'Manual'), eq(variables['Build.Reason'], 'Schedule') )
 
  # Next we can publish to azure, download, and potentially upload to NITRC.
   - task: PublishBuildArtifacts@1
