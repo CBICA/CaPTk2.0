@@ -37,6 +37,8 @@ jobs:
       ## We can set/change the extension dirs explicitly:
       # cmake -DMITK_EXTENSION_DIRS="$(Build.SourcesDirectory)"
 
+      # For right now just configure to pick up any new modules/plugins/cmdapps, then build
+      cmake .
       make -j2
     
     # 
