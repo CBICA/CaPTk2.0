@@ -1,19 +1,15 @@
 ### Source files need to be relative to src/
 ### Header files need to be relative to the root of the module
 
-### Fetch the source files (and make them be relative to src/)
-file(GLOB_RECURSE SOURCE_FILES RELATIVE 
-  "${CMAKE_CURRENT_SOURCE_DIR}/src" "${CMAKE_CURRENT_SOURCE_DIR}/src/*"
-)
-### Fetch the header files (and make them be relative to module root)
-file(GLOB_RECURSE HEADER_FILES RELATIVE 
-  "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/include/*"
-)
-
-### Set the files to the required variables normally
-
 set(CPP_FILES
-  "${SOURCE_FILES}"
+	CaPTkCohort.cpp
+	CaPTkCohortSeries.cpp
+	CaPTkCohortImage.cpp
+	CaPTkCohortStudy.cpp
+	CaPTkCohortOperations.cpp
+	CaPTkCohortSubject.cpp
+	CaPTkROIConstruction.cpp
+	CaPTkROIConstructionHelperBase.cpp
 )
 
 set(UI_FILES
@@ -21,11 +17,35 @@ set(UI_FILES
 )
 
 set(MOC_H_FILES
-  "${HEADER_FILES}"
+	include/CaPTkCohort.h
+	include/CaPTkCohortOperations.h
+	include/CaPTkCohortStudy.h
+	include/CaPTkCohortImage.h
+	include/CaPTkCohortSeries.h
+	include/CaPTkCohortSubject.h
+	include/CaPTkROIConstruction.h
+	include/CaPTkROIConstruction.hxx
+	include/CaPTkROIConstructionHelperBase.h
+	include/CaPTkROIConstructionHelperItk.h
+	include/CaPTkROIConstructionHelperItk.hxx
+	include/CaPTkROIConstructionImplementation.h
+	include/CaPTkROIConstructionImplementation.hxx
 )
 
 set(H_FILES
-  "${HEADER_FILES}"
+	include/CaPTkCohort.h
+	include/CaPTkCohortOperations.h
+	include/CaPTkCohortStudy.h
+	include/CaPTkCohortImage.h
+	include/CaPTkCohortSeries.h
+	include/CaPTkCohortSubject.h
+	include/CaPTkROIConstruction.h
+	include/CaPTkROIConstruction.hxx
+	include/CaPTkROIConstructionHelperBase.h
+	include/CaPTkROIConstructionHelperItk.h
+	include/CaPTkROIConstructionHelperItk.hxx
+	include/CaPTkROIConstructionImplementation.h
+	include/CaPTkROIConstructionImplementation.hxx
 )
 
 set(RESOURCE_FILES

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+  <extension point="org.blueberry.ui.views">
+
+    <view id="upenn.cbica.captk.views.interactivesegmentation"
+      name="Interactive Segmentation"
+      category="Segmentation"
+      icon="resources/mll_icon2.svg"
+      class="QmitkCaPTkInteractiveSegmentationView" />
+
+  </extension>
+  
+</plugin>

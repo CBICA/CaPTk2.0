@@ -1,0 +1,31 @@
+/**
+\page upenn_cbica_captk_brain_phiestimator PHI Estimator
+
+This plugin evaluates the Epidermal Growth Factor Receptor splice variant III (EGFRvIII) status in primary glioblastoma, by quantitative pattern analysis of the spatial heterogeneity of peritumoral perfusion dynamics from Dynamic Susceptibility Contrast (DSC) MRI scans, through the Peritumoral Heterogeneity Index (PHI / φ-index)
+
+REQUIREMENTS:
+
+    -T1-Gd: To annotate the immediate peritumoral ROI.
+    -T2-FLAIR: To annotate the distant peritumoral ROI.
+    -DSC-MRI: To perform the analysis and extract the PHI.
+    -(Command-line only) ROI Label file consisting of near-region (Label=1) and far-region (Label=2)
+
+USAGE:
+
+    -Using the multilabel segmentation tool, annotate 2 ROIs: one near (Label:1) the enhancing tumor and another far (Label:2) from it (but still within the peritumoral region). Rules for ROI annotation are provided below .
+    -Once the 2 ROIs are annotated, the calculation can be launched by clicking the Run button.
+    -Results are displayed on the UI when ready.
+
+RULES FOR ROI ANNOTATION:
+
+    -These two ROIs are used to sample tissue located on the two boundaries of the peritumoaral edema/invasion area: near to and far from the tumor, respectively, and hence to evaluate the heterogeneity or spatial gradient of perfusion signals.
+    -The "near" ROI is initially defined in the T1-Gd volume, adjacent to the enhancing part of the tumor, described by hyperintense signal on T1-Gd. The T2-FLAIR volume is then used to revise this ROI in terms of all its voxels being within the peritumoral edematous tissue, described by hyperintense signal on the T2-FLAIR volume.
+    -The T2-FLAIR volume is also used to define the ROI at the farthest from the tumor but still within the edematous tissue, i.e., the enhancing FLAIR abnormality signal.
+    -These ROIs are described by lines drawn in multiple slices of each image (T1-Gd and T2-FLAIR) for each subject.
+    -Please note that during annotation:
+        -Both ROIs are always within the peritumoral edema/invasion area,
+        -None of the ROIs are in proximity to the ventricles,
+        -Both ROIs are representative of infiltration into white matter and not into gray matter,
+        -The distant ROI is at the farthest possible distance from the enhancing part of the tumor while still within edema, and
+        -No vessels are involved within any of the defined ROIs, as denoted in the T1-Gd volume.
+*/

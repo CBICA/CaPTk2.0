@@ -11,41 +11,42 @@
 #include <QFutureWatcher>
 #include <QProgressBar>
 
-/** \class CaPTkTraining
+namespace captk {
+/** \class captk::Training
  *  \brief Training Module API
  */
-class MITKCAPTKTRAINING_EXPORT CaPTkTraining : public QObject
+class MITKCAPTKTRAINING_EXPORT Training : public QObject
 {
     Q_OBJECT
 
 public:
-    CaPTkTraining(QObject *parent = 0);
+    Training(QObject *parent = 0);
 
-    ~CaPTkTraining() {}
+    ~Training();
 
     /** \brief Runs the algorithm
      * 
      * Execute the algorithm in a background thread. When the
      * algorithm finishes, OnAlgorithmFinished() is called.
      * 
-     * @param QString featuresCsvPath path to the features csv file
-     * @param QString responsesCsvPath path to the responses csv file
-     * @param QString classificationKernelStr 
-     * @param QString configurationStr ("Cross-validation", "Split Train/Test", "Split Train" or "Split Test")
-     * @param QString folds number of folds (for configurationStr=="Cross-validation")
-     * @param QString samples number of samples (for configurationStr=="Split Train/Test")
-     * @param QString modelDirPath path to the model directory (for configurationStr=="Split Test") 
-     * @param QString outputDirPath 
+     * @param featuresCsvPath path to the features csv file
+     * @param responsesCsvPath path to the responses csv file
+     * @param classificationKernelStr 
+     * @param configurationStr ("Cross-validation", "Split Train/Test", "Train" or "Test")
+     * @param folds number of folds (for configurationStr=="Cross-validation")
+     * @param samples number of samples (for configurationStr=="Split Train/Test")
+     * @param modelDirPath path to the model directory (for configurationStr=="Test") 
+     * @param outputDirPath 
     */
     void Run(
-        QString featuresCsvPath,
-        QString responsesCsvPath,
-        QString classificationKernelStr,
-        QString configurationStr,
-        QString folds,
-        QString samples,
-        QString modelDirPath,
-        QString outputDirPath
+        const QString featuresCsvPath,
+        const QString responsesCsvPath,
+        const QString classificationKernelStr,
+        const QString configurationStr,
+        const int     folds,
+        const int     samples,
+        const QString modelDirPath,
+        const QString outputDirPath
     );
 
     void SetProgressBar(QProgressBar* progressBar);
@@ -68,8 +69,6 @@ public slots:
     */
     void OnAlgorithmFinished();
 
-protected:
-
     /** \brief Runs the algorithm after the operations in Run
      * 
      * This can serve as a background thread. When the
@@ -79,15 +78,17 @@ protected:
      * @return the result struct (that contains the output or an errorMessage)
     */
     Result RunThread(
-        QString& featuresCsvPath,
-        QString& responsesCsvPath,
-        QString& classificationKernelStr,
-        QString& configurationStr,
-        QString& folds,
-        QString& samples,
-        QString& modelDirPath,
-        QString& outputDirPath
+        const QString& featuresCsvPath,
+        const QString& responsesCsvPath,
+        const QString& classificationKernelStr,
+        const QString& configurationStr,
+        const int      folds,
+        const int      samples,
+        const QString& modelDirPath,
+        const QString& outputDirPath
     );
+
+protected:
 
     bool m_IsRunning = false;
     QFutureWatcher<Result> m_Watcher;
@@ -95,5 +96,7 @@ protected:
 
     QProgressBar* m_ProgressBar;
 };
+
+}
 
 #endif // ! CaPTkTraining_h

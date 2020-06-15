@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+  <extension point="org.blueberry.ui.views">
+
+    <view id="upenn.cbica.captk.views.training"
+      name="Training Plugin"
+      category="Radiomics"
+      icon="resources/training_plugin.svg"
+      class="QmitkCaPTkTrainingView" />
+
+  </extension>
+
+</plugin>
