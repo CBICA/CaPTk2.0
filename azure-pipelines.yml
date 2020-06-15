@@ -73,6 +73,7 @@ jobs:
         pathtoPublish: '$(Build.ArtifactStagingDirectory)'
         artifactName: '$(Build.DefinitionName)_installer_Linux_ubuntu1804'
     continueOnError: true
+    condition: or( eq(variables['Build.Reason'], 'Manual'), eq(variables['Build.Reason'], 'Schedule') )
 
   - task: DownloadBuildArtifacts@0
     inputs:
@@ -81,5 +82,6 @@ jobs:
         artifactName: '$(Build.DefinitionName)_installer_Linux_ubuntu1804'
         downloadPath: '$(System.ArtifactsDirectory)'
     continueOnError: true
+    condition: or( eq(variables['Build.Reason'], 'Manual'), eq(variables['Build.Reason'], 'Schedule') )
 
 # TODO: Add upload to NITRC task
