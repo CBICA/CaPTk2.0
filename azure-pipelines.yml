@@ -38,7 +38,7 @@ jobs:
       # cmake -DMITK_EXTENSION_DIRS="$(Build.SourcesDirectory)"
 
       # For right now just configure to pick up any new modules/plugins/cmdapps, then build
-      cmake .
+      cmake -DMITK_BUILD_upenn.cbica.captk.interactivesegmentation:BOOL=OFF .
       make -j2
     
     # 
