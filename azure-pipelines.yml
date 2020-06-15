@@ -45,7 +45,7 @@ jobs:
 
       # Invoke cmake here to make any configuration changes
       # For right now just configure to pick up any new modules/plugins/cmdapps, then build
-      cmake -DMITK_EXTENSION_DIRS="$(Build.SourcesDirectory) .
+      cmake -DMITK_EXTENSION_DIRS="$(Build.SourcesDirectory)" .
       make -j2
     
     # 
