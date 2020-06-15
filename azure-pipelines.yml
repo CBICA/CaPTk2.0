@@ -1,0 +1,87 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+#trigger:
+#- master
+
+schedules:
+- cron: "0 0 * * *"
+  displayName: Daily midnight build
+  branches:
+    include:
+    - master
+    # - releases/*
+    #exclude:
+    #- releases/ancient/*
+
+trigger:
+  batch: true
+  branches:
+    include: ['master']
+
+# 20200312: apparently this is now explicitly required for azure
+pr:
+  branches:
+    include: ['*']
+
+jobs:
+- job: "Ubuntu_1804_SelfHost"
+  displayName: "Self-hosted Ubuntu 18.04 build & package"
+  timeoutInMinutes: 0
+  cancelTimeoutInMinutes: 90
+
+  pool: 'Ubuntu_18.04'
+
+  steps:
+  - checkout: self  
+  # self represents the repo where the initial Pipelines YAML file was found
+  # CaPTk 2.0 extensions are now cloned.
+
+  - bash: |
+      echo Configuring and building MITK with CaPTk extensions...
+      cd /home/cbica-devs/Workspace/MITK/SuperBuild/MITK-build
+
+      # Invoke cmake here to make any configuration changes
+      # For right now just configure to pick up any new modules/plugins/cmdapps, then build
+      cmake -DMITK_EXTENSION_DIRS="$(Build.SourcesDirectory)" .
+      make -j2
+    
+    # 
+    displayName: 'Configure and build MITK with CaPTk extensions'
+
+  - bash: |
+      echo Packaging...
+      cd /home/cbica-devs/Workspace/MITK/SuperBuild/MITK-build
+      make package
+
+      # Now we can perform any postprocessing like installer generation from package
+      # TODO
+
+      ## Finally move installer to artifact staging. Something like:
+      #mv *_Installer.* $(Build.ArtifactStagingDirectory) 
+      # TODO. For now, just publish the tarball. Change/remove this when we make an installer.
+      mv *.tar.gz $(Build.ArtifactStagingDirectory) 
+
+    displayName: 'Create package'
+    condition: or( eq(variables['Build.Reason'], 'Manual'), eq(variables['Build.Reason'], 'Schedule') )
+
+ # Next we can publish to azure, download, and potentially upload to NITRC.
+  - task: PublishBuildArtifacts@1
+    inputs:
+        pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        artifactName: '$(Build.DefinitionName)_installer_Linux_ubuntu1804'
+    continueOnError: true
+    condition: or( eq(variables['Build.Reason'], 'Manual'), eq(variables['Build.Reason'], 'Schedule') )
+
+  - task: DownloadBuildArtifacts@0
+    inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: '$(Build.DefinitionName)_installer_Linux_ubuntu1804'
+        downloadPath: '$(System.ArtifactsDirectory)'
+    continueOnError: true
+    condition: or( eq(variables['Build.Reason'], 'Manual'), eq(variables['Build.Reason'], 'Schedule') )
+
+# TODO: Add upload to NITRC task
