@@ -12,7 +12,7 @@ CaPTk2 is developed and maintained by the [Center for Biomedical Image Computing
 
 Since this integration is still a work in progress, we currently do not provide any binaries of CaPTk2 for any platform. If you are looking for CaPTk please go [here](https://github.com/CBICA/CaPTk).
 
-However, you can download and build CaPTk2 from sources as per the build instructions here[link to developer guide].
+However, you can download and build CaPTk2 from sources as per the build instructions in our [developer guide](https://github.com/CBICA/CaPTk2.0/wiki/Developer-Guide).
 
 ## Contact
 For more information, please contact <a href="mailto:software@cbica.upenn.edu">CBICA Software</a>.
