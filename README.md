@@ -22,4 +22,6 @@ For more information, please contact <a href="mailto:software@cbica.upenn.edu">C
 ```bash
 git clone https://github.com/CBICA/CaPTk2.0.git
 ```
-##Acknowledgements
+
+## Acknowledgements
+We would like to thank the [Medical Imaging Interaction Toolkit (MITK)](https://www.mitk.org/) team from the [German Cancer Research Center (DKFZ)](https://www.dkfz.de/en/index.html) for their toolkit and support.
