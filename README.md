@@ -1,6 +1,6 @@
 # CaPTk2:  Cancer Imaging Phenomics Toolkit (2nd Gen)
 
-This is a work-in-progress towards integrating CaPTk algorithms into the [MITK](http://mitk.org/wiki/MITK) framework.
+This is a work-in-progress towards integrating [CaPTk]((https://github.com/CBICA/CaPTk)) algorithms into the [MITK](http://mitk.org/wiki/MITK) framework.
 
 CaPTk2 is developed and maintained by the [Center for Biomedical Image Computing and Analytics (CBICA)](https://www.cbica.upenn.edu/) at the University of Pennsylvania in collaboration with [German Cancer Research Center (DKFZ)](https://www.dkfz.de/en/index.html). 
 
@@ -10,7 +10,7 @@ CaPTk2 is developed and maintained by the [Center for Biomedical Image Computing
 
 ## Downloads
 
-Since this integration is still a work in progress, we currently do not provide any binaries of CaPTk2 for any platform. If you are looking for CaPTk please go [here](https://github.com/CBICA/CaPTk).
+Since this integration is still a work in progress, we currently do not provide any binaries of CaPTk2 for any platform. If you are looking for [CaPTk](https://github.com/CBICA/CaPTk) please go [here](https://github.com/CBICA/CaPTk).
 
 However, you can download and build CaPTk2 from sources as per the build instructions in our [developer guide](https://github.com/CBICA/CaPTk2.0/wiki/Developer-Guide).
 
