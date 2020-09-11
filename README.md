@@ -2,7 +2,7 @@
 
 This is a work-in-progress towards integrating CaPTk algorithms into the [MITK](http://mitk.org/wiki/MITK) framework.
 
-CaPTk2 is developed and maintained by the [Center for Biomedical Image Computing and Analytics (CBICA)](https://www.cbica.upenn.edu/) at the University of Pennsylvania in collaboration with German Cancer Research Center (DKFZ). 
+CaPTk2 is developed and maintained by the [Center for Biomedical Image Computing and Analytics (CBICA)](https://www.cbica.upenn.edu/) at the University of Pennsylvania in collaboration with [German Cancer Research Center (DKFZ)](https://www.dkfz.de/en/index.html). 
 
 ## Disclaimer
 - The software has been designed for research purposes only and has neither been reviewed nor approved for clinical use by the Food and Drug Administration (FDA) or by any other federal/state agency.
