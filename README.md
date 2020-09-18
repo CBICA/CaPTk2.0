@@ -7,6 +7,7 @@ CaPTk2 is developed and maintained by the [Center for Biomedical Image Computing
 ## Disclaimer
 - The software has been designed for research purposes only and has neither been reviewed nor approved for clinical use by the Food and Drug Administration (FDA) or by any other federal/state agency.
 - This code (excluding dependent libraries) is governed by the license provided in https://www.med.upenn.edu/cbica/software-agreement.html unless otherwise specified.
+- By installing CaPTk2, you also agree to all required licenses as stated in the [license file](https://github.com/CBICA/CaPTk2.0/blob/master/LICENSE).
 
 ## Downloads
 
